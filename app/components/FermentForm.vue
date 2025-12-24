@@ -84,7 +84,16 @@
 				<UInput v-model="formData.startDate" type="date" size="lg" />
 			</UFormField>
 			<UFormField label="End Date (optional)" name="endDate">
-				<UInput v-model="formData.endDate" type="date" size="lg" />
+				<div class="flex gap-2">
+					<UInput v-model="formData.endDate" type="date" size="lg" class="flex-1" />
+					<UButton
+						v-if="formData.endDate"
+						icon="lucide:x"
+						variant="ghost"
+						color="neutral"
+						@click="formData.endDate = ''"
+					/>
+				</div>
 			</UFormField>
 		</div>
 
