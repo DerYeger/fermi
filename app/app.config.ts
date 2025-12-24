@@ -1,33 +1,11 @@
 export default defineAppConfig({
 	app: {
-		name: "Nuxtor",
-		author: "Nicola Spadari",
-		repo: "https://github.com/NicolaSpadari/nuxtor",
-		tauriSite: "https://tauri.app",
-		nuxtSite: "https://nuxt.com",
-		nuxtUiSite: "https://ui4.nuxt.dev"
-	},
-	pageCategories: {
-		system: {
-			label: "System",
-			icon: "lucide:square-terminal"
-		},
-		storage: {
-			label: "Storage",
-			icon: "lucide:archive"
-		},
-		interface: {
-			label: "Interface",
-			icon: "lucide:app-window-mac"
-		},
-		other: {
-			label: "Other",
-			icon: "lucide:folder"
-		}
+		name: "Fermi",
+		description: "Fermentation Tracking App"
 	},
 	ui: {
 		colors: {
-			primary: "green",
+			primary: "amber",
 			neutral: "zinc"
 		},
 		button: {
@@ -51,15 +29,9 @@ export default defineAppConfig({
 				base: "resize-none"
 			}
 		},
-		accordion: {
+		card: {
 			slots: {
-				trigger: "cursor-pointer",
-				item: "md:py-2"
-			}
-		},
-		navigationMenu: {
-			slots: {
-				link: "cursor-pointer"
+				root: "bg-(--ui-bg-elevated)"
 			}
 		}
 	}

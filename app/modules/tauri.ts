@@ -1,9 +1,8 @@
 import * as tauriApp from "@tauri-apps/api/app";
 import * as tauriWebviewWindow from "@tauri-apps/api/webviewWindow";
+import * as tauriDialog from "@tauri-apps/plugin-dialog";
 import * as tauriFs from "@tauri-apps/plugin-fs";
 import * as tauriNotification from "@tauri-apps/plugin-notification";
-import * as tauriOs from "@tauri-apps/plugin-os";
-import * as tauriShell from "@tauri-apps/plugin-shell";
 import * as tauriStore from "@tauri-apps/plugin-store";
 import { addImports, defineNuxtModule } from "nuxt/kit";
 
@@ -14,11 +13,10 @@ const capitalize = (name: string) => {
 const tauriModules = [
 	{ module: tauriApp, prefix: "App", importPath: "@tauri-apps/api/app" },
 	{ module: tauriWebviewWindow, prefix: "WebviewWindow", importPath: "@tauri-apps/api/webviewWindow" },
-	{ module: tauriShell, prefix: "Shell", importPath: "@tauri-apps/plugin-shell" },
-	{ module: tauriOs, prefix: "Os", importPath: "@tauri-apps/plugin-os" },
 	{ module: tauriNotification, prefix: "Notification", importPath: "@tauri-apps/plugin-notification" },
 	{ module: tauriFs, prefix: "Fs", importPath: "@tauri-apps/plugin-fs" },
-	{ module: tauriStore, prefix: "Store", importPath: "@tauri-apps/plugin-store" }
+	{ module: tauriStore, prefix: "Store", importPath: "@tauri-apps/plugin-store" },
+	{ module: tauriDialog, prefix: "Dialog", importPath: "@tauri-apps/plugin-dialog" }
 ];
 
 export default defineNuxtModule<ModuleOptions>({
