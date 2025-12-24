@@ -53,7 +53,7 @@
 			<!-- Days fermenting -->
 			<div v-if="!ferment.isArchived" class="flex items-center gap-2 text-sm text-(--ui-text-muted) mb-3">
 				<UIcon name="lucide:clock" class="size-4" />
-				<span>{{ daysFermenting }} days</span>
+				<span>{{ daysFermenting }}</span>
 			</div>
 
 			<!-- Ingredients preview -->
@@ -130,12 +130,7 @@
 
 	const router = useRouter();
 
-	const daysFermenting = computed(() => {
-		const start = new Date(ferment.startDate);
-		const end = ferment.endDate ? new Date(ferment.endDate) : new Date();
-		const diffTime = Math.abs(end.getTime() - start.getTime());
-		return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-	});
+	const daysFermenting = useTimeSince(() => ferment.startDate);
 
 	function formatDate(dateStr: string) {
 		return new Date(dateStr).toLocaleDateString("en-US", {
