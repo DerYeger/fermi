@@ -46,9 +46,19 @@
 						</div>
 					</UFormField>
 
-					<p class="text-xs text-(--ui-text-muted)">
-						Current location: {{ displayLocation }}
-					</p>
+					<div class="flex items-center justify-between">
+						<p class="text-xs text-(--ui-text-muted)">
+							Current location: {{ displayLocation }}
+						</p>
+						<UButton
+							variant="ghost"
+							size="sm"
+							icon="lucide:folder-open"
+							@click="openDataDirectory"
+						>
+							Open in File Browser
+						</UButton>
+					</div>
 				</div>
 			</UCard>
 
@@ -156,6 +166,23 @@
 			toast.add({ title: "Save location reset to default", color: "success" });
 		} catch (error) {
 			toast.add({ title: "Error resetting save location", description: String(error), color: "error" });
+		}
+	};
+
+	const openDataDirectory = async () => {
+		try {
+			let path = saveLocation.value;
+			if (!path) {
+				// Get the app data directory path
+				path = await useTauriPathAppDataDir();
+			}
+			const fileProtocol = "file://";
+			if (!path.startsWith(fileProtocol)) {
+				path = fileProtocol + path;
+			}
+			await useTauriShellOpen(path);
+		} catch (error) {
+			toast.add({ title: "Error opening directory", description: String(error), color: "error" });
 		}
 	};
 </script>
