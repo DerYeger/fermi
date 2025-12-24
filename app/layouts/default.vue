@@ -8,6 +8,9 @@
 						<span class="text-xl font-bold">Fermi</span>
 					</NuxtLink>
 					<div class="flex items-center gap-2">
+						<NuxtLink to="/dashboard">
+							<UButton variant="ghost" icon="lucide:bar-chart-3" size="sm" />
+						</NuxtLink>
 						<NuxtLink to="/settings">
 							<UButton variant="ghost" icon="lucide:settings" size="sm" />
 						</NuxtLink>

@@ -1,5 +1,5 @@
 <template>
-	<UCard class="group relative overflow-hidden" :ui="{ body: 'p-0' }">
+	<UCard class="group relative overflow-hidden cursor-pointer" :ui="{ body: 'p-0' }" @click="navigateToDetails">
 		<!-- Image -->
 		<div v-if="ferment.imageBase64" class="aspect-video w-full overflow-hidden">
 			<img
@@ -80,7 +80,7 @@
 
 			<!-- Actions -->
 			<div class="flex items-center gap-2 pt-2 border-t border-(--ui-border)">
-				<UButton variant="ghost" size="sm" icon="lucide:pencil" @click="$emit('edit', ferment)">
+				<UButton variant="ghost" size="sm" icon="lucide:pencil" @click.stop="$emit('edit', ferment)">
 					Edit
 				</UButton>
 				<UButton
@@ -88,7 +88,7 @@
 					variant="ghost"
 					size="sm"
 					icon="lucide:archive"
-					@click="$emit('archive', ferment)"
+					@click.stop="$emit('archive', ferment)"
 				>
 					Complete
 				</UButton>
@@ -97,7 +97,7 @@
 					variant="ghost"
 					size="sm"
 					icon="lucide:archive-restore"
-					@click="$emit('unarchive', ferment)"
+					@click.stop="$emit('unarchive', ferment)"
 				>
 					Restore
 				</UButton>
@@ -107,7 +107,7 @@
 					icon="lucide:trash-2"
 					color="error"
 					class="ml-auto"
-					@click="$emit('delete', ferment)"
+					@click.stop="$emit('delete', ferment)"
 				/>
 			</div>
 		</div>
@@ -116,6 +116,8 @@
 
 <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
+
+	const router = useRouter();
 
 	const props = defineProps<{
 		ferment: Ferment
@@ -141,5 +143,9 @@
 			day: "numeric",
 			year: "numeric"
 		});
+	};
+
+	const navigateToDetails = () => {
+		router.push(`/ferment/${props.ferment.id}`);
 	};
 </script>
