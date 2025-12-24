@@ -217,17 +217,17 @@
 		});
 	});
 
-	const previousMonth = () => {
+	function previousMonth() {
 		const newDate = new Date(currentDate.value);
 		newDate.setMonth(newDate.getMonth() - 1);
 		currentDate.value = newDate;
-	};
+	}
 
-	const nextMonth = () => {
+	function nextMonth() {
 		const newDate = new Date(currentDate.value);
 		newDate.setMonth(newDate.getMonth() + 1);
 		currentDate.value = newDate;
-	};
+	}
 
 	const calendarDays = computed((): CalendarDay[] => {
 		const year = currentDate.value.getFullYear();
@@ -250,26 +250,26 @@
 		}
 
 		// Build a map of dates to ferments
-		const dateMap: Record<string, { ferment: Ferment, type: "start" | "end" }[]> = {};
+		const dateMap = new Map<string, { ferment: Ferment, type: "start" | "end" }[]>();
 
 		ferments.value.forEach((ferment) => {
 			if (ferment.startDate) {
 				const startKey = ferment.startDate;
-				if (!dateMap[startKey]) dateMap[startKey] = [];
-				dateMap[startKey].push({ ferment, type: "start" });
+				if (!dateMap.has(startKey)) dateMap.set(startKey, []);
+				dateMap.get(startKey)!.push({ ferment, type: "start" });
 			}
 			if (ferment.endDate) {
 				const endKey = ferment.endDate;
-				if (!dateMap[endKey]) dateMap[endKey] = [];
-				dateMap[endKey].push({ ferment, type: "end" });
+				if (!dateMap.has(endKey)) dateMap.set(endKey, []);
+				dateMap.get(endKey)!.push({ ferment, type: "end" });
 			}
 		});
 
 		// Add days of the month
 		for (let day = 1; day <= lastDay.getDate(); day++) {
 			const date = new Date(year, month, day);
-			const dateKey = date.toISOString().split("T")[0];
-			const dayFerments = dateMap[dateKey] || [];
+			const dateKey = String(date.toISOString().split("T")[0]);
+			const dayFerments = (dateMap.get(dateKey) ?? []) as { ferment: Ferment, type: "start" | "end" }[];
 
 			days.push({
 				date,
@@ -282,7 +282,7 @@
 		return days;
 	});
 
-	const getDayClasses = (day: CalendarDay) => {
+	function getDayClasses(day: CalendarDay) {
 		const classes: string[] = [];
 
 		if (!day.date) return classes;
@@ -308,9 +308,9 @@
 		}
 
 		return classes;
-	};
+	}
 
-	const getDayMenuItems = (day: CalendarDay) => {
+	function getDayMenuItems(day: CalendarDay) {
 		const startedFermentItems: DropdownMenuItem[] = [
 			{
 				type: "label",
@@ -341,5 +341,5 @@
 			allItems.push(endedFermentItems);
 		}
 		return allItems;
-	};
+	}
 </script>

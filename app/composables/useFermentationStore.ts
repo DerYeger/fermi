@@ -5,23 +5,19 @@ const DATA_FILENAME = "fermentation-data.json";
 const BACKUP_PREFIX = "fermentation-backup-";
 const CONFIG_FILENAME = "config.json";
 
-export const useFermentationStore = () => {
+export function useFermentationStore() {
 	const ferments = useState<Ferment[]>("ferments", () => []);
 	const settings = useState<AppSettings>("settings", () => ({ ...defaultSettings }));
 	const config = useState<AppConfig>("config", () => ({ ...defaultConfig }));
 	const isLoading = useState<boolean>("isLoading", () => true);
 	const configLoaded = useState<boolean>("configLoaded", () => false);
 
-	const activeFerments = computed(() =>
-		ferments.value.filter((f) => !f.isArchived).sort((a, b) =>
-			new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-		)
+	const activeFerments = computed(() => ferments.value.filter((f) => !f.isArchived).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+	)
 	);
 
-	const archivedFerments = computed(() =>
-		ferments.value.filter((f) => f.isArchived).sort((a, b) =>
-			new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-		)
+	const archivedFerments = computed(() => ferments.value.filter((f) => f.isArchived).sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+	)
 	);
 
 	// Data is stored in the configured location or AppData
@@ -198,9 +194,8 @@ export const useFermentationStore = () => {
 	}
 
 	async function updateFerment(id: string, updates: Partial<Ferment>) {
-		const index = ferments.value.findIndex((f) => f.id === id);
-		if (index !== -1) {
-			const ferment = ferments.value[index];
+		const ferment = ferments.value.find((f) => f.id === id);
+		if (ferment) {
 			Object.assign(ferment, updates, { updatedAt: new Date().toISOString() });
 			await saveData();
 		}
@@ -215,9 +210,8 @@ export const useFermentationStore = () => {
 	}
 
 	async function archiveFerment(id: string, rating: number, completionNotes: string) {
-		const index = ferments.value.findIndex((f) => f.id === id);
-		if (index !== -1) {
-			const ferment = ferments.value[index];
+		const ferment = ferments.value.find((f) => f.id === id);
+		if (ferment) {
 			Object.assign(ferment, {
 				isArchived: true,
 				rating,
@@ -230,9 +224,8 @@ export const useFermentationStore = () => {
 	}
 
 	async function unarchiveFerment(id: string) {
-		const index = ferments.value.findIndex((f) => f.id === id);
-		if (index !== -1) {
-			const ferment = ferments.value[index];
+		const ferment = ferments.value.find((f) => f.id === id);
+		if (ferment) {
 			Object.assign(ferment, {
 				isArchived: false,
 				rating: undefined,
@@ -283,4 +276,4 @@ export const useFermentationStore = () => {
 		updateSettings,
 		setSaveLocation
 	};
-};
+}

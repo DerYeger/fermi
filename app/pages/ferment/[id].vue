@@ -220,43 +220,46 @@
 			</div>
 		</div>
 
-		<!-- Edit Modal -->
-		<UModal v-model:open="showEditModal" title="Edit Ferment" :ui="{ width: 'sm:max-w-2xl' }">
-			<template #body>
-				<FermentForm
-					:initial-data="ferment"
-					@submit="handleEdit"
-					@cancel="showEditModal = false"
-				/>
-			</template>
-		</UModal>
+		<template v-if="ferment">
+			<!-- Edit Modal -->
+			<UModal v-model:open="showEditModal" title="Edit Ferment">
+				<template #body>
+					<FermentForm
+						:initial-data="ferment"
+						@submit="handleEdit"
+						@cancel="showEditModal = false"
+					/>
+				</template>
+			</UModal>
 
-		<!-- Archive Modal -->
-		<UModal v-model:open="showArchiveModal" title="Complete Ferment">
-			<template #body>
-				<ArchiveForm
-					@submit="handleArchive"
-					@cancel="showArchiveModal = false"
-				/>
-			</template>
-		</UModal>
+			<!-- Archive Modal -->
+			<UModal v-model:open="showArchiveModal" title="Complete Ferment">
+				<template #body>
+					<ArchiveForm
+						:ferment="ferment"
+						@submit="handleArchive"
+						@cancel="showArchiveModal = false"
+					/>
+				</template>
+			</UModal>
 
-		<!-- Delete Confirmation Modal -->
-		<UModal v-model:open="showDeleteModal" title="Delete Ferment">
-			<template #body>
-				<p class="text-(--ui-text-muted) mb-6">
-					Are you sure you want to delete "{{ ferment?.name }}"? This action cannot be undone.
-				</p>
-				<div class="flex justify-end gap-2">
-					<UButton variant="ghost" @click="showDeleteModal = false">
-						Cancel
-					</UButton>
-					<UButton color="error" @click="handleDelete">
-						Delete
-					</UButton>
-				</div>
-			</template>
-		</UModal>
+			<!-- Delete Confirmation Modal -->
+			<UModal v-model:open="showDeleteModal" title="Delete Ferment">
+				<template #body>
+					<p class="text-(--ui-text-muted) mb-6">
+						Are you sure you want to delete "{{ ferment?.name }}"? This action cannot be undone.
+					</p>
+					<div class="flex justify-end gap-2">
+						<UButton variant="ghost" @click="showDeleteModal = false">
+							Cancel
+						</UButton>
+						<UButton color="error" @click="handleDelete">
+							Delete
+						</UButton>
+					</div>
+				</template>
+			</UModal>
+		</template>
 	</div>
 </template>
 
@@ -267,7 +270,7 @@
 	const router = useRouter();
 	const { ferments, isLoading, updateFerment, archiveFerment, unarchiveFerment, deleteFerment } = useFermentationStore();
 
-	const fermentId = computed(() => route.params.id as string);
+	const fermentId = computed(() => String((route.params as any).id));
 
 	const ferment = computed(() => {
 		return ferments.value.find((f) => f.id === fermentId.value);
@@ -285,16 +288,16 @@
 	const showArchiveModal = ref(false);
 	const showDeleteModal = ref(false);
 
-	const formatDate = (dateStr: string) => {
+	function formatDate(dateStr: string) {
 		return new Date(dateStr).toLocaleDateString("en-US", {
 			weekday: "long",
 			month: "long",
 			day: "numeric",
 			year: "numeric"
 		});
-	};
+	}
 
-	const formatDateTime = (dateStr: string) => {
+	function formatDateTime(dateStr: string) {
 		return new Date(dateStr).toLocaleDateString("en-US", {
 			month: "short",
 			day: "numeric",
@@ -302,29 +305,29 @@
 			hour: "numeric",
 			minute: "2-digit"
 		});
-	};
+	}
 
-	const handleEdit = async (data: Omit<Ferment, "id" | "createdAt" | "updatedAt">) => {
+	async function handleEdit(data: Omit<Ferment, "id" | "createdAt" | "updatedAt">) {
 		if (!ferment.value) return;
 		await updateFerment(ferment.value.id, data);
 		showEditModal.value = false;
-	};
+	}
 
-	const handleArchive = async (data: { rating: number, completionNotes: string }) => {
+	async function handleArchive(data: { rating: number, completionNotes: string }) {
 		if (!ferment.value) return;
 		await archiveFerment(ferment.value.id, data.rating, data.completionNotes);
 		showArchiveModal.value = false;
-	};
+	}
 
-	const handleUnarchive = async () => {
+	async function handleUnarchive() {
 		if (!ferment.value) return;
 		await unarchiveFerment(ferment.value.id);
 	};
 
-	const handleDelete = async () => {
+	async function handleDelete() {
 		if (!ferment.value) return;
 		await deleteFerment(ferment.value.id);
 		showDeleteModal.value = false;
 		router.push("/");
-	};
+	}
 </script>

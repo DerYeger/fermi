@@ -117,7 +117,7 @@
 <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
 
-	const props = defineProps<{
+	const { ferment } = defineProps<{
 		ferment: Ferment
 	}>();
 
@@ -131,21 +131,21 @@
 	const router = useRouter();
 
 	const daysFermenting = computed(() => {
-		const start = new Date(props.ferment.startDate);
-		const end = props.ferment.endDate ? new Date(props.ferment.endDate) : new Date();
+		const start = new Date(ferment.startDate);
+		const end = ferment.endDate ? new Date(ferment.endDate) : new Date();
 		const diffTime = Math.abs(end.getTime() - start.getTime());
 		return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 	});
 
-	const formatDate = (dateStr: string) => {
+	function formatDate(dateStr: string) {
 		return new Date(dateStr).toLocaleDateString("en-US", {
 			month: "short",
 			day: "numeric",
 			year: "numeric"
 		});
-	};
+	}
 
-	const navigateToDetails = () => {
-		router.push(`/ferment/${props.ferment.id}`);
-	};
+	function navigateToDetails() {
+		router.push(`/ferment/${ferment.id}`);
+	}
 </script>

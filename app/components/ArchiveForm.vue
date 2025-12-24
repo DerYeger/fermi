@@ -27,7 +27,7 @@
 		<!-- Notes -->
 		<UFormField label="Final Notes (optional)" name="notes">
 			<UTextarea
-				v-model="notes"
+				v-model="completionNotes"
 				placeholder="How did it turn out? Any lessons learned?"
 				:rows="4"
 			/>
@@ -48,22 +48,22 @@
 <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
 
-	const props = defineProps<{
+	const { ferment } = defineProps<{
 		ferment: Ferment
 	}>();
 
 	const emit = defineEmits<{
-		submit: [data: { rating: number, notes: string }]
+		submit: [data: { rating: number, completionNotes: string }]
 		cancel: []
 	}>();
 
-	const rating = ref(props.ferment.rating || 3);
-	const notes = ref(props.ferment.completionNotes || "");
+	const rating = ref(ferment.rating ?? 3);
+	const completionNotes = ref(ferment.completionNotes ?? "");
 
-	const handleSubmit = () => {
+	function handleSubmit() {
 		emit("submit", {
 			rating: rating.value,
-			notes: notes.value
+			completionNotes: completionNotes.value
 		});
-	};
+	}
 </script>

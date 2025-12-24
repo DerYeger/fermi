@@ -113,7 +113,7 @@
 				Cancel
 			</UButton>
 			<UButton type="submit" :disabled="!isValid">
-				{{ props.initialData ? 'Update' : 'Create' }} Ferment
+				{{ initialData ? 'Update' : 'Create' }} Ferment
 			</UButton>
 		</div>
 	</form>
@@ -123,7 +123,7 @@
 	import type { Ferment, Ingredient } from "~/types/ferment";
 	import { generateId } from "~/types/ferment";
 
-	const props = defineProps<{
+	const { initialData } = defineProps<{
 		initialData?: Ferment | null
 	}>();
 
@@ -135,29 +135,29 @@
 	const fileInput = ref<HTMLInputElement | null>(null);
 
 	const formData = ref({
-		name: props.initialData?.name || "",
-		ingredients: props.initialData?.ingredients?.map((i) => ({ ...i })) || [] as Ingredient[],
-		saltRatio: props.initialData?.saltRatio ?? 2,
-		notes: props.initialData?.notes || "",
-		imageBase64: props.initialData?.imageBase64 || "",
-		startDate: props.initialData?.startDate || new Date().toISOString().split("T")[0],
-		endDate: props.initialData?.endDate || "",
-		isArchived: props.initialData?.isArchived || false,
-		rating: props.initialData?.rating,
-		completionNotes: props.initialData?.completionNotes
+		name: initialData?.name ?? "",
+		ingredients: initialData?.ingredients?.map((i) => ({ ...i })) ?? [] as Ingredient[],
+		saltRatio: initialData?.saltRatio ?? 2,
+		notes: initialData?.notes ?? "",
+		imageBase64: initialData?.imageBase64 ?? "",
+		startDate: initialData?.startDate ?? new Date().toISOString().split("T")[0],
+		endDate: initialData?.endDate ?? "",
+		isArchived: initialData?.isArchived ?? false,
+		rating: initialData?.rating,
+		completionNotes: initialData?.completionNotes
 	});
 
-	watch(() => props.initialData, (newData) => {
+	watch(() => initialData, (newData) => {
 		if (newData) {
 			formData.value = {
-				name: newData.name || "",
-				ingredients: newData.ingredients?.map((i) => ({ ...i })) || [],
+				name: newData.name ?? "",
+				ingredients: newData.ingredients?.map((i) => ({ ...i })) ?? [],
 				saltRatio: newData.saltRatio ?? 2,
-				notes: newData.notes || "",
-				imageBase64: newData.imageBase64 || "",
-				startDate: newData.startDate || new Date().toISOString().split("T")[0],
-				endDate: newData.endDate || "",
-				isArchived: newData.isArchived || false,
+				notes: newData.notes ?? "",
+				imageBase64: newData.imageBase64 ?? "",
+				startDate: newData.startDate ?? new Date().toISOString().split("T")[0],
+				endDate: newData.endDate ?? "",
+				isArchived: newData.isArchived ?? false,
 				rating: newData.rating,
 				completionNotes: newData.completionNotes
 			};
@@ -183,7 +183,7 @@
 
 	const wasIngredientAdded = ref(false);
 
-	const addIngredient = () => {
+	function addIngredient() {
 		wasIngredientAdded.value = true;
 		formData.value.ingredients.push({
 			id: generateId(),
@@ -191,17 +191,17 @@
 			amount: "",
 			unit: ""
 		});
-	};
+	}
 
-	const removeIngredient = (index: number) => {
+	function removeIngredient(index: number) {
 		formData.value.ingredients.splice(index, 1);
-	};
+	}
 
-	const selectImage = () => {
+	function selectImage() {
 		fileInput.value?.click();
-	};
+	}
 
-	const handleImageSelect = async (event: Event) => {
+	function handleImageSelect(event: Event) {
 		const input = event.target as HTMLInputElement;
 		const file = input.files?.[0];
 		if (!file) return;
@@ -213,11 +213,11 @@
 		reader.readAsDataURL(file);
 	};
 
-	const removeImage = () => {
+	function removeImage() {
 		formData.value.imageBase64 = "";
-	};
+	}
 
-	const handleSubmit = () => {
+	function handleSubmit() {
 		if (!isValid.value) return;
 
 		// Filter out empty ingredients
@@ -229,8 +229,8 @@
 			saltRatio: formData.value.saltRatio,
 			notes: formData.value.notes,
 			imageBase64: formData.value.imageBase64,
-			startDate: formData.value.startDate,
-			endDate: formData.value.endDate || undefined,
+			startDate: (formData.value.startDate ?? new Date().toISOString().split("T")[0]) as string,
+			endDate: formData.value.endDate ?? undefined,
 			isArchived: formData.value.isArchived,
 			rating: formData.value.rating,
 			completionNotes: formData.value.completionNotes

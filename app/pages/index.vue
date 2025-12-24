@@ -59,7 +59,7 @@
 		</div>
 
 		<!-- Add/Edit Ferment Modal -->
-		<UModal v-model:open="showAddModal" title="Add New Ferment" :ui="{ width: 'sm:max-w-2xl' }">
+		<UModal v-model:open="showAddModal" title="Add New Ferment">
 			<template #body>
 				<FermentForm
 					:initial-data="editingFerment"
@@ -118,22 +118,22 @@
 		await store.loadData();
 	});
 
-	const openEditModal = (ferment: Ferment) => {
+	function openEditModal(ferment: Ferment) {
 		editingFerment.value = ferment;
 		showAddModal.value = true;
-	};
+	}
 
-	const openArchiveModal = (ferment: Ferment) => {
+	function openArchiveModal(ferment: Ferment) {
 		archivingFerment.value = ferment;
 		showArchiveModal.value = true;
-	};
+	}
 
-	const closeModal = () => {
+	function closeModal() {
 		showAddModal.value = false;
 		editingFerment.value = null;
-	};
+	}
 
-	const handleSubmit = async (data: Omit<Ferment, "id" | "createdAt" | "updatedAt">) => {
+	async function handleSubmit(data: Omit<Ferment, "id" | "createdAt" | "updatedAt">) {
 		try {
 			if (editingFerment.value) {
 				await store.updateFerment(editingFerment.value.id, data);
@@ -146,35 +146,35 @@
 		} catch (error) {
 			toast.add({ title: "Error saving ferment", description: String(error), color: "error" });
 		}
-	};
+	}
 
-	const handleArchive = async (data: { rating: number, notes: string }) => {
+	async function handleArchive(data: { rating: number, completionNotes: string }) {
 		if (!archivingFerment.value) return;
 		try {
-			await store.archiveFerment(archivingFerment.value.id, data.rating, data.notes);
+			await store.archiveFerment(archivingFerment.value.id, data.rating, data.completionNotes);
 			toast.add({ title: "Ferment archived", color: "success" });
 			showArchiveModal.value = false;
 			archivingFerment.value = null;
 		} catch (error) {
 			toast.add({ title: "Error archiving ferment", description: String(error), color: "error" });
 		}
-	};
+	}
 
-	const handleUnarchive = async (ferment: Ferment) => {
+	async function handleUnarchive(ferment: Ferment) {
 		try {
 			await store.unarchiveFerment(ferment.id);
 			toast.add({ title: "Ferment restored to active", color: "success" });
 		} catch (error) {
 			toast.add({ title: "Error restoring ferment", description: String(error), color: "error" });
 		}
-	};
+	}
 
-	const confirmDelete = (ferment: Ferment) => {
+	function confirmDelete(ferment: Ferment) {
 		deletingFerment.value = ferment;
 		showDeleteConfirm.value = true;
-	};
+	}
 
-	const handleDelete = async () => {
+	async function handleDelete() {
 		if (!deletingFerment.value) return;
 		try {
 			await store.deleteFerment(deletingFerment.value.id);
@@ -184,5 +184,5 @@
 		} catch (error) {
 			toast.add({ title: "Error deleting ferment", description: String(error), color: "error" });
 		}
-	};
+	}
 </script>

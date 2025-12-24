@@ -43,15 +43,17 @@ export const defaultConfig: AppConfig = {
 	saveLocation: ""
 };
 
-export const createEmptyFerment = (): Omit<Ferment, "id" | "createdAt" | "updatedAt"> => ({
-	name: "",
-	ingredients: [],
-	saltRatio: 2,
-	notes: "",
-	startDate: new Date().toISOString().split("T")[0] as string,
-	isArchived: false
-});
+export function createEmptyFerment(): Omit<Ferment, "id" | "createdAt" | "updatedAt"> {
+	return ({
+		name: "",
+		ingredients: [],
+		saltRatio: 2,
+		notes: "",
+		startDate: new Date().toISOString().split("T")[0] as string,
+		isArchived: false
+	});
+}
 
-export const generateId = (): string => {
+export function generateId(): string {
 	return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-};
+}

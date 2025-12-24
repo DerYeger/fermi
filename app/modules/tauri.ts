@@ -8,9 +8,9 @@ import * as tauriShell from "@tauri-apps/plugin-shell";
 import * as tauriStore from "@tauri-apps/plugin-store";
 import { addImports, defineNuxtModule } from "nuxt/kit";
 
-const capitalize = (name: string) => {
+function capitalize(name: string) {
 	return name.charAt(0).toUpperCase() + name.slice(1);
-};
+}
 
 const tauriModules = [
 	{ module: tauriApp, prefix: "App", importPath: "@tauri-apps/api/app" },
@@ -23,7 +23,7 @@ const tauriModules = [
 	{ module: tauriShell, prefix: "Shell", importPath: "@tauri-apps/plugin-shell" }
 ];
 
-export default defineNuxtModule<ModuleOptions>({
+export default defineNuxtModule<{ prefix?: string }>({
 	meta: {
 		name: "nuxt-tauri",
 		configKey: "tauri"
