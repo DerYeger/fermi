@@ -2,7 +2,7 @@
 	<form class="space-y-6" @submit.prevent="handleSubmit">
 		<!-- Name -->
 		<UFormField label="Name" name="name" required>
-			<UInput v-model="formData.name" placeholder="e.g., Garlic Honey, Kimchi, Sauerkraut" size="lg" />
+			<UInput v-model="formData.name" placeholder="e.g., Garlic Honey, Kimchi, Sauerkraut" size="lg" autofocus />
 		</UFormField>
 
 		<!-- Image -->
@@ -49,6 +49,7 @@
 						v-model="ingredient.name"
 						placeholder="Ingredient name"
 						class="flex-1"
+						:autofocus="wasIngredientAdded"
 					/>
 					<UInput
 						v-model="ingredient.amount"
@@ -180,7 +181,10 @@
 		return formData.value.name.trim() !== "" && formData.value.startDate !== "";
 	});
 
+	const wasIngredientAdded = ref(false);
+
 	const addIngredient = () => {
+		wasIngredientAdded.value = true;
 		formData.value.ingredients.push({
 			id: generateId(),
 			name: "",
