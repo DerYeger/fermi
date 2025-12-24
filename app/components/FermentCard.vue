@@ -117,8 +117,6 @@
 <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
 
-	const router = useRouter();
-
 	const props = defineProps<{
 		ferment: Ferment
 	}>();
@@ -129,6 +127,8 @@
 		unarchive: [ferment: Ferment]
 		delete: [ferment: Ferment]
 	}>();
+
+	const router = useRouter();
 
 	const daysFermenting = computed(() => {
 		const start = new Date(props.ferment.startDate);

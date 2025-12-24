@@ -1,14 +1,16 @@
-import type { AppSettings, Ferment, FermentationData } from "~/types/ferment";
-import { defaultSettings, generateId } from "~/types/ferment";
+import type { AppConfig, AppSettings, Ferment, FermentationData } from "~/types/ferment";
+import { defaultConfig, defaultSettings, generateId } from "~/types/ferment";
 
 const DATA_FILENAME = "fermentation-data.json";
 const BACKUP_PREFIX = "fermentation-backup-";
+const CONFIG_FILENAME = "config.json";
 
 export const useFermentationStore = () => {
 	const ferments = useState<Ferment[]>("ferments", () => []);
 	const settings = useState<AppSettings>("settings", () => ({ ...defaultSettings }));
+	const config = useState<AppConfig>("config", () => ({ ...defaultConfig }));
 	const isLoading = useState<boolean>("isLoading", () => true);
-	const saveLocation = useState<string>("saveLocation", () => "");
+	const configLoaded = useState<boolean>("configLoaded", () => false);
 
 	const activeFerments = computed(() =>
 		ferments.value.filter((f) => !f.isArchived).sort((a, b) =>
@@ -22,25 +24,80 @@ export const useFermentationStore = () => {
 		)
 	);
 
-	const getDataFilePath = () => {
-		if (saveLocation.value) {
-			return `${saveLocation.value}/${DATA_FILENAME}`;
+	// Data is stored in the configured location or AppData
+	function getDataFilePath() {
+		if (config.value.saveLocation) {
+			return `${config.value.saveLocation}/${DATA_FILENAME}`;
 		}
 		return DATA_FILENAME;
-	};
+	}
 
-	const getBackupFilePath = (index: number) => {
-		if (saveLocation.value) {
-			return `${saveLocation.value}/${BACKUP_PREFIX}${index}.json`;
+	function getBackupFilePath(index: number) {
+		if (config.value.saveLocation) {
+			return `${config.value.saveLocation}/${BACKUP_PREFIX}${index}.json`;
 		}
 		return `${BACKUP_PREFIX}${index}.json`;
-	};
+	}
 
-	const getBaseDir = () => {
-		return saveLocation.value ? undefined : useTauriFsBaseDirectory.AppData;
-	};
+	function getBaseDir() {
+		return config.value.saveLocation ? undefined : useTauriFsBaseDirectory.AppData;
+	}
 
-	const createBackup = async () => {
+	// Load config from AppData/.fermi/config.json
+	async function loadConfig() {
+		try {
+			const content = await useTauriFsReadTextFile(CONFIG_FILENAME, { baseDir: useTauriFsBaseDirectory.AppData });
+			const loadedConfig: AppConfig = JSON.parse(content);
+			config.value = { ...defaultConfig, ...loadedConfig };
+			configLoaded.value = true;
+		} catch (error) {
+			console.error("Failed to load config:", error);
+			config.value = { ...defaultConfig };
+			configLoaded.value = true;
+		}
+	}
+
+	// Save config to AppData/.fermi/config.json
+	async function saveConfig() {
+		try {
+			await useTauriFsWriteTextFile(CONFIG_FILENAME, JSON.stringify(config.value, null, 2), { baseDir: useTauriFsBaseDirectory.AppData });
+		} catch (error) {
+			console.error("Failed to save config:", error);
+			throw error;
+		}
+	}
+
+	// Check if data exists at a given location
+	async function checkDataExistsAt(location: string): Promise<boolean> {
+		try {
+			if (location) {
+				const path = `${location}/${DATA_FILENAME}`;
+				return await useTauriFsExists(path);
+			} else {
+				return await useTauriFsExists(DATA_FILENAME, { baseDir: useTauriFsBaseDirectory.AppData });
+			}
+		} catch {
+			return false;
+		}
+	}
+
+	// Load data from a specific location
+	async function loadDataFromLocation(location: string): Promise<FermentationData | null> {
+		try {
+			let content: string;
+			if (location) {
+				const path = `${location}/${DATA_FILENAME}`;
+				content = await useTauriFsReadTextFile(path);
+			} else {
+				content = await useTauriFsReadTextFile(DATA_FILENAME, { baseDir: useTauriFsBaseDirectory.AppData });
+			}
+			return JSON.parse(content);
+		} catch {
+			return null;
+		}
+	}
+
+	async function createBackup() {
 		try {
 			const baseDir = getBaseDir();
 			const dataPath = getDataFilePath();
@@ -71,9 +128,9 @@ export const useFermentationStore = () => {
 		} catch (error) {
 			console.error("Failed to create backup:", error);
 		}
-	};
+	}
 
-	const saveData = async () => {
+	async function saveData() {
 		try {
 			await createBackup();
 
@@ -98,11 +155,16 @@ export const useFermentationStore = () => {
 			console.error("Failed to save data:", error);
 			throw error;
 		}
-	};
+	}
 
-	const loadData = async () => {
+	async function loadData() {
 		isLoading.value = true;
 		try {
+			// Load config first if not already loaded
+			if (!configLoaded.value) {
+				await loadConfig();
+			}
+
 			const baseDir = getBaseDir();
 			const dataPath = getDataFilePath();
 
@@ -120,9 +182,9 @@ export const useFermentationStore = () => {
 		} finally {
 			isLoading.value = false;
 		}
-	};
+	}
 
-	const addFerment = async (ferment: Omit<Ferment, "id" | "createdAt" | "updatedAt">) => {
+	async function addFerment(ferment: Omit<Ferment, "id" | "createdAt" | "updatedAt">) {
 		const now = new Date().toISOString();
 		const newFerment: Ferment = {
 			...ferment,
@@ -133,26 +195,26 @@ export const useFermentationStore = () => {
 		ferments.value.push(newFerment);
 		await saveData();
 		return newFerment;
-	};
+	}
 
-	const updateFerment = async (id: string, updates: Partial<Ferment>) => {
+	async function updateFerment(id: string, updates: Partial<Ferment>) {
 		const index = ferments.value.findIndex((f) => f.id === id);
 		if (index !== -1) {
 			const ferment = ferments.value[index];
 			Object.assign(ferment, updates, { updatedAt: new Date().toISOString() });
 			await saveData();
 		}
-	};
+	}
 
-	const deleteFerment = async (id: string) => {
+	async function deleteFerment(id: string) {
 		const index = ferments.value.findIndex((f) => f.id === id);
 		if (index !== -1) {
 			ferments.value.splice(index, 1);
 			await saveData();
 		}
-	};
+	}
 
-	const archiveFerment = async (id: string, rating: number, completionNotes: string) => {
+	async function archiveFerment(id: string, rating: number, completionNotes: string) {
 		const index = ferments.value.findIndex((f) => f.id === id);
 		if (index !== -1) {
 			const ferment = ferments.value[index];
@@ -165,9 +227,9 @@ export const useFermentationStore = () => {
 			});
 			await saveData();
 		}
-	};
+	}
 
-	const unarchiveFerment = async (id: string) => {
+	async function unarchiveFerment(id: string) {
 		const index = ferments.value.findIndex((f) => f.id === id);
 		if (index !== -1) {
 			const ferment = ferments.value[index];
@@ -179,38 +241,40 @@ export const useFermentationStore = () => {
 			});
 			await saveData();
 		}
-	};
+	}
 
-	const updateSettings = async (newSettings: Partial<AppSettings>) => {
-		const oldLocation = saveLocation.value;
+	async function updateSettings(newSettings: Partial<AppSettings>) {
 		settings.value = { ...settings.value, ...newSettings };
+		await saveData();
+	}
 
-		if (newSettings.saveLocation !== undefined) {
-			saveLocation.value = newSettings.saveLocation;
-			// If location changed, save data to new location
-			if (oldLocation !== newSettings.saveLocation) {
-				await saveData();
-			}
+	// Set save location with option to use existing data at new location
+	async function setSaveLocation(location: string, useExistingData: boolean = false) {
+		// Update config
+		config.value.saveLocation = location;
+		await saveConfig();
+
+		if (useExistingData) {
+			// Load data from the new location
+			await loadDataFromLocation(location);
 		} else {
+			// Save current data to the new location
 			await saveData();
 		}
-	};
-
-	const setSaveLocation = async (location: string) => {
-		saveLocation.value = location;
-		settings.value.saveLocation = location;
-		await saveData();
-	};
+	}
 
 	return {
 		ferments,
 		settings,
+		config,
 		isLoading,
-		saveLocation,
 		activeFerments,
 		archivedFerments,
+		loadConfig,
 		loadData,
 		saveData,
+		checkDataExistsAt,
+		loadDataFromLocation,
 		addFerment,
 		updateFerment,
 		deleteFerment,

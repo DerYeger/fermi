@@ -128,6 +128,7 @@
 </template>
 
 <script lang="ts" setup>
+	import type { DropdownMenuItem } from "@nuxt/ui";
 	import type { Ferment } from "~/types/ferment";
 	import { PieChart } from "echarts/charts";
 	import { LegendComponent, TitleComponent, TooltipComponent } from "echarts/components";
@@ -310,10 +311,35 @@
 	};
 
 	const getDayMenuItems = (day: CalendarDay) => {
-		return day.ferments.map((item) => ({
-			label: item.ferment.name,
-			icon: item.type === "start" ? "lucide:play" : "lucide:flag",
-			to: `/ferment/${item.ferment.id}`
-		}));
+		const startedFermentItems: DropdownMenuItem[] = [
+			{
+				type: "label",
+				label: "Started"
+			}
+		];
+		const endedFermentItems: DropdownMenuItem[] = [{
+			type: "label",
+			label: "Ended"
+		}];
+		day.ferments.forEach((item) => {
+			const menuItem: DropdownMenuItem = {
+				type: "link",
+				label: item.ferment.name,
+				to: `/ferment/${item.ferment.id}`
+			};
+			if (item.type === "start") {
+				startedFermentItems.push(menuItem);
+			} else if (item.type === "end") {
+				endedFermentItems.push(menuItem);
+			}
+		});
+		const allItems: DropdownMenuItem[][] = [];
+		if (startedFermentItems.length > 1) {
+			allItems.push(startedFermentItems);
+		}
+		if (endedFermentItems.length > 1) {
+			allItems.push(endedFermentItems);
+		}
+		return allItems;
 	};
 </script>

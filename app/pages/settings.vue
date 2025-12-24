@@ -111,6 +111,50 @@
 				</div>
 			</UCard>
 		</div>
+
+		<!-- Data Choice Modal -->
+		<UModal v-model:open="showDataChoiceModal" title="Existing Data Found">
+			<template #body>
+				<div class="space-y-4">
+					<p class="text-(--ui-text-muted)">
+						There is already fermentation data at the selected location. Would you like to:
+					</p>
+					<div class="space-y-3">
+						<UCard class="cursor-pointer hover:bg-(--ui-bg-elevated) transition-colors" @click="handleUseExistingData">
+							<div class="flex items-start gap-3">
+								<UIcon name="lucide:folder-input" class="size-5 mt-0.5 text-(--ui-primary)" />
+								<div>
+									<div class="font-medium">
+										Use existing data
+									</div>
+									<div class="text-sm text-(--ui-text-muted)">
+										Load the data already at this location. Your current data will remain at its current location.
+									</div>
+								</div>
+							</div>
+						</UCard>
+						<UCard class="cursor-pointer hover:bg-(--ui-bg-elevated) transition-colors" @click="handleUseCurrentData">
+							<div class="flex items-start gap-3">
+								<UIcon name="lucide:folder-output" class="size-5 mt-0.5 text-(--ui-primary)" />
+								<div>
+									<div class="font-medium">
+										Use current data
+									</div>
+									<div class="text-sm text-(--ui-text-muted)">
+										Overwrite the data at this location with your current data.
+									</div>
+								</div>
+							</div>
+						</UCard>
+					</div>
+					<div class="flex justify-end pt-2">
+						<UButton variant="ghost" @click="handleCancelLocationChange">
+							Cancel
+						</UButton>
+					</div>
+				</div>
+			</template>
+		</UModal>
 	</div>
 </template>
 
@@ -118,8 +162,10 @@
 	const store = useFermentationStore();
 	const toast = useToast();
 
-	const saveLocation = ref(store.settings.value.saveLocation);
+	const saveLocation = ref(store.config.value.saveLocation);
 	const maxBackups = ref(store.settings.value.maxBackups);
+	const pendingLocation = ref<string | null>(null);
+	const showDataChoiceModal = ref(false);
 
 	const displayLocation = computed(() => {
 		return saveLocation.value || "App Data Directory (default)";
@@ -127,7 +173,7 @@
 
 	onMounted(async () => {
 		await store.loadData();
-		saveLocation.value = store.settings.value.saveLocation;
+		saveLocation.value = store.config.value.saveLocation;
 		maxBackups.value = store.settings.value.maxBackups;
 	});
 
@@ -142,7 +188,7 @@
 		}
 	});
 
-	const selectFolder = async () => {
+	async function selectFolder() {
 		try {
 			const selected = await useTauriDialogOpen({
 				directory: true,
@@ -150,26 +196,73 @@
 				title: "Select Data Storage Folder"
 			});
 			if (selected && typeof selected === "string") {
-				saveLocation.value = selected;
-				await store.setSaveLocation(selected);
-				toast.add({ title: "Save location updated", color: "success" });
+				// Check if data already exists at the new location
+				const dataExists = await store.checkDataExistsAt(selected);
+				if (dataExists) {
+					pendingLocation.value = selected;
+					showDataChoiceModal.value = true;
+				} else {
+					// No existing data, just move current data there
+					await applyLocationChange(selected, false);
+				}
 			}
 		} catch (error) {
 			toast.add({ title: "Error setting save location", description: String(error), color: "error" });
 		}
-	};
+	}
 
-	const clearSaveLocation = async () => {
+	async function applyLocationChange(location: string, useExistingData: boolean) {
 		try {
-			saveLocation.value = "";
-			await store.setSaveLocation("");
-			toast.add({ title: "Save location reset to default", color: "success" });
+			saveLocation.value = location;
+			await store.setSaveLocation(location, useExistingData);
+			toast.add({
+				title: "Save location updated",
+				description: useExistingData ? "Using data from the new location" : "Your data has been moved to the new location",
+				color: "success"
+			});
+		} catch (error) {
+			toast.add({ title: "Error setting save location", description: String(error), color: "error" });
+		}
+	}
+
+	async function handleUseExistingData() {
+		if (pendingLocation.value) {
+			await applyLocationChange(pendingLocation.value, true);
+		}
+		showDataChoiceModal.value = false;
+		pendingLocation.value = null;
+	}
+
+	async function handleUseCurrentData() {
+		if (pendingLocation.value) {
+			await applyLocationChange(pendingLocation.value, false);
+		}
+		showDataChoiceModal.value = false;
+		pendingLocation.value = null;
+	}
+
+	function handleCancelLocationChange() {
+		showDataChoiceModal.value = false;
+		pendingLocation.value = null;
+	}
+
+	async function clearSaveLocation() {
+		try {
+			// Check if data exists at default location
+			const dataExists = await store.checkDataExistsAt("");
+			if (dataExists) {
+				pendingLocation.value = "";
+				showDataChoiceModal.value = true;
+			} else {
+				await applyLocationChange("", false);
+				toast.add({ title: "Save location reset to default", color: "success" });
+			}
 		} catch (error) {
 			toast.add({ title: "Error resetting save location", description: String(error), color: "error" });
 		}
-	};
+	}
 
-	const openDataDirectory = async () => {
+	async function openDataDirectory() {
 		try {
 			let path = saveLocation.value;
 			if (!path) {
@@ -184,5 +277,5 @@
 		} catch (error) {
 			toast.add({ title: "Error opening directory", description: String(error), color: "error" });
 		}
-	};
+	}
 </script>

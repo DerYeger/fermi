@@ -28,13 +28,19 @@ export interface FermentationData {
 }
 
 export interface AppSettings {
-	saveLocation: string
 	maxBackups: number
 }
 
+export interface AppConfig {
+	saveLocation: string
+}
+
 export const defaultSettings: AppSettings = {
-	saveLocation: "",
 	maxBackups: 5
+};
+
+export const defaultConfig: AppConfig = {
+	saveLocation: ""
 };
 
 export const createEmptyFerment = (): Omit<Ferment, "id" | "createdAt" | "updatedAt"> => ({
