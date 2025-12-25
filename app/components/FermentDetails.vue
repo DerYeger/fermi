@@ -246,7 +246,7 @@
 </template>
 
 <script lang="ts" setup>
-	import type { Ferment, FermentBase } from "~/types/ferment";
+	import { transitionToActive, type CompletedFerment, type Ferment, type FermentBase } from "~/types/ferment";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
@@ -260,40 +260,28 @@
 	const showArchiveModal = ref(false);
 	const showDeleteModal = ref(false);
 
-	function formatDate(date: string) {
-		return new Date(date).toLocaleDateString("en-US", {
-			weekday: "long",
-			month: "long",
-			day: "numeric",
-			year: "numeric"
-		});
+	async function handleEdit(data: Omit<FermentBase, "id" | "createdAt">) {
+    FermentCollection.update(ferment.id, (current) => {
+      Object.assign(current, data);
+    });
 	}
 
-	function formatDateTime(date: string) {
-		return new Date(date).toLocaleDateString("en-US", {
-			month: "short",
-			day: "numeric",
-			year: "numeric",
-			hour: "numeric",
-			minute: "2-digit"
-		});
+  async function handleArchive(data: CompletedFerment) {
+    FermentCollection.update(data.id, (draft) => {
+      Object.assign(draft, data);
+    });
+    showArchiveModal.value = false;
 	}
 
-	async function handleEdit(data: Omit<FermentBase, "id" | "createdAt" | "updatedAt">) {
-		FermentCollection.update(ferment.id, (current) => ({ ...current, ...data }));
-	}
-
-	async function handleArchive(_data: { rating: number | undefined, completionNotes: string }) {
-		// TODO: Move to ferment collection
-	}
-
-	async function handleUnarchive() {
-		// TODO: Move to ferment collection
+  async function handleUnarchive() {
+    if (ferment.state !== 'completed') return;
+		FermentCollection.update(ferment.id, (current) => {
+      Object.assign(current, transitionToActive(ferment));
+    });
 	};
 
-	async function handleDelete() {
+  async function handleDelete() {
+    await router.push({ name: 'index'});
 		FermentCollection.delete(ferment.id);
-		showDeleteModal.value = false;
-		router.push("/");
 	}
 </script>

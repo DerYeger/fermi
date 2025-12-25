@@ -128,7 +128,7 @@
 	}>();
 
 	const emit = defineEmits<{
-		submit: [data: Omit<FermentBase, "id" | "createdAt" | "updatedAt">]
+		submit: [data: Omit<FermentBase, "id" | "createdAt">]
 		cancel: []
 	}>();
 
@@ -146,7 +146,7 @@
 		ingredients: initialData?.ingredients?.map((i) => ({ ...i, amount: `${i.amount}` })) ?? [] as IngredientInput[],
 		saltRatio: initialData?.saltRatio ?? 2,
 		notes: initialData?.notes ?? "",
-		startDate: initialData?.startDate ?? getISODate(),
+		startDate: initialData?.startDate ?? getCurrentISODate(),
 		endDate: initialData?.endDate ?? ""
 	});
 
@@ -157,7 +157,7 @@
 				ingredients: newData.ingredients?.map((i) => ({ ...i, amount: `${i.amount}` })) ?? [],
 				saltRatio: newData.saltRatio ?? 2,
 				notes: newData.notes ?? "",
-				startDate: newData.startDate ?? getISODate(),
+				startDate: newData.startDate ?? getCurrentISODate(),
 				endDate: newData.endDate ?? ""
 			};
 		} else {
@@ -166,7 +166,7 @@
 				ingredients: [],
 				saltRatio: 2,
 				notes: "",
-				startDate: getISODate(),
+				startDate: getCurrentISODate(),
 				endDate: ""
 			};
 		}
@@ -227,11 +227,8 @@
 			notes: formData.value.notes,
 			imagePaths: [],
 			startDate: formData.value.startDate,
-			endDate: formData.value.endDate || undefined
+      endDate: formData.value.endDate || undefined,
+      updatedAt: new Date().toISOString()
 		});
 };
-
-function getISODate() {
-    return new Date().toISOString().split('T')[0]!;
-  }
 </script>

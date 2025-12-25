@@ -2,7 +2,7 @@ import type { DirEntry } from "@tauri-apps/plugin-fs";
 import type { Ferment, FermentState } from "~/types/ferment";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection, eq, useLiveQuery } from "@tanstack/vue-db";
-import { queryClient } from "~/queryClient";
+import { queryClient, queryKeys } from "~/queryClient";
 import { FermentSchema } from "~/types/ferment";
 
 const DATA_FILENAME = "data.json";
@@ -14,7 +14,7 @@ export const FermentCollection = createCollection(
 	queryCollectionOptions({
 		queryClient,
 		schema: FermentSchema,
-		queryKey: ["ferments"],
+		queryKey: queryKeys.ferments.all,
 		queryFn: async () => await loadAllFerments(),
 		getKey: (item) => item.id,
     onInsert: async ({ transaction }) => {

@@ -33,6 +33,7 @@
 		"@tauri-apps/plugin-shell": "^2.3.3",
 		"@tauri-apps/plugin-store": "^2.4.0",
 		"echarts": "^6.0.0",
+		"key-hierarchy": "3.0.9",
 		"nanoid": "5.1.6",
 		"nuxt": "^4.1.2",
 		"vue": "^3.5.21",

@@ -45,24 +45,43 @@
 </template>
 
 <script lang="ts" setup>
-	import type { Ferment } from "~/types/ferment";
+	import type { CompletedFerment, Ferment } from "~/types/ferment";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
 	}>();
 
 	const emit = defineEmits<{
-		submit: [data: { rating: number | undefined, completionNotes: string }]
+		submit: [data: CompletedFerment]
 		cancel: []
 	}>();
 
 	const rating = ref<number>();
 	const completionNotes = ref("");
 
-	function handleSubmit() {
-		emit("submit", {
-			rating: rating.value,
-			completionNotes: completionNotes.value
-		});
-	}
+  function handleSubmit() {
+    const completedFerment: CompletedFerment = {
+      ...ferment,
+      state: "completed",
+      endDate: ferment.endDate ?? getCurrentISODate(),
+      overall: {
+        stars: rating.value,
+        notes: completionNotes.value
+      },
+      flavor: {
+        stars: undefined,
+        notes: undefined
+      },
+      texture: {
+        stars: undefined,
+        notes: undefined
+      },
+      process: {
+        stars: undefined,
+        notes: undefined
+      },
+      notes: completionNotes.value,
+    };
+    emit("submit", completedFerment);
+  }
 </script>

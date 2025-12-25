@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts" setup>
-	import type { ActiveFerment, Ferment, FermentBase } from "~/types/ferment";
+	import { transitionToActive, type ActiveFerment, type CompletedFerment, type Ferment, type FermentBase } from "~/types/ferment";
 	import { nanoid } from "nanoid";
 
 	const { data: activeFerments, isLoading: isLoadingActive } = useActiveFerments();
@@ -130,19 +130,18 @@
 		editingFerment.value = null;
 	}
 
-	async function handleSubmit(data: Omit<FermentBase, "id" | "createdAt" | "updatedAt">) {
+	async function handleSubmit(data: Omit<FermentBase, "id" | "createdAt">) {
 		try {
 			if (editingFerment.value) {
         FermentCollection.update(editingFerment.value.id, (current) => {
-          Object.assign(current, data, { updatedAt: new Date().toISOString() });
+          Object.assign(current, data);
         });
       } else {
         const newFerment: ActiveFerment = {
 					...data,
 					id: nanoid(),
 					state: "active",
-					createdAt: new Date().toISOString(),
-					updatedAt: new Date().toISOString()
+					createdAt: data.updatedAt
         }
 				FermentCollection.insert(newFerment);
 			}
@@ -152,12 +151,18 @@
 		}
 	}
 
-	async function handleArchive(_data: { rating: number | undefined, completionNotes: string }) {
-		// TODO: Move to ferment collection
+	async function handleArchive(data: CompletedFerment) {
+		FermentCollection.update(data.id, (draft) => {
+      Object.assign(draft, data);
+    });
+    showArchiveModal.value = false;
 	}
 
-	async function handleUnarchive(_ferment: Ferment) {
-		// TODO: Move to ferment collection
+	async function handleUnarchive(ferment: Ferment) {
+		 if (ferment.state !== 'completed') return;
+		FermentCollection.update(ferment.id, (current) => {
+      Object.assign(current, transitionToActive(ferment));
+    });
 	}
 
 	function confirmDelete(ferment: Ferment) {

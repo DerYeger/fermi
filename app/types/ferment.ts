@@ -49,3 +49,12 @@ export const FermentSchema = z.discriminatedUnion("state", [
 export type Ferment = zInfer<typeof FermentSchema>;
 
 export type FermentState = Ferment["state"];
+
+export function transitionToActive(ferment: CompletedFerment): ActiveFerment {
+  return ActiveFermentSchema.parse({
+    ...ferment,
+    state: "active",
+    endDate: undefined,
+    updatedAt: new Date().toISOString()
+  } satisfies ActiveFerment)
+};

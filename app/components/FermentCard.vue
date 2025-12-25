@@ -36,7 +36,7 @@
 
 			<!-- Salt ratio -->
 			<div class="flex items-center gap-2 text-sm text-(--ui-text-muted) mb-2">
-				<UIcon name="lucide:percent" class="size-4" />
+				<UIcon name="lucide:gem" class="size-4" />
 				<span>{{ ferment.saltRatio }}% salt</span>
 			</div>
 
@@ -132,13 +132,7 @@
 
 	const daysFermenting = useTimeSince(() => ferment.startDate);
 
-	function formatDate(date: string) {
-		return new Date(date).toLocaleDateString("en-US", {
-			month: "short",
-			day: "numeric",
-			year: "numeric"
-		});
-	}
+
 
 	function navigateToDetails() {
 		router.push(`/ferment/${ferment.id}`);
