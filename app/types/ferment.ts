@@ -34,7 +34,6 @@ export const RatingSchema = z.object({
 export const CompletedFermentSchema = FermentBaseSchema.extend({
 	state: z.literal("completed"),
 	endDate: z.iso.date(),
-	thumb: z.enum(["up", "down"]).optional(),
 	overall: RatingSchema,
 	flavor: RatingSchema,
 	texture: RatingSchema,

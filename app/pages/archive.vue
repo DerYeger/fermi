@@ -13,15 +13,96 @@
 		</NewFermentButton>
 	</div>
 
-	<div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		<FermentCard
-			v-for="ferment in data"
-			:key="ferment.id"
-			:ferment="ferment"
-		/>
-	</div>
+	<UTable v-else :data="data as CompletedFerment[]" class="flex-1" :columns="columns" />
 </template>
 
 <script setup lang="ts">
+	import type { TableColumn } from "@nuxt/ui";
+	import type { CompletedFerment } from "~/types/ferment";
+
 	const { data, isLoading } = useCompletedFerments();
+
+	const columns: TableColumn<CompletedFerment>[] = [
+		{
+			header: "Name",
+			id: "name",
+			accessorFn: (row) => row.name,
+			enableSorting: true
+		},
+		{
+			header: "Ingredients",
+			id: "ingredients",
+			// TODO: Use badges
+			accessorFn: (row) => row.ingredients.map((ing) => ing.name).join(", "),
+			enableSorting: false
+		},
+		{
+			header: "Salt",
+			id: "saltRatio",
+			accessorFn: (row) => `${row.saltRatio}%`,
+			enableSorting: true
+		},
+		{
+			header: "Duration",
+			id: "duration",
+			accessorFn: (row) => {
+				// TODO: Simplify
+				const start = new Date(row.startDate);
+				const end = row.endDate ? new Date(row.endDate) : new Date();
+				const diffTime = Math.abs(end.getTime() - start.getTime());
+				const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+				return `${diffDays} days`;
+			},
+			enableSorting: true
+		},
+		{
+			// TODO: Render star icons with notes as tooltip
+			header: "Overall",
+			id: "overall",
+			accessorFn: (row) => row.overall.stars,
+			enableSorting: true
+		},
+		{
+			header: "Flavor",
+			id: "flavor",
+			accessorFn: (row) => row.flavor.stars,
+			enableSorting: true
+		},
+		{
+			header: "Texture",
+			id: "texture",
+			accessorFn: (row) => row.texture.stars,
+			enableSorting: true
+		},
+		{
+			header: "Process",
+			id: "process",
+			accessorFn: (row) => row.process.stars,
+			enableSorting: true
+		},
+		{
+			header: "Start Date",
+			id: "startDate",
+			accessorFn: (row) => row.startDate,
+			enableSorting: true
+		},
+		{
+			header: "End Date",
+			id: "endDate",
+			accessorFn: (row) => row.endDate,
+			enableSorting: true
+		},
+		{
+			header: "Created At",
+			id: "createdAt",
+			accessorFn: (row) => row.createdAt,
+			enableSorting: true
+		},
+		{
+			header: "Updated At",
+			id: "updatedAt",
+			accessorFn: (row) => row.updatedAt,
+			enableSorting: true
+		}
+	];
 </script>

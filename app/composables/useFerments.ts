@@ -7,7 +7,7 @@ import { FermentSchema } from "~/types/ferment";
 
 const DATA_FILENAME = "data.json";
 
-const toast = useToast()
+const toast = useToast();
 const { dataDir } = useFermiConfig();
 
 export const FermentCollection = createCollection(
@@ -17,47 +17,47 @@ export const FermentCollection = createCollection(
 		queryKey: queryKeys.ferments.all,
 		queryFn: async () => await loadAllFerments(),
 		getKey: (item) => item.id,
-    onInsert: async ({ transaction }) => {
-      try {
-        await Promise.all(transaction.mutations.map(async (mutation) => {
-          const ferment = mutation.modified;
-          await writeFermentData(ferment);
-        }));
-      } catch (error) {
-        toast.add({
-          color: "error",
-          title: "Failed to save",
-          description: String(error)
-        })
-      }
+		onInsert: async ({ transaction }) => {
+			try {
+				await Promise.all(transaction.mutations.map(async (mutation) => {
+					const ferment = mutation.modified;
+					await writeFermentData(ferment);
+				}));
+			} catch (error) {
+				toast.add({
+					color: "error",
+					title: "Failed to save",
+					description: String(error)
+				});
+			}
 		},
-    onUpdate: async ({ transaction }) => {
-      try {
-        await Promise.all(transaction.mutations.map(async (mutation) => {
-          const ferment = mutation.modified;
-          await writeFermentData(ferment);
-        }));
-      } catch (error) {
-        toast.add({
-          color: "error",
-          title: "Failed to update",
-          description: String(error)
-        })
-      }
-    },
-      onDelete: async ({ transaction }) => {
-        try {
-			await Promise.all(transaction.mutations.map(async (mutation) => {
-				const ferment = mutation.modified;
-				await deleteFermentById(ferment.id);
-      }));
-        } catch (error) {
-          toast.add({
-            color: "error",
-            title: "Failed to delete",
-            description: String(error)
-          })
-        }
+		onUpdate: async ({ transaction }) => {
+			try {
+				await Promise.all(transaction.mutations.map(async (mutation) => {
+					const ferment = mutation.modified;
+					await writeFermentData(ferment);
+				}));
+			} catch (error) {
+				toast.add({
+					color: "error",
+					title: "Failed to update",
+					description: String(error)
+				});
+			}
+		},
+		onDelete: async ({ transaction }) => {
+			try {
+				await Promise.all(transaction.mutations.map(async (mutation) => {
+					const ferment = mutation.modified;
+					await deleteFermentById(ferment.id);
+				}));
+			} catch (error) {
+				toast.add({
+					color: "error",
+					title: "Failed to delete",
+					description: String(error)
+				});
+			}
 		}
 	})
 );
@@ -67,7 +67,7 @@ watch(dataDir, () => {
 });
 
 export function useFerments() {
-  return useLiveQuery((q) => q.from({ ferment: FermentCollection }));
+	return useLiveQuery((q) => q.from({ ferment: FermentCollection }));
 }
 
 export function useActiveFerments() {
@@ -83,7 +83,7 @@ function useFermentsByState(state: FermentState) {
 }
 
 export function useFermentById(id: MaybeRefOrGetter<string>) {
-  return useLiveQuery((q) => q.from({ ferment: FermentCollection }).where(({ ferment }) => eq(ferment.id, unref(id))).findOne());
+	return useLiveQuery((q) => q.from({ ferment: FermentCollection }).where(({ ferment }) => eq(ferment.id, unref(id))).findOne());
 }
 
 async function loadAllFerments() {
@@ -100,7 +100,7 @@ async function loadFermentById(id: string) {
 	const path = getFermentDataPath(id);
 	let content: string;
 	if (dataDir.value) {
-    content = await useTauriFsReadTextFile(`${dataDir.value}/${path}`);
+		content = await useTauriFsReadTextFile(`${dataDir.value}/${path}`);
 	} else {
 		content = await useTauriFsReadTextFile(path, { baseDir: useTauriFsBaseDirectory.AppData });
 	}
@@ -108,11 +108,11 @@ async function loadFermentById(id: string) {
 }
 
 async function writeFermentData(data: Ferment) {
-  await ensureFermentDataExists(data.id);
+	await ensureFermentDataExists(data.id);
 	const path = getFermentDataPath(data.id);
 	const content = JSON.stringify(data, null, 2);
 	if (dataDir.value) {
-    await useTauriFsWriteTextFile(`${dataDir.value}/${path}`, content);
+		await useTauriFsWriteTextFile(`${dataDir.value}/${path}`, content);
 	} else {
 		await useTauriFsWriteTextFile(path, content, { baseDir: useTauriFsBaseDirectory.AppData });
 	}
@@ -121,20 +121,19 @@ async function writeFermentData(data: Ferment) {
 async function deleteFermentById(id: string) {
 	const path = getFermentPath(id);
 	if (dataDir.value) {
-    await useTauriFsRemove(`${dataDir.value}/${path}`, { recursive: true });
+		await useTauriFsRemove(`${dataDir.value}/${path}`, { recursive: true });
 	} else {
 		await useTauriFsRemove(path, { baseDir: useTauriFsBaseDirectory.AppData, recursive: true });
 	}
 }
 
 async function ensureFermentDataExists(id: string) {
-  const path = getFermentPath(id);
-  if (dataDir.value) {
-    await useTauriFsMkdir(`${dataDir.value}/${path}`, { recursive: true });
-  }
-  else {
-    await useTauriFsMkdir(path, { baseDir: useTauriFsBaseDirectory.AppData, recursive: true });
-  }
+	const path = getFermentPath(id);
+	if (dataDir.value) {
+		await useTauriFsMkdir(`${dataDir.value}/${path}`, { recursive: true });
+	} else {
+		await useTauriFsMkdir(path, { baseDir: useTauriFsBaseDirectory.AppData, recursive: true });
+	}
 }
 
 function getFermentPath(id: string) {
