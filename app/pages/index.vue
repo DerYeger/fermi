@@ -10,7 +10,7 @@
 				</UButton>
 			</div>
 
-			<div v-if="isLoading" class="flex justify-center py-12">
+			<div v-if="isLoadingActive" class="flex justify-center py-12">
 				<UIcon name="lucide:loader-2" class="size-8 animate-spin text-(--ui-text-muted)" />
 			</div>
 
@@ -36,19 +36,19 @@
 			</div>
 		</div>
 
-		<div v-if="archivedFerments.length > 0">
+		<div v-if="completedFerments.length > 0">
 			<div class="flex items-center justify-between mb-6">
 				<h2 class="text-2xl font-bold">
 					Archived Ferments
 				</h2>
 				<UBadge variant="subtle">
-					{{ archivedFerments.length }}
+					{{ completedFerments.length }}
 				</UBadge>
 			</div>
 
 			<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				<FermentCard
-					v-for="ferment in archivedFerments"
+					v-for="ferment in completedFerments"
 					:key="ferment.id"
 					:ferment="ferment"
 					@edit="openEditModal"
@@ -101,10 +101,11 @@
 </template>
 
 <script lang="ts" setup>
-	import type { Ferment } from "~/types/ferment";
+	import type { ActiveFerment, Ferment, FermentBase } from "~/types/ferment";
+	import { nanoid } from "nanoid";
 
-	const store = useFermentationStore();
-	const { activeFerments, archivedFerments, isLoading } = store;
+	const { data: activeFerments, isLoading: isLoadingActive } = useActiveFerments();
+	const { data: completedFerments } = useCompletedFerments();
 	const toast = useToast();
 
 	const showAddModal = ref(false);
@@ -113,10 +114,6 @@
 	const editingFerment = ref<Ferment | null>(null);
 	const archivingFerment = ref<Ferment | null>(null);
 	const deletingFerment = ref<Ferment | null>(null);
-
-	onMounted(async () => {
-		await store.loadData();
-	});
 
 	function openEditModal(ferment: Ferment) {
 		editingFerment.value = ferment;
@@ -133,14 +130,21 @@
 		editingFerment.value = null;
 	}
 
-	async function handleSubmit(data: Omit<Ferment, "id" | "createdAt" | "updatedAt">) {
+	async function handleSubmit(data: Omit<FermentBase, "id" | "createdAt" | "updatedAt">) {
 		try {
 			if (editingFerment.value) {
-				await store.updateFerment(editingFerment.value.id, data);
-				toast.add({ title: "Ferment updated", color: "success" });
-			} else {
-				await store.addFerment(data);
-				toast.add({ title: "Ferment added", color: "success" });
+        FermentCollection.update(editingFerment.value.id, (current) => {
+          Object.assign(current, data, { updatedAt: new Date().toISOString() });
+        });
+      } else {
+        const newFerment: ActiveFerment = {
+					...data,
+					id: nanoid(),
+					state: "active",
+					createdAt: new Date().toISOString(),
+					updatedAt: new Date().toISOString()
+        }
+				FermentCollection.insert(newFerment);
 			}
 			closeModal();
 		} catch (error) {
@@ -148,25 +152,12 @@
 		}
 	}
 
-	async function handleArchive(data: { rating: number, completionNotes: string }) {
-		if (!archivingFerment.value) return;
-		try {
-			await store.archiveFerment(archivingFerment.value.id, data.rating, data.completionNotes);
-			toast.add({ title: "Ferment archived", color: "success" });
-			showArchiveModal.value = false;
-			archivingFerment.value = null;
-		} catch (error) {
-			toast.add({ title: "Error archiving ferment", description: String(error), color: "error" });
-		}
+	async function handleArchive(_data: { rating: number | undefined, completionNotes: string }) {
+		// TODO: Move to ferment collection
 	}
 
-	async function handleUnarchive(ferment: Ferment) {
-		try {
-			await store.unarchiveFerment(ferment.id);
-			toast.add({ title: "Ferment restored to active", color: "success" });
-		} catch (error) {
-			toast.add({ title: "Error restoring ferment", description: String(error), color: "error" });
-		}
+	async function handleUnarchive(_ferment: Ferment) {
+		// TODO: Move to ferment collection
 	}
 
 	function confirmDelete(ferment: Ferment) {
@@ -176,13 +167,6 @@
 
 	async function handleDelete() {
 		if (!deletingFerment.value) return;
-		try {
-			await store.deleteFerment(deletingFerment.value.id);
-			toast.add({ title: "Ferment deleted", color: "success" });
-			showDeleteConfirm.value = false;
-			deletingFerment.value = null;
-		} catch (error) {
-			toast.add({ title: "Error deleting ferment", description: String(error), color: "error" });
-		}
+		FermentCollection.delete(deletingFerment.value.id);
 	}
 </script>

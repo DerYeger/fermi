@@ -1,59 +1,51 @@
-export interface Ingredient {
-	id: string
-	name: string
-	amount: string
-	unit: string
-}
+export const IngredientSchema = z.object({
+	id: z.string(),
+	name: z.string().min(1, "Name is required"),
+	amount: z.number().min(0.0001, "Amount must be greater than zero"),
+	unit: z.string().min(1, "Unit is required")
+});
 
-export interface Ferment {
-	id: string
-	name: string
-	ingredients: Ingredient[]
-	saltRatio: number
-	notes: string
-	imagePath?: string
-	imageBase64?: string
-	startDate: string
-	endDate?: string
-	rating?: number
-	completionNotes?: string
-	isArchived: boolean
-	createdAt: string
-	updatedAt: string
-}
+export type Ingredient = zInfer<typeof IngredientSchema>;
 
-export interface FermentationData {
-	ferments: Ferment[]
-	settings: AppSettings
-}
+const FermentBaseSchema = z.object({
+	id: z.string(),
+	name: z.string().min(1, "Name is required"),
+	ingredients: z.array(IngredientSchema).min(1, "At least one ingredient is required"),
+	saltRatio: z.number().min(0, "Salt ratio cannot be negative"),
+	notes: z.string(),
+	imagePaths: z.array(z.string()).optional().default([]),
+  startDate: z.iso.date(),
+  endDate: z.iso.date().optional(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime()
+});
+export type FermentBase = zInfer<typeof FermentBaseSchema>;
 
-export interface AppSettings {
-	maxBackups: number
-}
+export const ActiveFermentSchema = FermentBaseSchema.extend({
+	state: z.literal("active")
+});
+export type ActiveFerment = zInfer<typeof ActiveFermentSchema>;
 
-export interface AppConfig {
-	saveLocation: string
-}
+export const RatingSchema = z.object({
+	stars: z.number().min(1).max(5).optional(),
+	notes: z.string().optional()
+});
 
-export const defaultSettings: AppSettings = {
-	maxBackups: 5
-};
+export const CompletedFermentSchema = FermentBaseSchema.extend({
+	state: z.literal("completed"),
+	endDate: z.iso.date(),
+	thumb: z.enum(["up", "down"]).optional(),
+	overall: RatingSchema,
+	flavor: RatingSchema,
+	texture: RatingSchema,
+	process: RatingSchema
+});
+export type CompletedFerment = zInfer<typeof CompletedFermentSchema>;
 
-export const defaultConfig: AppConfig = {
-	saveLocation: ""
-};
+export const FermentSchema = z.discriminatedUnion("state", [
+	ActiveFermentSchema,
+	CompletedFermentSchema
+]);
+export type Ferment = zInfer<typeof FermentSchema>;
 
-export function createEmptyFerment(): Omit<Ferment, "id" | "createdAt" | "updatedAt"> {
-	return ({
-		name: "",
-		ingredients: [],
-		saltRatio: 2,
-		notes: "",
-		startDate: new Date().toISOString().split("T")[0] as string,
-		isArchived: false
-	});
-}
-
-export function generateId(): string {
-	return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-}
+export type FermentState = Ferment["state"];

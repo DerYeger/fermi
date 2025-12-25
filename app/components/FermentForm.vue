@@ -8,9 +8,9 @@
 		<!-- Image -->
 		<UFormField label="Image (optional)" name="image">
 			<div class="space-y-3">
-				<div v-if="formData.imageBase64" class="relative">
+				<div v-if="false" class="relative">
 					<img
-						:src="formData.imageBase64"
+						:src="undefined"
 						alt="Ferment preview"
 						class="w-full max-h-48 object-cover rounded-lg"
 					>
@@ -24,7 +24,7 @@
 					/>
 				</div>
 				<UButton variant="outline" icon="lucide:image-plus" @click="selectImage">
-					{{ formData.imageBase64 ? 'Change Image' : 'Add Image' }}
+					{{ false ? 'Change Image' : 'Add Image' }}
 				</UButton>
 				<input
 					ref="fileInput"
@@ -120,46 +120,45 @@
 </template>
 
 <script lang="ts" setup>
-	import type { Ferment, Ingredient } from "~/types/ferment";
-	import { generateId } from "~/types/ferment";
+	import type { FermentBase, Ingredient } from "~/types/ferment";
+	import { nanoid } from "nanoid";
 
 	const { initialData } = defineProps<{
-		initialData?: Ferment | null
+		initialData?: FermentBase | null
 	}>();
 
 	const emit = defineEmits<{
-		submit: [data: Omit<Ferment, "id" | "createdAt" | "updatedAt">]
+		submit: [data: Omit<FermentBase, "id" | "createdAt" | "updatedAt">]
 		cancel: []
 	}>();
 
-	const fileInput = ref<HTMLInputElement | null>(null);
+  const fileInput = ref<HTMLInputElement | null>(null);
+
+  type IngredientInput = {
+    id: string;
+    name: string;
+    amount: string;
+    unit: string;
+  }
 
 	const formData = ref({
 		name: initialData?.name ?? "",
-		ingredients: initialData?.ingredients?.map((i) => ({ ...i })) ?? [] as Ingredient[],
+		ingredients: initialData?.ingredients?.map((i) => ({ ...i, amount: `${i.amount}` })) ?? [] as IngredientInput[],
 		saltRatio: initialData?.saltRatio ?? 2,
 		notes: initialData?.notes ?? "",
-		imageBase64: initialData?.imageBase64 ?? "",
-		startDate: initialData?.startDate ?? new Date().toISOString().split("T")[0],
-		endDate: initialData?.endDate ?? "",
-		isArchived: initialData?.isArchived ?? false,
-		rating: initialData?.rating,
-		completionNotes: initialData?.completionNotes
+		startDate: initialData?.startDate ?? getISODate(),
+		endDate: initialData?.endDate ?? ""
 	});
 
 	watch(() => initialData, (newData) => {
 		if (newData) {
 			formData.value = {
 				name: newData.name ?? "",
-				ingredients: newData.ingredients?.map((i) => ({ ...i })) ?? [],
+				ingredients: newData.ingredients?.map((i) => ({ ...i, amount: `${i.amount}` })) ?? [],
 				saltRatio: newData.saltRatio ?? 2,
 				notes: newData.notes ?? "",
-				imageBase64: newData.imageBase64 ?? "",
-				startDate: newData.startDate ?? new Date().toISOString().split("T")[0],
-				endDate: newData.endDate ?? "",
-				isArchived: newData.isArchived ?? false,
-				rating: newData.rating,
-				completionNotes: newData.completionNotes
+				startDate: newData.startDate ?? getISODate(),
+				endDate: newData.endDate ?? ""
 			};
 		} else {
 			formData.value = {
@@ -167,12 +166,8 @@
 				ingredients: [],
 				saltRatio: 2,
 				notes: "",
-				imageBase64: "",
-				startDate: new Date().toISOString().split("T")[0],
-				endDate: "",
-				isArchived: false,
-				rating: undefined,
-				completionNotes: undefined
+				startDate: getISODate(),
+				endDate: ""
 			};
 		}
 	}, { immediate: true });
@@ -185,8 +180,8 @@
 
 	function addIngredient() {
 		wasIngredientAdded.value = true;
-		formData.value.ingredients.push({
-			id: generateId(),
+    formData.value.ingredients.push({
+      id: nanoid(),
 			name: "",
 			amount: "",
 			unit: ""
@@ -201,39 +196,42 @@
 		fileInput.value?.click();
 	}
 
-	function handleImageSelect(event: Event) {
-		const input = event.target as HTMLInputElement;
-		const file = input.files?.[0];
-		if (!file) return;
+	function handleImageSelect(_event: Event) {
+		// const input = event.target as HTMLInputElement;
+		// const file = input.files?.[0];
+		// if (!file) return;
 
-		const reader = new FileReader();
-		reader.onload = (e) => {
-			formData.value.imageBase64 = e.target?.result as string;
-		};
-		reader.readAsDataURL(file);
+		// const reader = new FileReader();
+		// reader.onload = (e) => {
+		// 	formData.value.imageBase64 = e.target?.result as string;
+		// };
+		// reader.readAsDataURL(file);
 	};
 
 	function removeImage() {
-		formData.value.imageBase64 = "";
+		// formData.value.imageBase64 = "";
 	}
 
 	function handleSubmit() {
 		if (!isValid.value) return;
 
-		// Filter out empty ingredients
-		const validIngredients = formData.value.ingredients.filter((i) => i.name.trim() !== "");
-
 		emit("submit", {
 			name: formData.value.name.trim(),
-			ingredients: validIngredients,
+			ingredients: formData.value.ingredients.map((i) => ({
+        id: i.id,
+        name: i.name.trim(),
+        amount: parseFloat(i.amount),
+        unit: i.unit.trim()
+      })),
 			saltRatio: formData.value.saltRatio,
 			notes: formData.value.notes,
-			imageBase64: formData.value.imageBase64,
-			startDate: (formData.value.startDate ?? new Date().toISOString().split("T")[0]) as string,
-			endDate: formData.value.endDate ?? undefined,
-			isArchived: formData.value.isArchived,
-			rating: formData.value.rating,
-			completionNotes: formData.value.completionNotes
+			imagePaths: [],
+			startDate: formData.value.startDate,
+			endDate: formData.value.endDate || undefined
 		});
-	};
+};
+
+function getISODate() {
+    return new Date().toISOString().split('T')[0]!;
+  }
 </script>

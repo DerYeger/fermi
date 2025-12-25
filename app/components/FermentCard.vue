@@ -1,9 +1,9 @@
 <template>
 	<UCard class="group relative overflow-hidden cursor-pointer" :ui="{ body: 'p-0' }" @click="navigateToDetails">
 		<!-- Image -->
-		<div v-if="ferment.imageBase64" class="aspect-video w-full overflow-hidden">
+		<div v-if="ferment.imagePaths.length > 0" class="aspect-video w-full overflow-hidden">
 			<img
-				:src="ferment.imageBase64"
+				:src="ferment.imagePaths[0]"
 				:alt="ferment.name"
 				class="size-full object-cover transition-transform group-hover:scale-105"
 			>
@@ -18,18 +18,18 @@
 				<h3 class="font-semibold text-lg truncate">
 					{{ ferment.name }}
 				</h3>
-				<UBadge v-if="ferment.isArchived" variant="subtle" color="neutral">
-					Archived
+				<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
+					Completed
 				</UBadge>
 			</div>
 
-			<!-- Rating for archived -->
-			<div v-if="ferment.isArchived && ferment.rating" class="flex items-center gap-1 mb-2">
+			<!-- Rating for completed -->
+			<div v-if="ferment.state === 'completed' && ferment.overall.stars" class="flex items-center gap-1 mb-2">
 				<UIcon
 					v-for="i in 5"
 					:key="i"
-					:name="i <= ferment.rating ? 'lucide:star' : 'lucide:star'"
-					:class="i <= ferment.rating ? 'text-yellow-500' : 'text-(--ui-text-muted)'"
+					:name="i <= ferment.overall.stars ? 'lucide:star' : 'lucide:star'"
+					:class="i <= ferment.overall.stars ? 'text-yellow-500' : 'text-(--ui-text-muted)'"
 					class="size-4"
 				/>
 			</div>
@@ -51,7 +51,7 @@
 			</div>
 
 			<!-- Days fermenting -->
-			<div v-if="!ferment.isArchived" class="flex items-center gap-2 text-sm text-(--ui-text-muted) mb-3">
+			<div v-if="ferment.state === 'active'" class="flex items-center gap-2 text-sm text-(--ui-text-muted) mb-3">
 				<UIcon name="lucide:clock" class="size-4" />
 				<span>{{ daysFermenting }}</span>
 			</div>
@@ -84,7 +84,7 @@
 					Edit
 				</UButton>
 				<UButton
-					v-if="!ferment.isArchived"
+					v-if="ferment.state === 'active'"
 					variant="ghost"
 					size="sm"
 					icon="lucide:archive"
@@ -132,8 +132,8 @@
 
 	const daysFermenting = useTimeSince(() => ferment.startDate);
 
-	function formatDate(dateStr: string) {
-		return new Date(dateStr).toLocaleDateString("en-US", {
+	function formatDate(date: string) {
+		return new Date(date).toLocaleDateString("en-US", {
 			month: "short",
 			day: "numeric",
 			year: "numeric"

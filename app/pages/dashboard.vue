@@ -138,7 +138,7 @@
 
 	use([PieChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
 
-	const { ferments, isLoading } = useFermentationStore();
+	const { data: ferments, isLoading } = useFerments();
 
 	// Ingredient Pie Chart
 	const ingredientData = computed(() => {
@@ -254,12 +254,12 @@
 
 		ferments.value.forEach((ferment) => {
 			if (ferment.startDate) {
-				const startKey = ferment.startDate;
+				const startKey = getDayString(ferment.startDate);
 				if (!dateMap.has(startKey)) dateMap.set(startKey, []);
 				dateMap.get(startKey)!.push({ ferment, type: "start" });
 			}
 			if (ferment.endDate) {
-				const endKey = ferment.endDate;
+				const endKey = getDayString(ferment.endDate);
 				if (!dateMap.has(endKey)) dateMap.set(endKey, []);
 				dateMap.get(endKey)!.push({ ferment, type: "end" });
 			}
@@ -268,7 +268,7 @@
 		// Add days of the month
 		for (let day = 1; day <= lastDay.getDate(); day++) {
 			const date = new Date(year, month, day);
-			const dateKey = String(date.toISOString().split("T")[0]);
+			const dateKey = getDayString(date.toISOString());
 			const dayFerments = (dateMap.get(dateKey) ?? []) as { ferment: Ferment, type: "start" | "end" }[];
 
 			days.push({
@@ -341,5 +341,9 @@
 			allItems.push(endedFermentItems);
 		}
 		return allItems;
-	}
+  }
+
+function getDayString(date: string) {
+    return date.split("T")[0]!
+  }
 </script>

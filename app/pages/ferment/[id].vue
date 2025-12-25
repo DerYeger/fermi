@@ -14,16 +14,11 @@
 			</UButton>
 		</div>
 
-		<FermentDetails v-else :ferment="ferment" />
+		<FermentDetails v-else :ferment="ferment[0]!" />
 	</div>
 </template>
 
 <script lang="ts" setup>
-	const route = useRoute();
-	const { ferments, isLoading } = useFermentationStore();
-
-	const ferment = computed(() => {
-		const fermentId = (route.params as any).id as string;
-		return ferments.value.find((f) => f.id === fermentId);
-	});
+	const route = useRoute('ferment-id');
+	const { data: ferment, isLoading } = useFermentById(route.params.id);
 </script>

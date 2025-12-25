@@ -13,7 +13,7 @@
 						{{ ferment.name }}
 					</h1>
 					<div class="flex items-center gap-2 mt-1">
-						<UBadge v-if="ferment.isArchived" variant="subtle" color="neutral">
+						<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
 							Archived
 						</UBadge>
 						<span class="text-sm text-(--ui-text-muted)">
@@ -25,7 +25,7 @@
 
 			<div class="flex items-center gap-2">
 				<UButton
-					v-if="!ferment.isArchived"
+					v-if="ferment.state === 'active'"
 					icon="lucide:pencil"
 					variant="outline"
 					@click="showEditModal = true"
@@ -33,7 +33,7 @@
 					Edit
 				</UButton>
 				<UButton
-					v-if="!ferment.isArchived"
+					v-if="ferment.state === 'active'"
 					icon="lucide:archive"
 					variant="outline"
 					@click="showArchiveModal = true"
@@ -62,9 +62,9 @@
 			<!-- Main content -->
 			<div class="lg:col-span-2 space-y-6">
 				<!-- Image -->
-				<UCard v-if="ferment.imageBase64">
+				<UCard v-if="ferment.imagePaths.length > 0">
 					<img
-						:src="ferment.imageBase64"
+						:src="ferment.imagePaths[0]"
 						:alt="ferment.name"
 						class="w-full max-h-96 object-cover rounded-lg"
 					>
@@ -85,8 +85,8 @@
 					</p>
 				</UCard>
 
-				<!-- Completion Notes (for archived) -->
-				<UCard v-if="ferment.isArchived && ferment.completionNotes">
+				<!-- Completion Notes (for completed) -->
+				<UCard v-if="ferment.state === 'completed' && ferment.overall.notes">
 					<template #header>
 						<div class="flex items-center gap-2">
 							<UIcon name="lucide:clipboard-check" class="size-5" />
@@ -96,15 +96,15 @@
 						</div>
 					</template>
 					<p class="whitespace-pre-wrap">
-						{{ ferment.completionNotes }}
+						{{ ferment.overall.notes }}
 					</p>
 				</UCard>
 			</div>
 
 			<!-- Sidebar -->
 			<div class="space-y-6">
-				<!-- Rating (for archived) -->
-				<UCard v-if="ferment.isArchived && ferment.rating">
+				<!-- Rating (for completed) -->
+				<UCard v-if="ferment.state === 'completed' && ferment.overall.stars">
 					<template #header>
 						<div class="flex items-center gap-2">
 							<UIcon name="lucide:star" class="size-5" />
@@ -118,7 +118,7 @@
 							v-for="i in 5"
 							:key="i"
 							name="lucide:star"
-							:class="i <= (ferment.rating || 0) ? 'text-yellow-500' : 'text-(--ui-text-muted)'"
+							:class="i <= ferment.overall.stars ? 'text-yellow-500' : 'text-(--ui-text-muted)'"
 							class="size-6"
 						/>
 					</div>
@@ -246,13 +246,11 @@
 </template>
 
 <script lang="ts" setup>
-	import type { Ferment } from "~/types/ferment";
+	import type { Ferment, FermentBase } from "~/types/ferment";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
 	}>();
-
-	const { updateFerment, archiveFerment, unarchiveFerment, deleteFerment } = useFermentationStore();
 
 	const router = useRouter();
 
@@ -262,8 +260,8 @@
 	const showArchiveModal = ref(false);
 	const showDeleteModal = ref(false);
 
-	function formatDate(dateStr: string) {
-		return new Date(dateStr).toLocaleDateString("en-US", {
+	function formatDate(date: string) {
+		return new Date(date).toLocaleDateString("en-US", {
 			weekday: "long",
 			month: "long",
 			day: "numeric",
@@ -271,8 +269,8 @@
 		});
 	}
 
-	function formatDateTime(dateStr: string) {
-		return new Date(dateStr).toLocaleDateString("en-US", {
+	function formatDateTime(date: string) {
+		return new Date(date).toLocaleDateString("en-US", {
 			month: "short",
 			day: "numeric",
 			year: "numeric",
@@ -281,22 +279,20 @@
 		});
 	}
 
-	async function handleEdit(data: Omit<Ferment, "id" | "createdAt" | "updatedAt">) {
-		await updateFerment(ferment.id, data);
-		showEditModal.value = false;
+	async function handleEdit(data: Omit<FermentBase, "id" | "createdAt" | "updatedAt">) {
+		FermentCollection.update(ferment.id, (current) => ({ ...current, ...data }));
 	}
 
-	async function handleArchive(data: { rating: number, completionNotes: string }) {
-		await archiveFerment(ferment.id, data.rating, data.completionNotes);
-		showArchiveModal.value = false;
+	async function handleArchive(_data: { rating: number | undefined, completionNotes: string }) {
+		// TODO: Move to ferment collection
 	}
 
 	async function handleUnarchive() {
-		await unarchiveFerment(ferment.id);
+		// TODO: Move to ferment collection
 	};
 
 	async function handleDelete() {
-		await deleteFerment(ferment.id);
+		FermentCollection.delete(ferment.id);
 		showDeleteModal.value = false;
 		router.push("/");
 	}

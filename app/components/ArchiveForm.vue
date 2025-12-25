@@ -16,11 +16,10 @@
 				>
 					<UIcon
 						name="lucide:star"
-						:class="i <= rating ? 'text-yellow-500' : 'text-(--ui-text-muted)'"
+						:class="i <= (rating ?? 0) ? 'text-yellow-500' : 'text-(--ui-text-muted)'"
 						class="size-8"
 					/>
 				</button>
-				<span class="ml-2 text-sm text-(--ui-text-muted)">{{ rating }}/5</span>
 			</div>
 		</UFormField>
 
@@ -53,12 +52,12 @@
 	}>();
 
 	const emit = defineEmits<{
-		submit: [data: { rating: number, completionNotes: string }]
+		submit: [data: { rating: number | undefined, completionNotes: string }]
 		cancel: []
 	}>();
 
-	const rating = ref(ferment.rating ?? 3);
-	const completionNotes = ref(ferment.completionNotes ?? "");
+	const rating = ref<number>();
+	const completionNotes = ref("");
 
 	function handleSubmit() {
 		emit("submit", {

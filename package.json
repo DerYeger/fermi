@@ -23,6 +23,9 @@
 	},
 	"dependencies": {
 		"@nuxt/ui": "4.0.0-alpha.2",
+		"@tanstack/query-db-collection": "1.0.12",
+		"@tanstack/vue-db": "0.0.92",
+		"@tanstack/vue-query": "5.92.1",
 		"@tauri-apps/api": "^2.8.0",
 		"@tauri-apps/plugin-dialog": "^2.4.2",
 		"@tauri-apps/plugin-fs": "^2.4.2",
@@ -30,6 +33,7 @@
 		"@tauri-apps/plugin-shell": "^2.3.3",
 		"@tauri-apps/plugin-store": "^2.4.0",
 		"echarts": "^6.0.0",
+		"nanoid": "5.1.6",
 		"nuxt": "^4.1.2",
 		"vue": "^3.5.21",
 		"vue-echarts": "^8.0.1",
