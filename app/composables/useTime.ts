@@ -10,24 +10,23 @@ export function useTimeSince(dateString: MaybeRefOrGetter<string>) {
 }
 
 export function formatDate(date: string) {
-  return Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric"
-  }).format(new Date(date));
+	return Intl.DateTimeFormat("en-US", {
+		month: "short",
+		day: "numeric",
+		year: "numeric"
+	}).format(new Date(date));
 }
 
 export function formatDateTime(date: string) {
-  return Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit"
-  }).format(new Date(date));
+	return Intl.DateTimeFormat("en-US", {
+		month: "short",
+		day: "numeric",
+		year: "numeric",
+		hour: "numeric",
+		minute: "2-digit"
+	}).format(new Date(date));
 }
 
-
 export function getCurrentISODate() {
-  return new Date().toISOString().split('T')[0]!;
+	return new Date().toISOString().split("T")[0]!;
 }

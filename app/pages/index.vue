@@ -248,12 +248,12 @@
 
 		ferments.value.forEach((ferment) => {
 			if (ferment.startDate) {
-				const startKey = getDayString(ferment.startDate);
+				const startKey = ferment.startDate;
 				if (!dateMap.has(startKey)) dateMap.set(startKey, []);
 				dateMap.get(startKey)!.push({ ferment, type: "start" });
 			}
 			if (ferment.endDate) {
-				const endKey = getDayString(ferment.endDate);
+				const endKey = ferment.endDate;
 				if (!dateMap.has(endKey)) dateMap.set(endKey, []);
 				dateMap.get(endKey)!.push({ ferment, type: "end" });
 			}
@@ -263,7 +263,7 @@
 		for (let day = 1; day <= lastDay.getDate(); day++) {
 			const date = new Date(year, month, day);
 			const dateKey = getDayString(date.toISOString());
-			const dayFerments = (dateMap.get(dateKey) ?? []) as { ferment: Ferment, type: "start" | "end" }[];
+			const dayFerments = (dateMap.get(dateKey) ?? []);
 
 			days.push({
 				date,

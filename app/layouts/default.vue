@@ -7,7 +7,7 @@
 				</UDashboardSidebar>
 				<UDashboardPanel>
 					<template #header>
-						<UDashboardNavbar title="Ferments">
+						<UDashboardNavbar :title="routeTitle">
 							<template #right>
 								<NewFermentButton />
 							</template>
@@ -49,4 +49,17 @@
 			to: "/settings"
 		}
 	];
+
+	const route = useRoute();
+
+	const routeTitle = computed(() => {
+		const routeName = route.name;
+		return {
+			index: "Dashboard",
+			ferments: "Ferments",
+			"ferment-id": "Ferment Details",
+			archive: "Archive",
+			settings: "Settings"
+		}[routeName];
+	});
 </script>
