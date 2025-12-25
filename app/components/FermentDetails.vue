@@ -2,58 +2,25 @@
 	<div>
 		<!-- Header -->
 		<div class="flex items-start justify-between gap-4 mb-6">
-			<div class="flex items-center gap-3">
-				<UButton
-					icon="lucide:arrow-left"
-					variant="ghost"
-					to="/"
-				/>
-				<div>
-					<h1 class="text-2xl font-bold">
-						{{ ferment.name }}
-					</h1>
-					<div class="flex items-center gap-2 mt-1">
-						<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
-							Archived
-						</UBadge>
-						<span class="text-sm text-(--ui-text-muted)">
-							{{ daysFermenting }} days
-						</span>
-					</div>
+			<div>
+				<h1 class="text-2xl font-bold">
+					{{ ferment.name }}
+				</h1>
+				<div class="flex items-center gap-2 mt-1">
+					<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
+						Archived
+					</UBadge>
+					<span class="text-sm text-(--ui-text-muted)">
+						{{ daysFermenting }}
+					</span>
 				</div>
 			</div>
 
 			<div class="flex items-center gap-2">
-				<UButton
-					v-if="ferment.state === 'active'"
-					icon="lucide:pencil"
-					variant="outline"
-					@click="showEditModal = true"
-				>
-					Edit
-				</UButton>
-				<UButton
-					v-if="ferment.state === 'active'"
-					icon="lucide:archive"
-					variant="outline"
-					@click="showArchiveModal = true"
-				>
-					Complete
-				</UButton>
-				<UButton
-					v-else
-					icon="lucide:archive-restore"
-					variant="outline"
-					@click="handleUnarchive"
-				>
-					Restore
-				</UButton>
-				<UButton
-					icon="lucide:trash-2"
-					variant="ghost"
-					color="error"
-					@click="showDeleteModal = true"
-				/>
+				<EditFermentButton :ferment="ferment" />
+				<ArchiveFermentButton v-if="ferment.state === 'active'" :ferment="ferment" />
+				<UnarchiveFermentButton v-else :ferment="ferment" />
+				<DeleteFermentButton :ferment="ferment" />
 			</div>
 		</div>
 
@@ -204,84 +171,14 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- Edit Modal -->
-	<UModal v-model:open="showEditModal" title="Edit Ferment">
-		<template #body>
-			<FermentForm
-				:initial-data="ferment"
-				@submit="handleEdit"
-				@cancel="showEditModal = false"
-			/>
-		</template>
-	</UModal>
-
-	<!-- Archive Modal -->
-	<UModal v-model:open="showArchiveModal" title="Complete Ferment">
-		<template #body>
-			<ArchiveForm
-				:ferment="ferment"
-				@submit="handleArchive"
-				@cancel="showArchiveModal = false"
-			/>
-		</template>
-	</UModal>
-
-	<!-- Delete Confirmation Modal -->
-	<UModal v-model:open="showDeleteModal" title="Delete Ferment">
-		<template #body>
-			<p class="text-(--ui-text-muted) mb-6">
-				Are you sure you want to delete "{{ ferment?.name }}"? This action cannot be undone.
-			</p>
-			<div class="flex justify-end gap-2">
-				<UButton variant="ghost" @click="showDeleteModal = false">
-					Cancel
-				</UButton>
-				<UButton color="error" @click="handleDelete">
-					Delete
-				</UButton>
-			</div>
-		</template>
-	</UModal>
 </template>
 
 <script lang="ts" setup>
-	import { transitionToActive, type CompletedFerment, type Ferment, type FermentBase } from "~/types/ferment";
+	import type { Ferment } from "~/types/ferment";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
 	}>();
 
-	const router = useRouter();
-
 	const daysFermenting = useTimeSince(() => ferment.startDate);
-
-	const showEditModal = ref(false);
-	const showArchiveModal = ref(false);
-	const showDeleteModal = ref(false);
-
-	async function handleEdit(data: Omit<FermentBase, "id" | "createdAt">) {
-    FermentCollection.update(ferment.id, (current) => {
-      Object.assign(current, data);
-    });
-	}
-
-  async function handleArchive(data: CompletedFerment) {
-    FermentCollection.update(data.id, (draft) => {
-      Object.assign(draft, data);
-    });
-    showArchiveModal.value = false;
-	}
-
-  async function handleUnarchive() {
-    if (ferment.state !== 'completed') return;
-		FermentCollection.update(ferment.id, (current) => {
-      Object.assign(current, transitionToActive(ferment));
-    });
-	};
-
-  async function handleDelete() {
-    await router.push({ name: 'index'});
-		FermentCollection.delete(ferment.id);
-	}
 </script>

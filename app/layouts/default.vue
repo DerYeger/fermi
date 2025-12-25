@@ -1,26 +1,52 @@
 <template>
-	<div class="min-h-screen bg-(--ui-bg)">
-		<header class="sticky top-0 z-50 border-b border-(--ui-border) bg-(--ui-bg)/80 backdrop-blur-sm">
-			<div class="mx-auto max-w-5xl px-4 py-4">
-				<div class="flex items-center justify-between">
-					<NuxtLink to="/" class="flex items-center gap-2">
-						<UIcon name="lucide:flask-conical" class="size-6 text-(--ui-primary)" />
-						<span class="text-xl font-bold">Fermi</span>
-					</NuxtLink>
-					<div class="flex items-center gap-2">
-						<NuxtLink to="/dashboard">
-							<UButton variant="ghost" icon="lucide:bar-chart-3" size="sm" />
-						</NuxtLink>
-						<NuxtLink to="/settings">
-							<UButton variant="ghost" icon="lucide:settings" size="sm" />
-						</NuxtLink>
-					</div>
-				</div>
-			</div>
-		</header>
-
-		<main class="mx-auto max-w-5xl px-4 py-6">
-			<slot />
-		</main>
-	</div>
+	<UApp>
+		<UMain>
+			<UDashboardGroup>
+				<UDashboardSidebar :items="sidebarItems">
+					<UNavigationMenu :items="sidebarItems" orientation="vertical" />
+				</UDashboardSidebar>
+				<UDashboardPanel>
+					<template #header>
+						<UDashboardNavbar title="Ferments">
+							<template #right>
+								<NewFermentButton />
+							</template>
+						</UDashboardNavbar>
+					</template>
+					<template #body>
+						<div class="pa-2">
+							<slot />
+						</div>
+					</template>
+				</UDashboardPanel>
+			</UDashboardGroup>
+		</UMain>
+	</UApp>
 </template>
+
+<script setup lang="ts">
+	import type { NavigationMenuItem } from "@nuxt/ui";
+
+	const sidebarItems: NavigationMenuItem[] = [
+		{
+			label: "Dashboard",
+			icon: "lucide:home",
+			to: "/"
+		},
+		{
+			label: "Ferments",
+			icon: "lucide:apple",
+			to: "/ferments"
+		},
+		{
+			label: "Archive",
+			icon: "lucide:archive",
+			to: "/archive"
+		},
+		{
+			label: "Settings",
+			icon: "lucide:settings-2",
+			to: "/settings"
+		}
+	];
+</script>

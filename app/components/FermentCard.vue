@@ -80,35 +80,10 @@
 
 			<!-- Actions -->
 			<div class="flex items-center gap-2 pt-2 border-t border-(--ui-border)">
-				<UButton variant="ghost" size="sm" icon="lucide:pencil" @click.stop="$emit('edit', ferment)">
-					Edit
-				</UButton>
-				<UButton
-					v-if="ferment.state === 'active'"
-					variant="ghost"
-					size="sm"
-					icon="lucide:archive"
-					@click.stop="$emit('archive', ferment)"
-				>
-					Complete
-				</UButton>
-				<UButton
-					v-else
-					variant="ghost"
-					size="sm"
-					icon="lucide:archive-restore"
-					@click.stop="$emit('unarchive', ferment)"
-				>
-					Restore
-				</UButton>
-				<UButton
-					variant="ghost"
-					size="sm"
-					icon="lucide:trash-2"
-					color="error"
-					class="ml-auto"
-					@click.stop="$emit('delete', ferment)"
-				/>
+				<EditFermentButton :ferment="ferment" />
+				<ArchiveFermentButton v-if="ferment.state === 'active'" :ferment="ferment" />
+				<UnarchiveFermentButton v-else :ferment="ferment" />
+				<DeleteFermentButton :ferment="ferment" />
 			</div>
 		</div>
 	</UCard>
@@ -121,20 +96,11 @@
 		ferment: Ferment
 	}>();
 
-	defineEmits<{
-		edit: [ferment: Ferment]
-		archive: [ferment: Ferment]
-		unarchive: [ferment: Ferment]
-		delete: [ferment: Ferment]
-	}>();
-
 	const router = useRouter();
 
 	const daysFermenting = useTimeSince(() => ferment.startDate);
 
-
-
 	function navigateToDetails() {
-		router.push(`/ferment/${ferment.id}`);
+		router.push({ name: "ferment-id", params: { id: ferment.id } });
 	}
 </script>
