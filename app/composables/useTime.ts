@@ -30,3 +30,10 @@ export function formatDateTime(date: string) {
 export function getCurrentISODate() {
 	return new Date().toISOString().split("T")[0]!;
 }
+
+export function getDaysBetween(startDate: string, endDate: string) {
+	const start = new Date(startDate);
+	const end = new Date(endDate);
+	const diffTime = Math.abs(end.getTime() - start.getTime());
+	return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}

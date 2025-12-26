@@ -13,96 +13,119 @@
 		</NewFermentButton>
 	</div>
 
-	<UTable v-else :data="data as CompletedFerment[]" class="flex-1" :columns="columns" />
+	<UTable
+		v-else :data="data as CompletedFerment[]" class="flex-1" :columns="columns" :initial-state="{
+			sorting: [{
+				id: 'endDate',
+				desc: false
+			}]
+		}"
+	/>
 </template>
 
 <script setup lang="ts">
-	import type { TableColumn } from "@nuxt/ui";
+	import type { CellContext, ColumnDef, HeaderContext } from "@tanstack/vue-table";
 	import type { CompletedFerment } from "~/types/ferment";
+	import { createColumnHelper } from "@tanstack/vue-table";
 
 	const { data, isLoading } = useCompletedFerments();
 
-	const columns: TableColumn<CompletedFerment>[] = [
-		{
-			header: "Name",
+	const IngredientsCell = resolveComponent("IngredientsCell");
+	const SortableTableHeader = resolveComponent("SortableTableHeader");
+	const StarsCell = resolveComponent("StarsCell");
+	const UButton = resolveComponent("UButton");
+
+	function createSortableHeader<T>(label: string) {
+		return (context: HeaderContext<CompletedFerment, T>) => {
+			const isSorted = context.column.getIsSorted();
+			return h(SortableTableHeader, { label, isSorted, context });
+		};
+	}
+
+	function createStarsCell() {
+		return (context: CellContext<CompletedFerment, number | undefined>) => {
+			const stars = context.getValue();
+			return h(StarsCell, { stars });
+		};
+	}
+
+	const columnHelper = createColumnHelper<CompletedFerment>();
+
+	const columns = [
+		columnHelper.display({
+			id: "actions",
+			header: "",
+			cell: (ctx) =>
+				h(
+					UButton,
+					{
+						icon: "lucide:eye",
+						class: "p-2 -mx-2",
+						variant: "ghost",
+						onClick: () =>
+							navigateTo(`/ferment/${ctx.row.original.id}`)
+					}
+				)
+		}),
+		columnHelper.accessor("name", {
 			id: "name",
-			accessorFn: (row) => row.name,
-			enableSorting: true
-		},
-		{
-			header: "Ingredients",
+			header: createSortableHeader("Name")
+		}),
+		columnHelper.display({
 			id: "ingredients",
-			// TODO: Use badges
-			accessorFn: (row) => row.ingredients.map((ing) => ing.name).join(", "),
-			enableSorting: false
-		},
-		{
-			header: "Salt",
+			header: "Ingredients",
+			cell: (ctx) =>
+				h(IngredientsCell, { ingredients: ctx.row.original.ingredients })
+		}),
+		columnHelper.accessor("saltRatio", {
 			id: "saltRatio",
-			accessorFn: (row) => `${row.saltRatio}%`,
-			enableSorting: true
-		},
-		{
-			header: "Duration",
+			header: createSortableHeader("Salt"),
+			cell: (ctx) => `${ctx.getValue()}%`
+		}),
+		columnHelper.accessor((row) => getDaysBetween(row.startDate, row.endDate), {
 			id: "duration",
-			accessorFn: (row) => {
-				// TODO: Simplify
-				const start = new Date(row.startDate);
-				const end = row.endDate ? new Date(row.endDate) : new Date();
-				const diffTime = Math.abs(end.getTime() - start.getTime());
-				const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-				return `${diffDays} days`;
-			},
-			enableSorting: true
-		},
-		{
-			// TODO: Render star icons with notes as tooltip
-			header: "Overall",
+			header: createSortableHeader("Duration"),
+			cell: (ctx) => `${ctx.getValue()} days`
+		}),
+		columnHelper.accessor((row) => row.overall.stars, {
 			id: "overall",
-			accessorFn: (row) => row.overall.stars,
-			enableSorting: true
-		},
-		{
-			header: "Flavor",
+			header: createSortableHeader("Overall"),
+			cell: createStarsCell()
+		}),
+		columnHelper.accessor((row) => row.flavor.stars, {
 			id: "flavor",
-			accessorFn: (row) => row.flavor.stars,
-			enableSorting: true
-		},
-		{
-			header: "Texture",
+			header: createSortableHeader("Flavor"),
+			cell: createStarsCell()
+		}),
+		columnHelper.accessor((row) => row.texture.stars, {
 			id: "texture",
-			accessorFn: (row) => row.texture.stars,
-			enableSorting: true
-		},
-		{
-			header: "Process",
+			header: createSortableHeader("Texture"),
+			cell: createStarsCell()
+		}),
+		columnHelper.accessor((row) => row.process.stars, {
 			id: "process",
-			accessorFn: (row) => row.process.stars,
-			enableSorting: true
-		},
-		{
-			header: "Start Date",
+			header: createSortableHeader("Process"),
+			cell: createStarsCell()
+		}),
+		columnHelper.accessor("startDate", {
 			id: "startDate",
-			accessorFn: (row) => row.startDate,
-			enableSorting: true
-		},
-		{
-			header: "End Date",
+			header: createSortableHeader("Start Date"),
+			cell: (ctx) => formatDate(ctx.getValue())
+		}),
+		columnHelper.accessor("endDate", {
 			id: "endDate",
-			accessorFn: (row) => row.endDate,
-			enableSorting: true
-		},
-		{
-			header: "Created At",
+			header: createSortableHeader("End Date"),
+			cell: (ctx) => formatDate(ctx.getValue())
+		}),
+		columnHelper.accessor("createdAt", {
 			id: "createdAt",
-			accessorFn: (row) => row.createdAt,
-			enableSorting: true
-		},
-		{
-			header: "Updated At",
+			header: createSortableHeader("Created At"),
+			cell: (ctx) => formatDateTime(ctx.getValue())
+		}),
+		columnHelper.accessor("updatedAt", {
 			id: "updatedAt",
-			accessorFn: (row) => row.updatedAt,
-			enableSorting: true
-		}
-	];
+			header: createSortableHeader("Updated At"),
+			cell: (ctx) => formatDateTime(ctx.getValue())
+		})
+	] as ColumnDef<CompletedFerment>[];
 </script>

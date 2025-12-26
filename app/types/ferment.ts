@@ -14,10 +14,10 @@ const FermentBaseSchema = z.object({
 	saltRatio: z.number().min(0, "Salt ratio cannot be negative"),
 	notes: z.string(),
 	imagePaths: z.array(z.string()).optional().default([]),
-  startDate: z.iso.date(),
-  endDate: z.iso.date().optional(),
-  createdAt: z.iso.datetime(),
-  updatedAt: z.iso.datetime()
+	startDate: z.iso.date(),
+	endDate: z.iso.date().optional(),
+	createdAt: z.iso.datetime(),
+	updatedAt: z.iso.datetime()
 });
 export type FermentBase = zInfer<typeof FermentBaseSchema>;
 
@@ -50,10 +50,10 @@ export type Ferment = zInfer<typeof FermentSchema>;
 export type FermentState = Ferment["state"];
 
 export function transitionToActive(ferment: CompletedFerment): ActiveFerment {
-  return ActiveFermentSchema.parse({
-    ...ferment,
-    state: "active",
-    endDate: undefined,
-    updatedAt: new Date().toISOString()
-  } satisfies ActiveFerment)
+	return ActiveFermentSchema.parse({
+		...ferment,
+		state: "active",
+		endDate: undefined,
+		updatedAt: new Date().toISOString()
+	} satisfies ActiveFerment);
 };

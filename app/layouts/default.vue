@@ -1,13 +1,13 @@
 <template>
 	<UApp>
-		<UMain>
+		<UMain class="select-none">
 			<UDashboardGroup>
 				<UDashboardSidebar :items="sidebarItems">
 					<UNavigationMenu :items="sidebarItems" orientation="vertical" />
 				</UDashboardSidebar>
 				<UDashboardPanel>
 					<template #header>
-						<UDashboardNavbar :title="routeTitle">
+						<UDashboardNavbar :title="routeNames[route.name]">
 							<template #right>
 								<NewFermentButton />
 							</template>
@@ -52,14 +52,11 @@
 
 	const route = useRoute();
 
-	const routeTitle = computed(() => {
-		const routeName = route.name;
-		return {
-			index: "Dashboard",
-			ferments: "Ferments",
-			"ferment-id": "Ferment Details",
-			archive: "Archive",
-			settings: "Settings"
-		}[routeName];
-	});
+	const routeNames: Record<typeof route["name"], string> = {
+		index: "Dashboard",
+		ferments: "Ferments",
+		"ferment-id": "Ferment Details",
+		archive: "Archive",
+		settings: "Settings"
+	};
 </script>

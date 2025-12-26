@@ -1,0 +1,15 @@
+<template>
+	<div class="flex items-center h-full">
+		<UIcon v-for="n in 5" :key="n" name="lucide:star" :class="{ 'text-yellow-500': isActive(n) }" class="inline-block size-4 text-(--ui-accent)" />
+	</div>
+</template>
+
+<script lang="ts" setup>
+	const { stars } = defineProps<{
+		stars: number | undefined
+	}>();
+
+	function isActive(n: number) {
+		return stars !== undefined && n <= stars;
+	}
+</script>
