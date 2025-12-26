@@ -38,7 +38,7 @@
 		</UFormField>
 
 		<!-- Ingredients -->
-		<UFormField label="Ingredients" name="ingredients">
+		<UFormField label="Ingredients" name="ingredients" required>
 			<div class="space-y-3">
 				<div v-for="(ingredient, index) in formData.ingredients" :key="ingredient.id" class="flex gap-2">
 					<UInput
@@ -50,6 +50,8 @@
 					<UInput
 						v-model.number="ingredient.amount"
 						placeholder="Amount"
+						type="number"
+						min="0"
 						class="w-24"
 					/>
 					<UInput
@@ -80,11 +82,11 @@
 			<UFormField label="Start date" name="startDate" required>
 				<UInput v-model="formData.startDate" type="date" size="lg" />
 			</UFormField>
-			<UFormField :label="isEditingCompleted ? 'End date (optional)' : 'End date'" name="endDate">
+			<UFormField label="End date" name="endDate" :required="isFermentCompleted">
 				<div class="flex gap-2">
 					<UInput v-model="formData.endDate" type="date" size="lg" class="flex-1" />
 					<UButton
-						v-if="!isEditingCompleted && formData.endDate"
+						v-if="!isFermentCompleted && formData.endDate"
 						icon="lucide:x"
 						variant="ghost"
 						color="neutral"
@@ -108,7 +110,7 @@
 			<UButton variant="ghost" @click="$emit('cancel')">
 				Cancel
 			</UButton>
-			<UButton type="submit" :disabled="!isValid">
+			<UButton type="submit">
 				{{ initialData ? 'Update' : 'Create' }} Ferment
 			</UButton>
 		</div>
@@ -120,9 +122,9 @@
 	import Compressor from "compressorjs";
 	import { nanoid } from "nanoid";
 
-	const { initialData, isEditingCompleted = false } = defineProps<{
+	const { initialData, isFermentCompleted = false } = defineProps<{
 		initialData?: FermentBase | null
-		isEditingCompleted?: boolean
+		isFermentCompleted?: boolean
 	}>();
 
 	const emit = defineEmits<{
@@ -170,10 +172,6 @@
 			};
 		}
 	}, { immediate: true });
-
-	const isValid = computed(() => {
-		return formData.value.name.trim() !== "" && formData.value.startDate !== "";
-	});
 
 	const imageInput = ref<File>();
 	const imageDate = ref<string>(getCurrentISODate());
@@ -225,8 +223,6 @@
 	}
 
 	function handleSubmit() {
-		if (!isValid.value) return;
-
 		emit("submit", {
 			name: formData.value.name.trim(),
 			images: formData.value.images,

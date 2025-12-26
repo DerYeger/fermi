@@ -8,6 +8,7 @@
 		<template #body>
 			<FermentForm
 				:initial-data="ferment"
+				:is-ferment-completed="ferment.state === 'completed'"
 				@submit="handleSubmit"
 				@cancel="showEditModal = false"
 			/>
@@ -17,6 +18,7 @@
 
 <script lang="ts" setup>
 	import type { Ferment, FermentBase } from "~/types/ferment";
+	import { SchemaValidationError } from "@tanstack/vue-db";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
@@ -33,7 +35,8 @@
 			});
 			showEditModal.value = false;
 		} catch (error) {
-			toast.add({ title: "Error saving ferment", description: String(error), color: "error" });
+			const description = error instanceof SchemaValidationError ? z.prettifyError(error) : String(error);
+			toast.add({ title: "Error updating ferment", description, color: "error" });
 		}
 	}
 </script>

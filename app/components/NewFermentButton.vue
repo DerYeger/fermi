@@ -16,6 +16,7 @@
 
 <script lang="ts" setup>
 	import type { ActiveFerment, FermentBase } from "~/types/ferment";
+	import { SchemaValidationError } from "@tanstack/vue-db";
 	import { nanoid } from "nanoid";
 
 	const toast = useToast();
@@ -32,7 +33,8 @@
 			FermentCollection.insert(newFerment);
 			showAddModal.value = false;
 		} catch (error) {
-			toast.add({ title: "Error saving ferment", description: String(error), color: "error" });
+			const description = error instanceof SchemaValidationError ? z.prettifyError(error) : String(error);
+			toast.add({ title: "Error saving ferment", description, color: "error" });
 		}
 	}
 </script>
