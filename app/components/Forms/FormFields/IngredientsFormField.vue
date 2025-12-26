@@ -15,7 +15,7 @@
 					label="Name"
 					required
 				>
-					<UInput v-model="ingredient.name" />
+					<UInputMenu v-model="ingredient.name" create-item :items="ingredientNames" @create="onCreateName(index, $event)" />
 				</UFormField>
 
 				<UFormField
@@ -31,7 +31,7 @@
 					label="Unit"
 					required
 				>
-					<UInput v-model="ingredient.unit" />
+					<UInputMenu v-model="ingredient.unit" create-item :items="ingredientUnits" @create="onCreateUnit(index, $event)" />
 				</UFormField>
 
 				<div class="mt-6">
@@ -40,9 +40,7 @@
 						icon="lucide:trash-2"
 						variant="soft"
 						@click="removeIngredient(index)"
-					>
-						Remove
-					</UButton>
+					/>
 				</div>
 			</div>
 			<div>
@@ -62,6 +60,16 @@
 
 	const wasIngredientAdded = ref(false);
 
+	const draftedIngredientNames = computed(() => {
+		return model.value.map((ingredient) => ingredient.name).filter((name) => name.trim() !== "");
+	});
+	const ingredientNames = useIngredientNames(draftedIngredientNames);
+
+	const draftedIngredientUnits = computed(() => {
+		return model.value.map((ingredient) => ingredient.unit).filter((unit) => unit.trim() !== "");
+	});
+	const ingredientUnits = useIngredientNames(draftedIngredientUnits);
+
 	function addIngredient() {
 		wasIngredientAdded.value = true;
 		model.value.push({
@@ -74,5 +82,17 @@
 
 	function removeIngredient(index: number) {
 		model.value.splice(index, 1);
+	}
+
+	function onCreateName(index: number, name: string) {
+		const item = model.value[index];
+		if (!item) return;
+		item.name = name;
+	}
+
+	function onCreateUnit(index: number, unit: string) {
+		const item = model.value[index];
+		if (!item) return;
+		item.unit = unit;
 	}
 </script>

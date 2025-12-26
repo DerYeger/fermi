@@ -1,3 +1,5 @@
+import { Stream } from "@yeger/streams/sync";
+
 export const IngredientSchema = z.object({
 	id: z.string(),
 	name: z.string().min(1, "Name is required"),

@@ -1,6 +1,7 @@
 import type { Ferment } from "~/types/ferment";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection, eq, useLiveQuery } from "@tanstack/vue-db";
+import { Stream } from "@yeger/streams/sync";
 import { queryClient, queryKeys } from "~/queryClient";
 import { FermentSchema } from "~/types/ferment";
 
@@ -87,6 +88,51 @@ export function useCompletedFerments() {
 
 export function useFermentById(id: MaybeRefOrGetter<string>) {
 	return useLiveQuery((q) => q.from({ ferment: FermentCollection }).where(({ ferment }) => eq(ferment.id, unref(id))).findOne());
+}
+
+function useIngredients() {
+	return useLiveQuery((q) =>
+		q.from({ ferment: FermentCollection })
+			.select(({ ferment }) => ({ ingredients: ferment.ingredients }))
+	);
+}
+
+export function useFermentNames(otherNames: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
+	const query = useLiveQuery((q) => q.from({ ferment: FermentCollection }).select(({ ferment }) => ({ name: ferment.name })));
+	return computed(() =>
+		Stream.from(query.data.value ?? [])
+			.map((item) => item.name)
+			.concat(toValue(otherNames))
+			.distinct()
+			.toArray()
+			.sort((a, b) => a.localeCompare(b))
+	);
+}
+
+export function useIngredientNames(otherNames: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
+	const query = useIngredients();
+	return computed(() =>
+		Stream.from(query.data.value ?? [])
+			.flatMap((item) => item.ingredients)
+			.map((ingredient) => ingredient.name)
+			.concat(toValue(otherNames))
+			.distinct()
+			.toArray()
+			.sort((a, b) => a.localeCompare(b))
+	);
+}
+
+export function useUnits(otherUnits: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
+	const query = useIngredients();
+	return computed(() =>
+		Stream.from(query.data.value ?? [])
+			.flatMap((item) => item.ingredients)
+			.map((ingredient) => ingredient.unit)
+			.concat(toValue(otherUnits))
+			.distinct()
+			.toArray()
+			.sort((a, b) => a.localeCompare(b))
+	);
 }
 
 async function loadAllFerments() {

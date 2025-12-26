@@ -32,6 +32,7 @@
 		"@tauri-apps/plugin-notification": "2.3.3",
 		"@tauri-apps/plugin-shell": "2.3.3",
 		"@tauri-apps/plugin-store": "2.4.1",
+		"@yeger/streams": "2.0.1",
 		"compressorjs": "1.2.1",
 		"echarts": "6.0.0",
 		"key-hierarchy": "3.0.9",
