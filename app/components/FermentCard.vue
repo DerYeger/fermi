@@ -1,101 +1,86 @@
 <template>
-	<UCard class="group relative overflow-hidden cursor-pointer" :ui="{ body: 'p-0' }" @click="navigateToDetails">
-		<!-- Image -->
-		<div v-if="ferment.images.length > 0" class="aspect-video w-full overflow-hidden">
-			<img
-				:src="ferment.images[0]!.base64"
-				:alt="ferment.name"
-				class="size-full object-cover"
-			>
-		</div>
-		<div v-else class="aspect-video w-full bg-elevated flex-center">
-			<UIcon name="lucide:flask-conical" class="size-12 text-muted" />
-		</div>
-
-		<!-- Content -->
-		<div class="p-4">
-			<div class="flex items-start justify-between gap-2 mb-2">
-				<h3 class="font-semibold text-lg truncate">
-					{{ ferment.name }}
-				</h3>
-				<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
-					Completed
-				</UBadge>
+	<UCard class="cursor-pointer" @click="navigateToDetails">
+		<template #header>
+			<div class="font-semibold text-lg truncate">
+				{{ ferment.name }}
 			</div>
+		</template>
 
-			<!-- Rating for completed -->
-			<div v-if="ferment.state === 'completed' && ferment.overall.stars" class="flex items-center gap-1 mb-2">
-				<UIcon
-					v-for="i in 5"
-					:key="i"
-					:name="i <= ferment.overall.stars ? 'lucide:star' : 'lucide:star'"
-					:class="i <= ferment.overall.stars ? 'text-yellow-500' : 'text-muted'"
-					class="size-4"
-				/>
+		<div class="flex flex-col gap-2 text-sm text-muted">
+			<!-- Image -->
+			<div class="mb-2 w-full overflow-hidden rounded-lg">
+				<div v-if="ferment.images.length > 0" class="aspect-video">
+					<img
+						:src="ferment.images[0]!.base64"
+						:alt="ferment.name"
+						class="size-full object-cover"
+					>
+				</div>
+				<div v-else class="aspect-video bg-elevated flex-center">
+					<UIcon name="lucide:flask-conical" class="size-12" />
+				</div>
 			</div>
 
 			<!-- Salt ratio -->
-			<div class="flex items-center gap-2 text-sm text-muted mb-2">
+			<div class="flex items-center gap-2">
 				<UIcon name="lucide:gem" class="size-4" />
 				<span>{{ ferment.saltRatio }}% salt</span>
 			</div>
 
-			<!-- Dates -->
-			<div class="flex items-center gap-2 text-sm text-muted mb-2">
-				<UIcon name="lucide:calendar" class="size-4" />
-				<span>Started {{ formatDate(ferment.startDate) }}</span>
-			</div>
-			<div v-if="ferment.endDate" class="flex items-center gap-2 text-sm text-muted mb-2">
-				<UIcon name="lucide:calendar-check" class="size-4" />
-				<span>Ended {{ formatDate(ferment.endDate) }}</span>
-			</div>
-
 			<!-- Days fermenting -->
-			<div v-if="ferment.state === 'active'" class="flex items-center gap-2 text-sm text-muted mb-3">
+			<div v-if="ferment.state === 'active'" class="flex items-center gap-2">
 				<UIcon name="lucide:clock" class="size-4" />
 				<span>{{ daysFermenting }}</span>
 			</div>
 
+			<!-- Dates -->
+			<div class="flex items-center gap-2">
+				<UIcon name="lucide:calendar" class="size-4" />
+				<span>Started {{ formatDate(ferment.startDate) }}</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<UIcon name="lucide:calendar-check" class="size-4" />
+				<span v-if="ferment.endDate">Ends {{ formatDate(ferment.endDate) }}</span>
+				<span v-else>No end date</span>
+			</div>
+
 			<!-- Ingredients preview -->
-			<div v-if="ferment.ingredients.length > 0" class="mb-3">
+			<div v-if="ferment.ingredients.length > 0" class="mt-2">
 				<div class="flex flex-wrap gap-1">
 					<UBadge
 						v-for="ingredient in ferment.ingredients.slice(0, 3)"
 						:key="ingredient.id"
 						variant="soft"
-						size="sm"
 					>
 						{{ ingredient.name }}
 					</UBadge>
 					<UBadge
 						v-if="ferment.ingredients.length > 3"
 						variant="soft"
-						size="sm"
 						color="neutral"
 					>
 						+{{ ferment.ingredients.length - 3 }} more
 					</UBadge>
 				</div>
 			</div>
-
-			<!-- Actions -->
-			<div class="flex items-center gap-2 pt-2 border-t border-default">
+		</div>
+		<template #footer>
+			<div class="flex gap-2">
 				<EditFermentButton :ferment="ferment" />
-				<ArchiveFermentButton v-if="ferment.state === 'active'" :ferment="ferment" />
-				<UnarchiveFermentButton v-else :ferment="ferment" />
+				<ArchiveFermentButton :ferment="ferment" />
 				<DeleteFermentButton :ferment="ferment" />
 			</div>
-		</div>
+		</template>
 	</UCard>
 </template>
 
 <script lang="ts" setup>
-	import type { Ferment } from "~/types/ferment";
+	import type { ActiveFerment } from "~/types/ferment";
 	import ArchiveFermentButton from "~/components/Forms/ArchiveFermentForm/ArchiveFermentButton.vue";
 	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
 
 	const { ferment } = defineProps<{
-		ferment: Ferment
+		ferment: ActiveFerment
 	}>();
 
 	const daysFermenting = useTimeSince(() => ferment.startDate);
