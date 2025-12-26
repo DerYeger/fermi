@@ -18,6 +18,7 @@
 <script lang="ts" setup>
 	import type { FormSubmitEvent } from "@nuxt/ui";
 	import type { ActiveFerment } from "~/types/ferment";
+	import FermentFormActions from "~/components/Forms/FermentFormActions.vue";
 	import DatesFormField from "~/components/Forms/FormFields/DatesFormField.vue";
 	import ImagesFormField from "~/components/Forms/FormFields/ImagesFormField.vue";
 	import IngredientsFormField from "~/components/Forms/FormFields/IngredientsFormField.vue";
@@ -25,6 +26,7 @@
 	import NotesFormField from "~/components/Forms/FormFields/NotesFormField.vue";
 	import SaltRatioFormField from "~/components/Forms/FormFields/SaltRatioFormField.vue";
 	import { ActiveFermentSchema } from "~/types/ferment";
+	import { deepClone } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: ActiveFerment
@@ -35,7 +37,7 @@
 		cancel: []
 	}>();
 
-	const state = reactive<ActiveFerment>(JSON.parse(JSON.stringify(ferment)));
+	const state = reactive<ActiveFerment>(deepClone(ferment));
 
 	function handleSubmit(event: FormSubmitEvent<ActiveFerment>) {
 		emit("submit", event.data);

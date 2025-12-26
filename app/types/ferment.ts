@@ -38,7 +38,7 @@ export type ActiveFerment = zInfer<typeof ActiveFermentSchema>;
 
 export const RatingSchema = z.object({
 	stars: z.number().min(1).max(5).optional(),
-	notes: NotesSchema.optional()
+	notes: NotesSchema
 });
 
 export const CompletedFermentSchema = FermentBaseSchema.extend({

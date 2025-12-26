@@ -12,6 +12,30 @@
 		<NotesFormField
 			v-model="state.notes"
 		/>
+		<RatingFormFields
+			v-model:stars="state.overall.stars"
+			v-model:notes="state.overall.notes"
+			label="Overall"
+			name="overall"
+		/>
+		<RatingFormFields
+			v-model:stars="state.flavor.stars"
+			v-model:notes="state.flavor.notes"
+			label="Flavor"
+			name="flavor"
+		/>
+		<RatingFormFields
+			v-model:stars="state.texture.stars"
+			v-model:notes="state.texture.notes"
+			label="Texture"
+			name="texture"
+		/>
+		<RatingFormFields
+			v-model:stars="state.process.stars"
+			v-model:notes="state.process.notes"
+			label="Process"
+			name="process"
+		/>
 		<FermentFormActions submit-label="Update" @cancel="emit('cancel')" />
 	</UForm>
 </template>
@@ -19,13 +43,16 @@
 <script lang="ts" setup>
 	import type { FormSubmitEvent } from "@nuxt/ui";
 	import type { CompletedFerment } from "~/types/ferment";
+	import FermentFormActions from "~/components/Forms/FermentFormActions.vue";
 	import DatesFormField from "~/components/Forms/FormFields/DatesFormField.vue";
 	import ImagesFormField from "~/components/Forms/FormFields/ImagesFormField.vue";
 	import IngredientsFormField from "~/components/Forms/FormFields/IngredientsFormField.vue";
 	import NameFormField from "~/components/Forms/FormFields/NameFormField.vue";
 	import NotesFormField from "~/components/Forms/FormFields/NotesFormField.vue";
+	import RatingFormFields from "~/components/Forms/FormFields/RatingFormFields.vue";
 	import SaltRatioFormField from "~/components/Forms/FormFields/SaltRatioFormField.vue";
 	import { CompletedFermentSchema } from "~/types/ferment";
+	import { deepClone } from "~/types/utils";
 
 	// TODO: Add form fields for completed ferment specific data
 
@@ -38,7 +65,7 @@
 		cancel: []
 	}>();
 
-	const state = reactive<CompletedFerment>(JSON.parse(JSON.stringify(ferment)));
+	const state = reactive<CompletedFerment>(deepClone(ferment));
 
 	function handleSubmit(event: FormSubmitEvent<CompletedFerment>) {
 		emit("submit", event.data);

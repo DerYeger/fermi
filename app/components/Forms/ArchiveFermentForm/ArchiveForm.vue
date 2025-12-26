@@ -1,51 +1,43 @@
 <template>
-	<form class="space-y-6" @submit.prevent="handleSubmit">
+	<UForm :schema="CompletedFermentSchema" :state="state" class="flex flex-col gap-6" @submit="handleSubmit">
 		<p class="text-muted">
 			Mark "{{ ferment.name }}" as complete. Rate your ferment and add any final notes.
 		</p>
-
-		<!-- Rating -->
-		<UFormField label="Rating" name="rating">
-			<div class="flex items-center gap-2">
-				<button
-					v-for="i in 5"
-					:key="i"
-					type="button"
-					class="p-1 transition-transform hover:scale-110"
-					@click="rating = i"
-				>
-					<UIcon
-						name="lucide:star"
-						:class="i <= (rating ?? 0) ? 'text-yellow-500' : 'text-muted'"
-						class="size-8"
-					/>
-				</button>
-			</div>
-		</UFormField>
-
-		<!-- Notes -->
-		<UFormField label="Final notes (optional)" name="notes">
-			<UTextarea
-				v-model="completionNotes"
-				placeholder="How did it turn out? Any lessons learned?"
-				:rows="4"
-			/>
-		</UFormField>
-
-		<!-- Actions -->
-		<div class="flex justify-end gap-3 pt-4 border-t border-default">
-			<UButton variant="ghost" @click="$emit('cancel')">
-				Cancel
-			</UButton>
-			<UButton type="submit">
-				Complete ferment
-			</UButton>
-		</div>
-	</form>
+		<RatingFormFields
+			v-model:stars="state.overall.stars"
+			v-model:notes="state.overall.notes"
+			label="Overall"
+			name="overall"
+		/>
+		<RatingFormFields
+			v-model:stars="state.flavor.stars"
+			v-model:notes="state.flavor.notes"
+			label="Flavor"
+			name="flavor"
+		/>
+		<RatingFormFields
+			v-model:stars="state.texture.stars"
+			v-model:notes="state.texture.notes"
+			label="Texture"
+			name="texture"
+		/>
+		<RatingFormFields
+			v-model:stars="state.process.stars"
+			v-model:notes="state.process.notes"
+			label="Process"
+			name="process"
+		/>
+		<FermentFormActions submit-label="Complete" @cancel="emit('cancel')" />
+	</UForm>
 </template>
 
 <script lang="ts" setup>
+	import type { FormSubmitEvent } from "@nuxt/ui";
 	import type { ActiveFerment, CompletedFerment } from "~/types/ferment";
+	import FermentFormActions from "~/components/Forms/FermentFormActions.vue";
+	import RatingFormFields from "~/components/Forms/FormFields/RatingFormFields.vue";
+	import { CompletedFermentSchema } from "~/types/ferment";
+	import { deepClone } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: ActiveFerment
@@ -56,32 +48,29 @@
 		cancel: []
 	}>();
 
-	const rating = ref<number>();
-	const completionNotes = ref("");
+	const state = reactive<CompletedFerment>({
+		...deepClone(ferment),
+		state: "completed",
+		endDate: ferment.endDate ?? getISODate(),
+		overall: {
+			stars: undefined,
+			notes: ""
+		},
+		flavor: {
+			stars: undefined,
+			notes: ""
+		},
+		texture: {
+			stars: undefined,
+			notes: ""
+		},
+		process: {
+			stars: undefined,
+			notes: ""
+		}
+	});
 
-	function handleSubmit() {
-		const completedFerment: CompletedFerment = {
-			...ferment,
-			state: "completed",
-			endDate: ferment.endDate ?? getISODate(),
-			overall: {
-				stars: rating.value,
-				notes: completionNotes.value
-			},
-			flavor: {
-				stars: undefined,
-				notes: undefined
-			},
-			texture: {
-				stars: undefined,
-				notes: undefined
-			},
-			process: {
-				stars: undefined,
-				notes: undefined
-			},
-			notes: completionNotes.value
-		};
-		emit("submit", completedFerment);
+	function handleSubmit(event: FormSubmitEvent<CompletedFerment>) {
+		emit("submit", event.data);
 	}
 </script>
