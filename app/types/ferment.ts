@@ -7,13 +7,18 @@ export const IngredientSchema = z.object({
 
 export type Ingredient = zInfer<typeof IngredientSchema>;
 
+const FermentImage = z.object({
+	base64: z.string(),
+	date: z.iso.date()
+});
+
 const FermentBaseSchema = z.object({
 	id: z.string(),
 	name: z.string().min(1, "Name is required"),
 	ingredients: z.array(IngredientSchema).min(1, "At least one ingredient is required"),
 	saltRatio: z.number().min(0, "Salt ratio cannot be negative"),
 	notes: z.string(),
-	imagePaths: z.array(z.string()).optional().default([]),
+	images: z.array(FermentImage).optional().default([]),
 	startDate: z.iso.date(),
 	endDate: z.iso.date().optional(),
 	createdAt: z.iso.datetime(),

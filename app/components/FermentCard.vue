@@ -1,15 +1,15 @@
 <template>
 	<UCard class="group relative overflow-hidden cursor-pointer" :ui="{ body: 'p-0' }" @click="navigateToDetails">
 		<!-- Image -->
-		<div v-if="ferment.imagePaths.length > 0" class="aspect-video w-full overflow-hidden">
+		<div v-if="ferment.images.length > 0" class="aspect-video w-full overflow-hidden">
 			<img
-				:src="ferment.imagePaths[0]"
+				:src="ferment.images[0]!.base64"
 				:alt="ferment.name"
-				class="size-full object-cover transition-transform group-hover:scale-105"
+				class="size-full object-cover"
 			>
 		</div>
-		<div v-else class="aspect-video w-full bg-(--ui-bg-elevated) flex-center">
-			<UIcon name="lucide:flask-conical" class="size-12 text-(--ui-text-muted)" />
+		<div v-else class="aspect-video w-full bg-elevated flex-center">
+			<UIcon name="lucide:flask-conical" class="size-12 text-muted" />
 		</div>
 
 		<!-- Content -->
@@ -29,29 +29,29 @@
 					v-for="i in 5"
 					:key="i"
 					:name="i <= ferment.overall.stars ? 'lucide:star' : 'lucide:star'"
-					:class="i <= ferment.overall.stars ? 'text-yellow-500' : 'text-(--ui-text-muted)'"
+					:class="i <= ferment.overall.stars ? 'text-yellow-500' : 'text-muted'"
 					class="size-4"
 				/>
 			</div>
 
 			<!-- Salt ratio -->
-			<div class="flex items-center gap-2 text-sm text-(--ui-text-muted) mb-2">
+			<div class="flex items-center gap-2 text-sm text-muted mb-2">
 				<UIcon name="lucide:gem" class="size-4" />
 				<span>{{ ferment.saltRatio }}% salt</span>
 			</div>
 
 			<!-- Dates -->
-			<div class="flex items-center gap-2 text-sm text-(--ui-text-muted) mb-2">
+			<div class="flex items-center gap-2 text-sm text-muted mb-2">
 				<UIcon name="lucide:calendar" class="size-4" />
 				<span>Started {{ formatDate(ferment.startDate) }}</span>
 			</div>
-			<div v-if="ferment.endDate" class="flex items-center gap-2 text-sm text-(--ui-text-muted) mb-2">
+			<div v-if="ferment.endDate" class="flex items-center gap-2 text-sm text-muted mb-2">
 				<UIcon name="lucide:calendar-check" class="size-4" />
 				<span>Ended {{ formatDate(ferment.endDate) }}</span>
 			</div>
 
 			<!-- Days fermenting -->
-			<div v-if="ferment.state === 'active'" class="flex items-center gap-2 text-sm text-(--ui-text-muted) mb-3">
+			<div v-if="ferment.state === 'active'" class="flex items-center gap-2 text-sm text-muted mb-3">
 				<UIcon name="lucide:clock" class="size-4" />
 				<span>{{ daysFermenting }}</span>
 			</div>
@@ -79,7 +79,7 @@
 			</div>
 
 			<!-- Actions -->
-			<div class="flex items-center gap-2 pt-2 border-t border-(--ui-border)">
+			<div class="flex items-center gap-2 pt-2 border-t border-default">
 				<EditFermentButton :ferment="ferment" />
 				<ArchiveFermentButton v-if="ferment.state === 'active'" :ferment="ferment" />
 				<UnarchiveFermentButton v-else :ferment="ferment" />

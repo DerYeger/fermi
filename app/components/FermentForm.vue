@@ -6,38 +6,34 @@
 		</UFormField>
 
 		<!-- Image -->
-		<UFormField label="Image (optional)" name="image">
-			<div class="space-y-3">
-				<div v-if="false" class="relative">
-					<img
-						:src="undefined"
-						alt="Ferment preview"
-						class="w-full max-h-48 object-cover rounded-lg"
-					>
+		<UFormField label="Images (optional)" name="images">
+			<div class="flex flex-wrap gap-2">
+				<div v-for="(image, index) of formData.images" :key="index" class="p-1 flex flex-col gap-1 items-center justify-between w-fit">
+					<img :src="image.base64" :alt="`Ferment image taken on ${image.date}`" :height="96" :width="96">
 					<UButton
-						icon="lucide:x"
-						size="xs"
+						icon="lucide:trash-2"
+						label="Remove"
 						color="error"
-						variant="solid"
-						class="absolute top-2 right-2"
-						@click="removeImage"
+						size="sm"
+						@click="formData.images.splice(index, 1)"
 					/>
 				</div>
-				<UButton variant="outline" icon="lucide:image-plus" @click="selectImage">
-					{{ false ? 'Change Image' : 'Add Image' }}
-				</UButton>
-				<input
-					ref="fileInput"
-					type="file"
-					accept="image/*"
-					class="hidden"
-					@change="handleImageSelect"
-				>
+			</div>
+			<UFileUpload v-model="imageInput" accept="image/*" />
+			<div class="flex items-center gap-2 mt-2">
+				<div>
+					<UInput v-model="imageDate" type="date" size="sm" />
+				</div>
+				<UTooltip :disabled="imageInput && isImageDateValid" :text="!imageInput ? 'Select an image' : 'Provide a valid date'">
+					<UButton :disabled="!imageInput || !isImageDateValid" variant="outline" icon="lucide:plus" size="sm" @click="addImage">
+						Add image
+					</UButton>
+				</UTooltip>
 			</div>
 		</UFormField>
 
 		<!-- Salt Ratio -->
-		<UFormField label="Salt Ratio (%)" name="saltRatio" required>
+		<UFormField label="Salt ratio (%)" name="saltRatio" required>
 			<UInput v-model.number="formData.saltRatio" type="number" min="0" max="100" step="0.1" size="lg" />
 		</UFormField>
 
@@ -52,7 +48,7 @@
 						:autofocus="wasIngredientAdded"
 					/>
 					<UInput
-						v-model="ingredient.amount"
+						v-model.number="ingredient.amount"
 						placeholder="Amount"
 						class="w-24"
 					/>
@@ -74,21 +70,21 @@
 					size="sm"
 					@click="addIngredient"
 				>
-					Add Ingredient
+					Add ingredient
 				</UButton>
 			</div>
 		</UFormField>
 
 		<!-- Dates -->
 		<div class="grid grid-cols-2 gap-4">
-			<UFormField label="Start Date" name="startDate" required>
+			<UFormField label="Start date" name="startDate" required>
 				<UInput v-model="formData.startDate" type="date" size="lg" />
 			</UFormField>
-			<UFormField label="End Date (optional)" name="endDate">
+			<UFormField :label="isEditingCompleted ? 'End date (optional)' : 'End date'" name="endDate">
 				<div class="flex gap-2">
 					<UInput v-model="formData.endDate" type="date" size="lg" class="flex-1" />
 					<UButton
-						v-if="formData.endDate"
+						v-if="!isEditingCompleted && formData.endDate"
 						icon="lucide:x"
 						variant="ghost"
 						color="neutral"
@@ -108,7 +104,7 @@
 		</UFormField>
 
 		<!-- Actions -->
-		<div class="flex justify-end gap-3 pt-4 border-t border-(--ui-border)">
+		<div class="flex justify-end gap-3 pt-4 border-t border-default">
 			<UButton variant="ghost" @click="$emit('cancel')">
 				Cancel
 			</UButton>
@@ -120,11 +116,13 @@
 </template>
 
 <script lang="ts" setup>
-	import type { FermentBase, Ingredient } from "~/types/ferment";
+	import type { FermentBase } from "~/types/ferment";
+	import Compressor from "compressorjs";
 	import { nanoid } from "nanoid";
 
-	const { initialData } = defineProps<{
+	const { initialData, isEditingCompleted = false } = defineProps<{
 		initialData?: FermentBase | null
+		isEditingCompleted?: boolean
 	}>();
 
 	const emit = defineEmits<{
@@ -132,18 +130,17 @@
 		cancel: []
 	}>();
 
-  const fileInput = ref<HTMLInputElement | null>(null);
-
-  type IngredientInput = {
-    id: string;
-    name: string;
-    amount: string;
-    unit: string;
-  }
+	interface IngredientInput {
+		id: string
+		name: string
+		amount: number | undefined
+		unit: string
+	}
 
 	const formData = ref({
 		name: initialData?.name ?? "",
-		ingredients: initialData?.ingredients?.map((i) => ({ ...i, amount: `${i.amount}` })) ?? [] as IngredientInput[],
+		images: initialData?.images ?? [],
+		ingredients: initialData?.ingredients?.map((i) => ({ ...i })) ?? [] as IngredientInput[],
 		saltRatio: initialData?.saltRatio ?? 2,
 		notes: initialData?.notes ?? "",
 		startDate: initialData?.startDate ?? getCurrentISODate(),
@@ -154,7 +151,8 @@
 		if (newData) {
 			formData.value = {
 				name: newData.name ?? "",
-				ingredients: newData.ingredients?.map((i) => ({ ...i, amount: `${i.amount}` })) ?? [],
+				images: newData.images ?? [],
+				ingredients: newData.ingredients?.map((i) => ({ ...i })) ?? [],
 				saltRatio: newData.saltRatio ?? 2,
 				notes: newData.notes ?? "",
 				startDate: newData.startDate ?? getCurrentISODate(),
@@ -163,6 +161,7 @@
 		} else {
 			formData.value = {
 				name: "",
+				images: [],
 				ingredients: [],
 				saltRatio: 2,
 				notes: "",
@@ -176,14 +175,47 @@
 		return formData.value.name.trim() !== "" && formData.value.startDate !== "";
 	});
 
+	const imageInput = ref<File>();
+	const imageDate = ref<string>(getCurrentISODate());
+	const isImageDateValid = computed(() => {
+		return z.iso.date().safeParse(imageDate.value).success;
+	});
+
+	async function addImage() {
+		const image = imageInput.value;
+		if (!image) return;
+		const base64 = await new Promise<string>((resolve, reject) =>
+			new Compressor(image, {
+				quality: 0.8,
+				maxWidth: 720,
+				maxHeight: 720,
+				success(compressedImage) {
+					const reader = new FileReader();
+					reader.onload = (e) => {
+						resolve(e.target?.result as string);
+					};
+					reader.readAsDataURL(compressedImage);
+				},
+				error(err) {
+					reject(err);
+				}
+			}));
+		formData.value.images.push({
+			base64,
+			date: imageDate.value
+		});
+		imageInput.value = undefined;
+		imageDate.value = getCurrentISODate();
+	}
+
 	const wasIngredientAdded = ref(false);
 
 	function addIngredient() {
 		wasIngredientAdded.value = true;
-    formData.value.ingredients.push({
-      id: nanoid(),
+		formData.value.ingredients.push({
+			id: nanoid(),
 			name: "",
-			amount: "",
+			amount: undefined,
 			unit: ""
 		});
 	}
@@ -192,43 +224,23 @@
 		formData.value.ingredients.splice(index, 1);
 	}
 
-	function selectImage() {
-		fileInput.value?.click();
-	}
-
-	function handleImageSelect(_event: Event) {
-		// const input = event.target as HTMLInputElement;
-		// const file = input.files?.[0];
-		// if (!file) return;
-
-		// const reader = new FileReader();
-		// reader.onload = (e) => {
-		// 	formData.value.imageBase64 = e.target?.result as string;
-		// };
-		// reader.readAsDataURL(file);
-	};
-
-	function removeImage() {
-		// formData.value.imageBase64 = "";
-	}
-
 	function handleSubmit() {
 		if (!isValid.value) return;
 
 		emit("submit", {
 			name: formData.value.name.trim(),
+			images: formData.value.images,
 			ingredients: formData.value.ingredients.map((i) => ({
-        id: i.id,
-        name: i.name.trim(),
-        amount: parseFloat(i.amount),
-        unit: i.unit.trim()
-      })),
+				id: i.id,
+				name: i.name.trim(),
+				amount: i.amount ?? 0,
+				unit: i.unit.trim()
+			})),
 			saltRatio: formData.value.saltRatio,
 			notes: formData.value.notes,
-			imagePaths: [],
 			startDate: formData.value.startDate,
-      endDate: formData.value.endDate || undefined,
-      updatedAt: new Date().toISOString()
+			endDate: formData.value.endDate || undefined,
+			updatedAt: new Date().toISOString()
 		});
-};
+	};
 </script>

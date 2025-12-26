@@ -1,6 +1,6 @@
 <template>
 	<form class="space-y-6" @submit.prevent="handleSubmit">
-		<p class="text-(--ui-text-muted)">
+		<p class="text-muted">
 			Mark "{{ ferment.name }}" as complete. Rate your ferment and add any final notes.
 		</p>
 
@@ -16,7 +16,7 @@
 				>
 					<UIcon
 						name="lucide:star"
-						:class="i <= (rating ?? 0) ? 'text-yellow-500' : 'text-(--ui-text-muted)'"
+						:class="i <= (rating ?? 0) ? 'text-yellow-500' : 'text-muted'"
 						class="size-8"
 					/>
 				</button>
@@ -24,7 +24,7 @@
 		</UFormField>
 
 		<!-- Notes -->
-		<UFormField label="Final Notes (optional)" name="notes">
+		<UFormField label="Final notes (optional)" name="notes">
 			<UTextarea
 				v-model="completionNotes"
 				placeholder="How did it turn out? Any lessons learned?"
@@ -33,12 +33,12 @@
 		</UFormField>
 
 		<!-- Actions -->
-		<div class="flex justify-end gap-3 pt-4 border-t border-(--ui-border)">
+		<div class="flex justify-end gap-3 pt-4 border-t border-default">
 			<UButton variant="ghost" @click="$emit('cancel')">
 				Cancel
 			</UButton>
 			<UButton type="submit">
-				Complete Ferment
+				Complete ferment
 			</UButton>
 		</div>
 	</form>

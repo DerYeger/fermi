@@ -10,7 +10,7 @@
 					<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
 						Archived
 					</UBadge>
-					<span class="text-sm text-(--ui-text-muted)">
+					<span class="text-sm text-muted">
 						{{ daysFermenting }}
 					</span>
 				</div>
@@ -29,13 +29,16 @@
 			<!-- Main content -->
 			<div class="lg:col-span-2 space-y-6">
 				<!-- Image -->
-				<UCard v-if="ferment.imagePaths.length > 0">
-					<img
-						:src="ferment.imagePaths[0]"
-						:alt="ferment.name"
-						class="w-full max-h-96 object-cover rounded-lg"
-					>
-				</UCard>
+				<UCarousel
+					v-slot="{ item }"
+					:items="ferment.images"
+					class="mb-6"
+					dots
+					:prev="{ variant: 'solid' }" :next="{ variant: 'solid' }"
+					:ui="{ item: 'basis-1/3 ps-2 rounded-lg my-auto', container: 'ms-0' }"
+				>
+					<img :src="item.base64" :alt="`Ferment Image taken on ${item.date}`" :width="480" :height="480">
+				</UCarousel>
 
 				<!-- Notes -->
 				<UCard v-if="ferment.notes">
@@ -85,7 +88,7 @@
 							v-for="i in 5"
 							:key="i"
 							name="lucide:star"
-							:class="i <= ferment.overall.stars ? 'text-yellow-500' : 'text-(--ui-text-muted)'"
+							:class="i <= ferment.overall.stars ? 'text-yellow-500' : 'text-muted'"
 							class="size-6"
 						/>
 					</div>
@@ -103,7 +106,7 @@
 					</template>
 					<div class="space-y-4">
 						<div>
-							<div class="text-sm text-(--ui-text-muted) mb-1">
+							<div class="text-sm text-muted mb-1">
 								Salt Ratio
 							</div>
 							<div class="font-medium">
@@ -111,7 +114,7 @@
 							</div>
 						</div>
 						<div>
-							<div class="text-sm text-(--ui-text-muted) mb-1">
+							<div class="text-sm text-muted mb-1">
 								Start Date
 							</div>
 							<div class="font-medium">
@@ -119,7 +122,7 @@
 							</div>
 						</div>
 						<div v-if="ferment.endDate">
-							<div class="text-sm text-(--ui-text-muted) mb-1">
+							<div class="text-sm text-muted mb-1">
 								End Date
 							</div>
 							<div class="font-medium">
@@ -127,7 +130,7 @@
 							</div>
 						</div>
 						<div>
-							<div class="text-sm text-(--ui-text-muted) mb-1">
+							<div class="text-sm text-muted mb-1">
 								Created
 							</div>
 							<div class="font-medium">
@@ -135,7 +138,7 @@
 							</div>
 						</div>
 						<div>
-							<div class="text-sm text-(--ui-text-muted) mb-1">
+							<div class="text-sm text-muted mb-1">
 								Last Updated
 							</div>
 							<div class="font-medium">
@@ -159,10 +162,10 @@
 						<div
 							v-for="ingredient in ferment.ingredients"
 							:key="ingredient.id"
-							class="flex items-center justify-between py-2 border-b border-(--ui-border) last:border-0"
+							class="flex items-center justify-between py-2 border-b border-default last:border-0"
 						>
 							<span class="font-medium">{{ ingredient.name }}</span>
-							<span v-if="ingredient.amount" class="text-sm text-(--ui-text-muted)">
+							<span v-if="ingredient.amount" class="text-sm text-muted">
 								{{ ingredient.amount }} {{ ingredient.unit }}
 							</span>
 						</div>

@@ -1,12 +1,12 @@
 <template>
 	<div>
 		<div v-if="isLoading" class="flex justify-center py-12">
-			<UIcon name="lucide:loader-2" class="size-8 animate-spin text-(--ui-text-muted)" />
+			<UIcon name="lucide:loader-2" class="size-8 animate-spin text-muted" />
 		</div>
 
 		<div v-else-if="ferments.length === 0" class="text-center py-12">
-			<UIcon name="lucide:bar-chart-3" class="size-16 mx-auto mb-4 text-(--ui-text-muted)" />
-			<p class="text-(--ui-text-muted) mb-4">
+			<UIcon name="lucide:bar-chart-3" class="size-16 mx-auto mb-4 text-muted" />
+			<p class="text-muted mb-4">
 				No data to visualize yet
 			</p>
 			<UButton to="/">
@@ -84,7 +84,7 @@
 						<div
 							v-for="day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']"
 							:key="day"
-							class="text-center text-xs font-medium text-(--ui-text-muted) py-2"
+							class="text-center text-xs font-medium text-muted py-2"
 						>
 							{{ day }}
 						</div>

@@ -1,10 +1,10 @@
 <template>
 	<UButton icon="lucide:plus" variant="outline" @click="showAddModal = true">
 		<slot>
-			New Ferment
+			New ferment
 		</slot>
 	</UButton>
-	<UModal v-model:open="showAddModal" title="Add New Ferment">
+	<UModal v-model:open="showAddModal" title="Add new ferment">
 		<template #body>
 			<FermentForm
 				@submit="handleSubmit"

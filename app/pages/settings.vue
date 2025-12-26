@@ -5,16 +5,16 @@
 			<template #header>
 				<div class="flex items-center gap-2">
 					<UIcon name="lucide:folder" class="size-5" />
-					<span class="font-semibold">Data Storage</span>
+					<span class="font-semibold">Data storage</span>
 				</div>
 			</template>
 
 			<div class="space-y-4">
-				<p class="text-sm text-(--ui-text-muted)">
+				<p class="text-sm text-muted">
 					Choose where your fermentation data is stored. The default location is in the app's data directory.
 				</p>
 
-				<UFormField label="Save Location" name="saveLocation">
+				<UFormField label="Save location" name="saveLocation">
 					<div class="flex gap-2">
 						<UInput
 							v-model="dataDir"
@@ -35,7 +35,7 @@
 				</UFormField>
 
 				<div class="flex items-center justify-between">
-					<p class="text-xs text-(--ui-text-muted)">
+					<p class="text-xs text-muted">
 						Current location: {{ dataDirDisplay }}
 					</p>
 					<UButton
@@ -55,16 +55,16 @@
 			<template #header>
 				<div class="flex items-center gap-2">
 					<UIcon name="lucide:archive" class="size-5" />
-					<span class="font-semibold">Automatic Backups</span>
+					<span class="font-semibold">Automatic backups</span>
 				</div>
 			</template>
 
 			<div class="space-y-4">
-				<p class="text-sm text-(--ui-text-muted)">
+				<p class="text-sm text-muted">
 					Automatic backups are created before each save. Configure how many backups to keep.
 				</p>
 
-				<UFormField label="Maximum Backups" name="maxBackups">
+				<UFormField label="Maximum backups" name="maxBackups">
 					<UInput
 						v-model.number="maxBackups"
 						type="number"
@@ -74,7 +74,7 @@
 					/>
 				</UFormField>
 
-				<p class="text-xs text-(--ui-text-muted)">
+				<p class="text-xs text-muted">
 					Up to {{ maxBackups }} backup files will be kept. Older backups are automatically deleted.
 				</p>
 			</div>
@@ -89,7 +89,7 @@
 				</div>
 			</template>
 
-			<div class="space-y-2 text-sm text-(--ui-text-muted)">
+			<div class="space-y-2 text-sm text-muted">
 				<p>
 					Fermi is a simple fermentation tracking app to help you manage your fermentation projects.
 				</p>

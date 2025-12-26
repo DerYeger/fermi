@@ -7,9 +7,9 @@
 		class="ml-auto"
 		@click.stop="showConfirmDialog = true"
 	/>
-	<UModal v-model:open="showConfirmDialog" title="Delete Ferment">
+	<UModal v-model:open="showConfirmDialog" title="Delete ferment">
 		<template #body>
-			<p class="text-(--ui-text-muted) mb-6">
+			<p class="text-muted mb-6">
 				Are you sure you want to delete "{{ ferment.name }}"? This action cannot be undone.
 			</p>
 			<div class="flex justify-end gap-2">

@@ -1,27 +1,25 @@
 <template>
-	<UApp>
-		<UMain class="select-none">
-			<UDashboardGroup>
-				<UDashboardSidebar :items="sidebarItems">
-					<UNavigationMenu :items="sidebarItems" orientation="vertical" />
-				</UDashboardSidebar>
-				<UDashboardPanel>
-					<template #header>
-						<UDashboardNavbar :title="routeNames[route.name]">
-							<template #right>
-								<NewFermentButton />
-							</template>
-						</UDashboardNavbar>
-					</template>
-					<template #body>
-						<div class="pa-2">
-							<slot />
-						</div>
-					</template>
-				</UDashboardPanel>
-			</UDashboardGroup>
-		</UMain>
-	</UApp>
+	<UMain class="select-none">
+		<UDashboardGroup>
+			<UDashboardSidebar :items="sidebarItems">
+				<UNavigationMenu :items="sidebarItems" orientation="vertical" />
+			</UDashboardSidebar>
+			<UDashboardPanel>
+				<template #header>
+					<UDashboardNavbar :title="routeNames[route.name]">
+						<template #right>
+							<NewFermentButton />
+						</template>
+					</UDashboardNavbar>
+				</template>
+				<template #body>
+					<div class="pa-2">
+						<slot />
+					</div>
+				</template>
+			</UDashboardPanel>
+		</UDashboardGroup>
+	</UMain>
 </template>
 
 <script setup lang="ts">

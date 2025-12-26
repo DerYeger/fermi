@@ -7,7 +7,7 @@
 	>
 		Complete
 	</UButton>
-	<UModal v-model:open="showArchiveModal" title="Complete Ferment">
+	<UModal v-model:open="showArchiveModal" title="Complete ferment">
 		<template #body>
 			<ArchiveForm
 				:ferment="ferment"

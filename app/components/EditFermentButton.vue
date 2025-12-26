@@ -3,7 +3,7 @@
 		Edit
 	</UButton>
 	<UModal
-		v-model:open="showEditModal" title="Edit Ferment"
+		v-model:open="showEditModal" title="Edit ferment"
 	>
 		<template #body>
 			<FermentForm
