@@ -4,7 +4,6 @@
 		size="sm"
 		icon="lucide:trash-2"
 		color="error"
-		class="ml-auto"
 		@click.stop="showConfirmDialog = true"
 	/>
 	<UModal v-model:open="showConfirmDialog" title="Delete ferment">

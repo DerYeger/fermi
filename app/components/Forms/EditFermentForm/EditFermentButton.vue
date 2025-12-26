@@ -1,7 +1,5 @@
 <template>
-	<UButton variant="ghost" size="sm" icon="lucide:pencil" @click.stop="showEditModal = true">
-		Edit
-	</UButton>
+	<UButton :label="hideLabel ? undefined : 'Edit'" variant="ghost" size="sm" icon="lucide:pencil" @click.stop="showEditModal = true" />
 	<UModal
 		v-model:open="showEditModal"
 		title="Edit ferment"
@@ -31,6 +29,7 @@
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
+		hideLabel?: boolean
 	}>();
 
 	const showEditModal = ref(false);

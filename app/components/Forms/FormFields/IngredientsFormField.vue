@@ -46,7 +46,7 @@
 				</div>
 			</div>
 			<div>
-				<UButton variant="outline" icon="lucide-plus" label="Add ingredient" @click="addIngredient" />
+				<UButton variant="outline" icon="lucide:plus" label="Add ingredient" @click="addIngredient" />
 			</div>
 		</div>
 	</UFormField>

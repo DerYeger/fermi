@@ -1,12 +1,11 @@
 <template>
 	<UButton
+		:label="hideLabel ? undefined : 'Restore'"
 		variant="ghost"
 		size="sm"
 		icon="lucide:archive-restore"
 		@click.stop="showConfirmDialog = true"
-	>
-		Restore
-	</UButton>
+	/>
 	<UModal v-model:open="showConfirmDialog" title="Restore ferment">
 		<template #body>
 			<p class="text-muted mb-6">
@@ -30,6 +29,7 @@
 
 	const { ferment } = defineProps<{
 		ferment: CompletedFerment
+		hideLabel?: boolean
 	}>();
 
 	const showConfirmDialog = ref(false);

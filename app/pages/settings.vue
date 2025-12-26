@@ -1,5 +1,17 @@
 <template>
 	<div class="space-y-8">
+		<!-- Theme -->
+		<UCard>
+			<template #header>
+				<div class="flex items-center gap-2">
+					<UIcon name="lucide:moon" class="size-5" />
+					<span class="font-semibold">Theme</span>
+				</div>
+			</template>
+
+			<UColorModeSelect />
+		</UCard>
+
 		<!-- Save Location -->
 		<UCard>
 			<template #header>

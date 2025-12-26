@@ -21,7 +21,7 @@
 			:data="data as CompletedFerment[]" class="flex-1" :columns="columns" :initial-state="{
 				sorting: [{
 					id: 'endDate',
-					desc: false
+					desc: true
 				}]
 			}"
 		/>
@@ -33,18 +33,26 @@
 	import type { CompletedFerment } from "~/types/ferment";
 	import { createColumnHelper } from "@tanstack/vue-table";
 	import NewFermentButton from "~/components/Forms/NewFermentForm/NewFermentButton.vue";
+	import FermentActionsCell from "~/components/Table/FermentActionsCell.vue";
+	import IngredientsCell from "~/components/Table/IngredientsCell.vue";
+	import SortableTableHeader from "~/components/Table/SortableTableHeader.vue";
+	import StarsCell from "~/components/Table/StarsCell.vue";
 
 	const { data, isLoading } = useCompletedFerments();
 
-	const IngredientsCell = resolveComponent("IngredientsCell");
-	const SortableTableHeader = resolveComponent("SortableTableHeader");
-	const StarsCell = resolveComponent("StarsCell");
 	const UButton = resolveComponent("UButton");
 
 	function createSortableHeader<T>(label: string) {
 		return (context: HeaderContext<CompletedFerment, T>) => {
 			const isSorted = context.column.getIsSorted();
-			return h(SortableTableHeader, { label, isSorted, context });
+			return h(SortableTableHeader, {
+				label,
+				isSorted,
+				onToggleSorting:
+					(desc: boolean) => {
+						context.column.toggleSorting(desc);
+					}
+			});
 		};
 	}
 
@@ -63,13 +71,9 @@
 			header: "",
 			cell: (ctx) =>
 				h(
-					UButton,
+					FermentActionsCell,
 					{
-						icon: "lucide:eye",
-						class: "p-2 -mx-2",
-						variant: "ghost",
-						onClick: () =>
-							navigateTo(`/ferment/${ctx.row.original.id}`)
+						ferment: ctx.row.original
 					}
 				)
 		}),
@@ -122,16 +126,16 @@
 			id: "endDate",
 			header: createSortableHeader("End Date"),
 			cell: (ctx) => formatDate(ctx.getValue())
-		}),
-		columnHelper.accessor("createdAt", {
-			id: "createdAt",
-			header: createSortableHeader("Created At"),
-			cell: (ctx) => formatDateTime(ctx.getValue())
-		}),
-		columnHelper.accessor("updatedAt", {
-			id: "updatedAt",
-			header: createSortableHeader("Updated At"),
-			cell: (ctx) => formatDateTime(ctx.getValue())
 		})
+		// columnHelper.accessor("createdAt", {
+		// 	id: "createdAt",
+		// 	header: createSortableHeader("Created At"),
+		// 	cell: (ctx) => formatDateTime(ctx.getValue())
+		// }),
+		// columnHelper.accessor("updatedAt", {
+		// 	id: "updatedAt",
+		// 	header: createSortableHeader("Updated At"),
+		// 	cell: (ctx) => formatDateTime(ctx.getValue())
+		// })
 	] as ColumnDef<CompletedFerment>[];
 </script>

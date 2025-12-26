@@ -15,12 +15,13 @@
 		<FermentCard
 			v-for="ferment in data"
 			:key="ferment.id"
-			:ferment="ferment"
+			:ferment="ferment as ActiveFerment"
 		/>
 	</div>
 </template>
 
 <script lang="ts" setup>
+	import type { ActiveFerment } from "~/types/ferment";
 	import NewFermentButton from "~/components/Forms/NewFermentForm/NewFermentButton.vue";
 
 	const { data, isLoading } = useActiveFerments();

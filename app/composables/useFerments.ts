@@ -1,4 +1,4 @@
-import type { Ferment, FermentState } from "~/types/ferment";
+import type { Ferment } from "~/types/ferment";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection, eq, useLiveQuery } from "@tanstack/vue-db";
 import { queryClient, queryKeys } from "~/queryClient";
@@ -70,15 +70,19 @@ export function useFerments() {
 }
 
 export function useActiveFerments() {
-	return useFermentsByState("active");
+	return useLiveQuery((q) =>
+		q.from({ ferment: FermentCollection })
+			.where(({ ferment }) => eq(ferment.state, "active"))
+			.orderBy(({ ferment }) => ferment.startDate, "asc")
+	);
 }
 
 export function useCompletedFerments() {
-	return useFermentsByState("completed");
-}
-
-function useFermentsByState(state: FermentState) {
-	return useLiveQuery((q) => q.from({ ferment: FermentCollection }).where(({ ferment }) => eq(ferment.state, state)));
+	return useLiveQuery((q) =>
+		q.from({ ferment: FermentCollection })
+			.where(({ ferment }) => eq(ferment.state, "completed"))
+			.orderBy(({ ferment }) => ferment.endDate, "desc")
+	);
 }
 
 export function useFermentById(id: MaybeRefOrGetter<string>) {
