@@ -3,12 +3,19 @@
 		Edit
 	</UButton>
 	<UModal
-		v-model:open="showEditModal" title="Edit ferment"
+		v-model:open="showEditModal"
+		title="Edit ferment"
 	>
 		<template #body>
-			<FermentForm
-				:initial-data="ferment"
-				:is-ferment-completed="ferment.state === 'completed'"
+			<EditActiveFermentForm
+				v-if="ferment.state === 'active'"
+				:ferment="ferment"
+				@submit="handleSubmit"
+				@cancel="showEditModal = false"
+			/>
+			<EditCompletedFermentForm
+				v-else
+				:ferment="ferment"
 				@submit="handleSubmit"
 				@cancel="showEditModal = false"
 			/>
@@ -17,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-	import type { Ferment, FermentBase } from "~/types/ferment";
+	import type { Ferment } from "~/types/ferment";
 	import { SchemaValidationError } from "@tanstack/vue-db";
 
 	const { ferment } = defineProps<{
@@ -28,10 +35,10 @@
 
 	const toast = useToast();
 
-	async function handleSubmit(data: Omit<FermentBase, "id" | "createdAt">) {
+	async function handleSubmit(data: Ferment) {
 		try {
 			FermentCollection.update(ferment.id, (current) => {
-				Object.assign(current, data);
+				Object.assign(current, data, { updatedAt: getISODatetime() });
 			});
 			showEditModal.value = false;
 		} catch (error) {

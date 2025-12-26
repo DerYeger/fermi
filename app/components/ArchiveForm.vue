@@ -63,7 +63,7 @@
 		const completedFerment: CompletedFerment = {
 			...ferment,
 			state: "completed",
-			endDate: ferment.endDate ?? getCurrentISODate(),
+			endDate: ferment.endDate ?? getISODate(),
 			overall: {
 				stars: rating.value,
 				notes: completionNotes.value

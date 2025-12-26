@@ -16,14 +16,16 @@
 		</template>
 	</UEmpty>
 
-	<UTable
-		v-else :data="data as CompletedFerment[]" class="flex-1" :columns="columns" :initial-state="{
-			sorting: [{
-				id: 'endDate',
-				desc: false
-			}]
-		}"
-	/>
+	<div v-else>
+		<UTable
+			:data="data as CompletedFerment[]" class="flex-1" :columns="columns" :initial-state="{
+				sorting: [{
+					id: 'endDate',
+					desc: false
+				}]
+			}"
+		/>
+	</div>
 </template>
 
 <script setup lang="ts">

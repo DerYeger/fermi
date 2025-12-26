@@ -6,7 +6,7 @@
 	</UButton>
 	<UModal v-model:open="showAddModal" title="Add new ferment">
 		<template #body>
-			<FermentForm
+			<NewFermentForm
 				@submit="handleSubmit"
 				@cancel="showAddModal = false"
 			/>
@@ -15,22 +15,15 @@
 </template>
 
 <script lang="ts" setup>
-	import type { ActiveFerment, FermentBase } from "~/types/ferment";
+	import type { ActiveFerment } from "~/types/ferment";
 	import { SchemaValidationError } from "@tanstack/vue-db";
-	import { nanoid } from "nanoid";
 
 	const toast = useToast();
 	const showAddModal = ref(false);
 
-	async function handleSubmit(data: Omit<FermentBase, "id" | "createdAt">) {
+	async function handleSubmit(ferment: ActiveFerment) {
 		try {
-			const newFerment: ActiveFerment = {
-				...data,
-				id: nanoid(),
-				state: "active",
-				createdAt: data.updatedAt
-			};
-			FermentCollection.insert(newFerment);
+			FermentCollection.insert(ferment);
 			showAddModal.value = false;
 		} catch (error) {
 			const description = error instanceof SchemaValidationError ? z.prettifyError(error) : String(error);

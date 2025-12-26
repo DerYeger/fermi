@@ -27,8 +27,12 @@ export function formatDateTime(date: string) {
 	}).format(new Date(date));
 }
 
-export function getCurrentISODate() {
-	return new Date().toISOString().split("T")[0]!;
+export function getISODate(date = new Date()) {
+	return date.toISOString().split("T")[0]!;
+}
+
+export function getISODatetime(date = new Date()) {
+	return date.toISOString();
 }
 
 export function getDaysBetween(startDate: string, endDate: string) {
