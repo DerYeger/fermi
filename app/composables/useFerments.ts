@@ -1,4 +1,3 @@
-import type { DirEntry } from "@tauri-apps/plugin-fs";
 import type { Ferment, FermentState } from "~/types/ferment";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection, eq, useLiveQuery } from "@tanstack/vue-db";
@@ -8,7 +7,7 @@ import { FermentSchema } from "~/types/ferment";
 const DATA_FILENAME = "data.json";
 
 const toast = useToast();
-const { dataDir } = useFermiConfig();
+const { dataDir, maxBackups } = useFermiConfig();
 
 export const FermentCollection = createCollection(
 	queryCollectionOptions({
@@ -87,59 +86,77 @@ export function useFermentById(id: MaybeRefOrGetter<string>) {
 }
 
 async function loadAllFerments() {
-	let dirs: DirEntry[] = [];
-	if (dataDir.value) {
-		dirs = await useTauriFsReadDir(dataDir.value);
-	} else {
-		dirs = await useTauriFsReadDir("", { baseDir: useTauriFsBaseDirectory.AppData });
-	}
+	const dirs = await useTauriFsReadDir(dataDir.value || "", getOptions());
 	return Promise.all(dirs.filter((dir) => dir.isDirectory).map((dir) => loadFermentById(dir.name)));
 }
 
 async function loadFermentById(id: string) {
-	const path = getFermentDataPath(id);
-	let content: string;
-	if (dataDir.value) {
-		content = await useTauriFsReadTextFile(`${dataDir.value}/${path}`);
-	} else {
-		content = await useTauriFsReadTextFile(path, { baseDir: useTauriFsBaseDirectory.AppData });
-	}
+	const content: string = await useTauriFsReadTextFile(getFermentFile(id), getOptions());
 	return JSON.parse(content);
 }
 
 async function writeFermentData(data: Ferment) {
-	await ensureFermentDataExists(data.id);
-	const path = getFermentDataPath(data.id);
+	await ensureFermentDirExists(data.id);
+	await createBackup(data.id);
 	const content = JSON.stringify(data, null, 2);
-	if (dataDir.value) {
-		await useTauriFsWriteTextFile(`${dataDir.value}/${path}`, content);
-	} else {
-		await useTauriFsWriteTextFile(path, content, { baseDir: useTauriFsBaseDirectory.AppData });
-	}
+	await useTauriFsWriteTextFile(getFermentFile(data.id), content, getOptions());
 }
 
 async function deleteFermentById(id: string) {
-	const path = getFermentPath(id);
-	if (dataDir.value) {
-		await useTauriFsRemove(`${dataDir.value}/${path}`, { recursive: true });
-	} else {
-		await useTauriFsRemove(path, { baseDir: useTauriFsBaseDirectory.AppData, recursive: true });
+	await useTauriFsRemove(getFermentDir(id), { ...getOptions(), recursive: true });
+}
+
+async function ensureFermentDirExists(id: string) {
+	await useTauriFsMkdir(getFermentDir(id), { ...getOptions(), recursive: true });
+}
+
+async function createBackup(id: string) {
+	try {
+		const dataPath = getFermentFile(id);
+
+		const exists = await useTauriFsExists(dataPath, getOptions());
+		if (!exists) return;
+
+		const currentData = await useTauriFsReadTextFile(dataPath, getOptions());
+
+		// Rotate backups (shift all backups up by 1, delete oldest if exceeds max)
+		for (let i = maxBackups.value - 1; i >= 1; i--) {
+			const oldPath = getBackupFilePath(id, i);
+			const newPath = getBackupFilePath(id, i + 1);
+
+			const oldExists = await useTauriFsExists(oldPath, getOptions());
+			if (oldExists) {
+				if (i + 1 > maxBackups.value) {
+					await useTauriFsRemove(oldPath, getOptions());
+				} else {
+					const backupData = await useTauriFsReadTextFile(oldPath, getOptions());
+					await useTauriFsWriteTextFile(newPath, backupData, getOptions());
+				}
+			}
+		}
+
+		// Create new backup at position 1
+		await useTauriFsWriteTextFile(getBackupFilePath(id, 1), currentData, getOptions());
+	} catch (error) {
+		console.error("Failed to create backup:", error);
 	}
 }
 
-async function ensureFermentDataExists(id: string) {
-	const path = getFermentPath(id);
+function getFermentDir(id: string) {
 	if (dataDir.value) {
-		await useTauriFsMkdir(`${dataDir.value}/${path}`, { recursive: true });
-	} else {
-		await useTauriFsMkdir(path, { baseDir: useTauriFsBaseDirectory.AppData, recursive: true });
+		return `${dataDir.value}/${id}`;
 	}
-}
-
-function getFermentPath(id: string) {
 	return `${id}`;
 }
 
-function getFermentDataPath(id: string) {
-	return `${getFermentPath(id)}/${DATA_FILENAME}`;
+function getFermentFile(id: string) {
+	return `${getFermentDir(id)}/${DATA_FILENAME}`;
+}
+
+function getOptions() {
+	return dataDir.value ? {} : { baseDir: useTauriFsBaseDirectory.AppData };
+}
+
+function getBackupFilePath(id: string, backupIndex: number) {
+	return `${getFermentDir(id)}/backup_${backupIndex}.json`;
 }
