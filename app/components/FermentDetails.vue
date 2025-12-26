@@ -32,8 +32,8 @@
 				<UCarousel
 					v-slot="{ item }"
 					:items="ferment.images"
-					class="mb-6"
-					dots
+					:class="{ 'mb-12': ferment.images.length > 3 }"
+					:dots="ferment.images.length > 3"
 					:prev="{ variant: 'solid' }" :next="{ variant: 'solid' }"
 					:ui="{ item: 'basis-1/3 ps-2 rounded-lg my-auto', container: 'ms-0' }"
 				>
