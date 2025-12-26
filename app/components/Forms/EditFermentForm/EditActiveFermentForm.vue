@@ -18,6 +18,12 @@
 <script lang="ts" setup>
 	import type { FormSubmitEvent } from "@nuxt/ui";
 	import type { ActiveFerment } from "~/types/ferment";
+	import DatesFormField from "~/components/Forms/FormFields/DatesFormField.vue";
+	import ImagesFormField from "~/components/Forms/FormFields/ImagesFormField.vue";
+	import IngredientsFormField from "~/components/Forms/FormFields/IngredientsFormField.vue";
+	import NameFormField from "~/components/Forms/FormFields/NameFormField.vue";
+	import NotesFormField from "~/components/Forms/FormFields/NotesFormField.vue";
+	import SaltRatioFormField from "~/components/Forms/FormFields/SaltRatioFormField.vue";
 	import { ActiveFermentSchema } from "~/types/ferment";
 
 	const { ferment } = defineProps<{

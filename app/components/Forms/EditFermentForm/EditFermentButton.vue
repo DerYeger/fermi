@@ -26,6 +26,8 @@
 <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
 	import { SchemaValidationError } from "@tanstack/vue-db";
+	import EditActiveFermentForm from "~/components/Forms/EditFermentForm/EditActiveFermentForm.vue";
+	import EditCompletedFermentForm from "~/components/Forms/EditFermentForm/EditCompletedFermentForm.vue";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment

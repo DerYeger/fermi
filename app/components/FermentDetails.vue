@@ -178,6 +178,8 @@
 
 <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
+	import ArchiveFermentButton from "~/components/Forms/ArchiveFermentForm/ArchiveFermentButton.vue";
+	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment

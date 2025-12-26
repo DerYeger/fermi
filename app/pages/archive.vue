@@ -32,6 +32,7 @@
 	import type { CellContext, ColumnDef, HeaderContext } from "@tanstack/vue-table";
 	import type { CompletedFerment } from "~/types/ferment";
 	import { createColumnHelper } from "@tanstack/vue-table";
+	import NewFermentButton from "~/components/Forms/NewFermentForm/NewFermentButton.vue";
 
 	const { data, isLoading } = useCompletedFerments();
 

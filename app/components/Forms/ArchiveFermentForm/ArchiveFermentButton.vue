@@ -20,6 +20,7 @@
 
 <script lang="ts" setup>
 	import type { ActiveFerment, CompletedFerment } from "~/types/ferment";
+	import ArchiveForm from "~/components/Forms/ArchiveFermentForm/ArchiveForm.vue";
 
 	const { ferment } = defineProps<{
 		ferment: ActiveFerment

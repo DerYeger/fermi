@@ -1,7 +1,7 @@
 <template>
 	<UMain class="select-none">
 		<UDashboardGroup>
-			<UDashboardSidebar :items="sidebarItems">
+			<UDashboardSidebar>
 				<UNavigationMenu :items="sidebarItems" orientation="vertical" />
 			</UDashboardSidebar>
 			<UDashboardPanel>
@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 	import type { NavigationMenuItem } from "@nuxt/ui";
+	import NewFermentButton from "~/components/Forms/NewFermentForm/NewFermentButton.vue";
 
 	const sidebarItems: NavigationMenuItem[] = [
 		{

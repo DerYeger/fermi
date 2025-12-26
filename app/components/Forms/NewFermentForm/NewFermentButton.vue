@@ -17,6 +17,7 @@
 <script lang="ts" setup>
 	import type { ActiveFerment } from "~/types/ferment";
 	import { SchemaValidationError } from "@tanstack/vue-db";
+	import NewFermentForm from "~/components/Forms/NewFermentForm/NewFermentForm.vue";
 
 	const toast = useToast();
 	const showAddModal = ref(false);

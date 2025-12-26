@@ -91,16 +91,16 @@
 
 <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
+	import ArchiveFermentButton from "~/components/Forms/ArchiveFermentForm/ArchiveFermentButton.vue";
+	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
 	}>();
 
-	const router = useRouter();
-
 	const daysFermenting = useTimeSince(() => ferment.startDate);
 
 	function navigateToDetails() {
-		router.push({ name: "ferment-id", params: { id: ferment.id } });
+		navigateTo({ name: "ferment-id", params: { id: ferment.id } });
 	}
 </script>

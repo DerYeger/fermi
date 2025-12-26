@@ -21,5 +21,7 @@
 </template>
 
 <script lang="ts" setup>
+	import NewFermentButton from "~/components/Forms/NewFermentForm/NewFermentButton.vue";
+
 	const { data, isLoading } = useActiveFerments();
 </script>

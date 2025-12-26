@@ -18,6 +18,7 @@
 
   <script setup lang="ts">
 	import type { FermentImage } from "~/types/ferment";
+	import ImageForm from "~/components/Forms/FormFields/ImageForm.vue";
 
 	const model = defineModel<FermentImage[]>({
 		required: true
