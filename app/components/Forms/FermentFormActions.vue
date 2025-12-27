@@ -1,5 +1,5 @@
 <template>
-	<div class="flex justify-end gap-3">
+	<div class="flex justify-end gap-2">
 		<UButton variant="ghost" color="error" @click="emit('cancel')">
 			Cancel
 		</UButton>

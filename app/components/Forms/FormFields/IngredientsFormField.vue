@@ -28,7 +28,7 @@
 					:name="`ingredients.${index}.unit`"
 					required
 				>
-					<UInputMenu v-model="ingredient.unit" create-item placeholder="Unit" :items="ingredientUnits" @create="onCreateUnit(index, $event)" />
+					<UInputMenu v-model="ingredient.unit" create-item placeholder="Unit" :items="unitItems" @create="onCreateUnit(index, $event)" />
 				</UFormField>
 
 				<div>
@@ -48,8 +48,10 @@
 </template>
 
 <script setup lang="ts">
+	import type { InputMenuItem } from "@nuxt/ui";
 	import type { Ingredient } from "~/types/ferment";
 	import { nanoid } from "nanoid";
+	import { PREDEFINED_UNITS } from "~/composables/useFerments";
 
 	const model = defineModel<Ingredient[]>({
 		required: true
@@ -65,7 +67,30 @@
 	const draftedIngredientUnits = computed(() => {
 		return model.value.map((ingredient) => ingredient.unit).filter((unit) => unit.trim() !== "");
 	});
-	const ingredientUnits = useIngredientNames(draftedIngredientUnits);
+	const customIngredientUnits = useIngredientUnits(draftedIngredientUnits);
+
+	const unitItems = computed<InputMenuItem[]>(() => {
+		const items: InputMenuItem[] = [
+		];
+		const predefinedUnits = Object.entries(PREDEFINED_UNITS);
+		predefinedUnits.forEach(([category, units], index) => {
+			items.push({ type: "label", label: category });
+			for (const unit of units) {
+				items.push({ label: unit, value: unit });
+			}
+			if (index < predefinedUnits.length - 1) {
+				items.push({ type: "separator" });
+			}
+		});
+		if (customIngredientUnits.value.length > 0) {
+			items.push({ type: "separator" });
+			items.push({ type: "label", label: "Custom" });
+			for (const unit of customIngredientUnits.value) {
+				items.push({ label: unit, value: unit });
+			}
+		}
+		return items;
+	});
 
 	function addIngredient() {
 		wasIngredientAdded.value = true;
@@ -84,12 +109,12 @@
 	function onCreateName(index: number, name: string) {
 		const item = model.value[index];
 		if (!item) return;
-		item.name = name;
+		item.name = name.trim();
 	}
 
 	function onCreateUnit(index: number, unit: string) {
 		const item = model.value[index];
 		if (!item) return;
-		item.unit = unit;
+		item.unit = unit.trim();
 	}
 </script>

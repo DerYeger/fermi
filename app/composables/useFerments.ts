@@ -123,13 +123,21 @@ export function useIngredientNames(otherNames: MaybeRefOrGetter<string[]>): Comp
 	);
 }
 
-export function useUnits(otherUnits: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
+export const PREDEFINED_UNITS = {
+	Metric: ["g", "kg", "ml", "l"],
+	Imperial: ["cups", "tbsp", "tsp", "oz", "lb", "pieces"],
+	Other: ["pieces"]
+};
+const PREDEFINED_UNITS_SET = new Set(Object.values(PREDEFINED_UNITS).flat());
+
+export function useIngredientUnits(otherUnits: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
 	const query = useIngredients();
 	return computed(() =>
 		Stream.from(query.data.value ?? [])
 			.flatMap((item) => item.ingredients)
 			.map((ingredient) => ingredient.unit)
 			.concat(toValue(otherUnits))
+			.filter((unit) => !PREDEFINED_UNITS_SET.has(unit))
 			.distinct()
 			.toArray()
 			.sort((a, b) => a.localeCompare(b))
