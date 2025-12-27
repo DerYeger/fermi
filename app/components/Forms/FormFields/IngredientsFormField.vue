@@ -8,7 +8,7 @@
 			<div
 				v-for="(ingredient, index) in model"
 				:key="index"
-				class="flex gap-2"
+				class="grid grid-cols-[4fr_2fr_2fr_max-content] gap-2"
 			>
 				<UFormField
 					:name="`ingredients.${index}.name`"

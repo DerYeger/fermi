@@ -4,7 +4,7 @@
 	<Empty v-else-if="data.length === 0" type="active" />
 
 	<div v-else ref="scrollAreaWrapper">
-		<UScrollArea v-slot="{ item }" :items="data" orientation="vertical" :virtualize="{ gap: 24, lanes, estimateSize: 280 }" :ui="{ root: 'p-1 -mx-1' }">
+		<UScrollArea v-slot="{ item }" :items="data" orientation="vertical" :virtualize="{ gap: 16, lanes, estimateSize: 280 }" :ui="{ root: 'p-1 -m-1' }">
 			<FermentCard
 				:ferment="item as ActiveFerment"
 			/>

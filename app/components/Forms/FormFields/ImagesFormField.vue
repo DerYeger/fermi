@@ -16,7 +16,8 @@
 		</div>
 		<UScrollArea v-if="model.length > 0" v-slot="{ item, index }" orientation="horizontal" :items="model" :ui="{ item: 'ml-2 first:ml-0' }">
 			<div
-				class="flex flex-col gap-2 pb-2"
+				class="flex flex-col gap-2"
+				:class="{ 'pb-2': model.length > 2 }"
 			>
 				<div>
 					<img :src="item.base64" alt="Ferment image" class="w-51 aspect-square object-cover rounded-md">

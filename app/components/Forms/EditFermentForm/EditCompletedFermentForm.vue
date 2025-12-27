@@ -1,5 +1,5 @@
 <template>
-	<UForm :schema="CompletedFermentSchema" :state="state" class="flex flex-col gap-6" @submit="handleSubmit">
+	<UForm :schema="CompletedFermentSchema" :state="state" class="flex flex-col gap-8" @submit="handleSubmit">
 		<NameFormField v-model="state.name" />
 		<ImagesFormField v-model="state.images" />
 		<SaltRatioFormField v-model="state.saltRatio" />

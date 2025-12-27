@@ -1,5 +1,5 @@
 <template>
-	<UForm :schema="CompletedFermentSchema" :state="state" class="flex flex-col gap-6" @submit="handleSubmit">
+	<UForm :schema="CompletedFermentSchema" :state="state" class="flex flex-col gap-8" @submit="handleSubmit">
 		<p class="text-muted">
 			Mark "{{ ferment.name }}" as complete. Rate your ferment and add any final notes.
 		</p>

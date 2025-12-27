@@ -3,9 +3,11 @@
 
 	<Empty v-else-if="data.length === 0" type="completed" />
 
-	<div v-else>
+	<div v-else class="-m-4 h-[calc(100%+2rem)] flex flex-col overflow-hidden">
 		<UTable
-			:data="data as CompletedFerment[]" class="flex-1" :columns="columns" :initial-state="{
+			class="h-full"
+			sticky
+			:data="data as CompletedFerment[]" :columns="columns" :initial-state="{
 				sorting: [{
 					id: 'endDate',
 					desc: true

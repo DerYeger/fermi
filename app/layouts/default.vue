@@ -1,16 +1,16 @@
 <template>
 	<UMain class="select-none">
 		<UDashboardGroup>
-			<UDashboardSidebar>
-				<UNavigationMenu :items="sidebarItems" orientation="vertical" />
-			</UDashboardSidebar>
-			<UDashboardPanel>
+			<UDashboardPanel :ui="{ body: 'sm:p-4' }">
 				<template #header>
-					<UDashboardNavbar :title="routeNames[route.name]">
+					<UDashboardToolbar>
+						<template #left>
+							<UNavigationMenu highlight :items="sidebarItems" :ui="{ item: 'max-md:[&_span.truncate]:hidden' }" />
+						</template>
 						<template #right>
 							<NewFermentButton with-shortcut />
 						</template>
-					</UDashboardNavbar>
+					</UDashboardToolbar>
 				</template>
 				<template #body>
 					<slot />
@@ -26,34 +26,18 @@
 
 	const sidebarItems: NavigationMenuItem[] = [
 		{
+			type: "link",
 			label: "Dashboard",
 			icon: "lucide:home",
 			to: "/"
 		},
 		{
+			type: "link",
 			label: "Ferments",
-			icon: "lucide:apple",
+			icon: "lucide:salad",
 			to: "/ferments"
 		},
-		{
-			label: "Archive",
-			icon: "lucide:archive",
-			to: "/archive"
-		},
-		{
-			label: "Settings",
-			icon: "lucide:settings-2",
-			to: "/settings"
-		}
+		{ type: "link", label: "Archive", icon: "lucide:archive", to: "/archive" },
+		{ type: "link", label: "Settings", icon: "lucide:settings-2", to: "/settings" }
 	];
-
-	const route = useRoute();
-
-	const routeNames: Record<typeof route["name"], string> = {
-		index: "Dashboard",
-		ferments: "Ferments",
-		"ferment-id": "Ferment Details",
-		archive: "Archive",
-		settings: "Settings"
-	};
 </script>

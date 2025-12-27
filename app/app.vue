@@ -1,11 +1,9 @@
 <template>
-	<Html class="overflow-x-hidden">
-		<Body class="font-sans antialiased">
-			<UApp>
-				<NuxtLayout>
-					<NuxtPage />
-				</NuxtLayout>
-			</UApp>
-		</Body>
-	</Html>
+	<AppBase>
+		<NuxtPage />
+	</AppBase>
 </template>
+
+<script setup lang="ts">
+	import AppBase from "~/app-base.vue";
+</script>

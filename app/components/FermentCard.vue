@@ -45,7 +45,7 @@
 				<span v-else>No end date</span>
 			</div>
 
-			<!-- Ingredients preview -->
+			<!-- Ingredients -->
 			<div v-if="ferment.ingredients.length > 0" class="mt-2">
 				<div class="flex flex-wrap gap-1">
 					<UBadge
