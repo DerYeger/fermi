@@ -18,11 +18,12 @@
 <script lang="ts" setup>
 	import FermentCalendar from "~/components/Dashboard/FermentCalendar.vue";
 	import IngredientsChart from "~/components/Dashboard/IngredientsChart.vue";
+	import KPICard from "~/components/Dashboard/KPICard.vue";
 	import OverdueFerments from "~/components/Dashboard/OverdueFerments.vue";
 
 	const { data: ferments, isLoading } = useFerments();
 
-	const items = [IngredientsChart, FermentCalendar, OverdueFerments];
+	const items = [KPICard, IngredientsChart, FermentCalendar, OverdueFerments];
 
 	const scrollAreaWrapper = useTemplateRef("scrollAreaWrapper");
 	const { width } = useElementSize(scrollAreaWrapper);
