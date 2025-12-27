@@ -1,20 +1,7 @@
 <template>
-	<div v-if="isLoading" class="flex justify-center py-12">
-		<UIcon name="lucide:loader-2" class="size-8 animate-spin text-muted" />
-	</div>
+	<Loader v-if="isLoading" />
 
-	<UEmpty v-else-if="data.length === 0" title="No completed ferments" description="Completed ferments will appear here." variant="naked">
-		<template #actions>
-			<NewFermentButton>
-				Create new ferment
-			</NewFermentButton>
-			<UButton
-				variant="subtle"
-				label="See active ferments"
-				@click="navigateTo('/ferments')"
-			/>
-		</template>
-	</UEmpty>
+	<Empty v-else-if="data.length === 0" type="completed" />
 
 	<div v-else>
 		<UTable
@@ -32,15 +19,12 @@
 	import type { CellContext, ColumnDef, HeaderContext } from "@tanstack/vue-table";
 	import type { CompletedFerment } from "~/types/ferment";
 	import { createColumnHelper } from "@tanstack/vue-table";
-	import NewFermentButton from "~/components/Forms/NewFermentForm/NewFermentButton.vue";
 	import FermentActionsCell from "~/components/Table/FermentActionsCell.vue";
 	import IngredientsCell from "~/components/Table/IngredientsCell.vue";
 	import SortableTableHeader from "~/components/Table/SortableTableHeader.vue";
 	import StarsCell from "~/components/Table/StarsCell.vue";
 
 	const { data, isLoading } = useCompletedFerments();
-
-	const UButton = resolveComponent("UButton");
 
 	function createSortableHeader<T>(label: string) {
 		return (context: HeaderContext<CompletedFerment, T>) => {

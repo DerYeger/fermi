@@ -1,7 +1,5 @@
 <template>
-	<div v-if="isLoading" class="flex justify-center py-12">
-		<UIcon name="lucide:loader-2" class="size-8 animate-spin text-muted" />
-	</div>
+	<Loader v-if="isLoading" />
 
 	<UError
 		v-else-if="!ferment"

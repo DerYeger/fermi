@@ -1,9 +1,5 @@
 <template>
-	<UButton icon="lucide:plus" variant="subtle" @click="showAddModal = true">
-		<slot>
-			New ferment
-		</slot>
-	</UButton>
+	<UButton icon="lucide:plus" variant="subtle" label="New ferment" @click="showAddModal = true" />
 	<UModal v-model:open="showAddModal" title="Add new ferment">
 		<template #body>
 			<NewFermentForm

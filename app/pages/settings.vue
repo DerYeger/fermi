@@ -1,5 +1,5 @@
 <template>
-	<div class="space-y-8">
+	<div class="flex flex-col gap-6">
 		<!-- Theme -->
 		<UCard>
 			<template #header>

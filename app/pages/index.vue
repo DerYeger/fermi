@@ -1,123 +1,111 @@
 <template>
-	<div>
-		<div v-if="isLoading" class="flex justify-center py-12">
-			<UIcon name="lucide:loader-2" class="size-8 animate-spin text-muted" />
-		</div>
+	<Loader v-if="isLoading" />
 
-		<div v-else-if="ferments.length === 0" class="text-center py-12">
-			<UIcon name="lucide:bar-chart-3" class="size-16 mx-auto mb-4 text-muted" />
-			<p class="text-muted mb-4">
-				No data to visualize yet
-			</p>
-			<UButton to="/" variant="subtle">
-				Add Your First Ferment
-			</UButton>
-		</div>
+	<Empty v-else-if="ferments.length === 0" type="all" />
 
-		<div v-else class="grid gap-6 lg:grid-cols-2">
-			<!-- Ingredient Pie Chart -->
-			<UCard>
-				<template #header>
+	<div v-else class="grid gap-6 lg:grid-cols-2">
+		<!-- Ingredient Pie Chart -->
+		<UCard>
+			<template #header>
+				<div class="flex items-center gap-2">
+					<UIcon name="lucide:pie-chart" class="size-5" />
+					<h2 class="font-semibold">
+						Ingredient Usage
+					</h2>
+				</div>
+			</template>
+
+			<div class="h-80">
+				<VChart :option="ingredientChartOption" autoresize />
+			</div>
+		</UCard>
+
+		<!-- Calendar View -->
+		<UCard>
+			<template #header>
+				<div class="flex items-center justify-between">
 					<div class="flex items-center gap-2">
-						<UIcon name="lucide:pie-chart" class="size-5" />
+						<UIcon name="lucide:calendar" class="size-5" />
 						<h2 class="font-semibold">
-							Ingredient Usage
+							Fermentation Calendar
 						</h2>
 					</div>
-				</template>
-
-				<div class="h-80">
-					<VChart :option="ingredientChartOption" autoresize />
+					<div class="flex items-center gap-2">
+						<UButton
+							icon="lucide:chevron-left"
+							variant="ghost"
+							size="xs"
+							@click="previousMonth"
+						/>
+						<span class="text-sm font-medium min-w-32 text-center">
+							{{ currentMonthLabel }}
+						</span>
+						<UButton
+							icon="lucide:chevron-right"
+							variant="ghost"
+							size="xs"
+							@click="nextMonth"
+						/>
+					</div>
 				</div>
-			</UCard>
+			</template>
 
-			<!-- Calendar View -->
-			<UCard>
-				<template #header>
-					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2">
-							<UIcon name="lucide:calendar" class="size-5" />
-							<h2 class="font-semibold">
-								Fermentation Calendar
-							</h2>
-						</div>
-						<div class="flex items-center gap-2">
-							<UButton
-								icon="lucide:chevron-left"
-								variant="ghost"
-								size="xs"
-								@click="previousMonth"
-							/>
-							<span class="text-sm font-medium min-w-32 text-center">
-								{{ currentMonthLabel }}
-							</span>
-							<UButton
-								icon="lucide:chevron-right"
-								variant="ghost"
-								size="xs"
-								@click="nextMonth"
-							/>
-						</div>
+			<div class="space-y-4">
+				<!-- Legend -->
+				<div class="flex gap-4 text-xs">
+					<div class="flex items-center gap-1.5">
+						<span class="size-3 rounded bg-emerald-500" />
+						<span>Start</span>
 					</div>
-				</template>
+					<div class="flex items-center gap-1.5">
+						<span class="size-3 rounded bg-amber-500" />
+						<span>End</span>
+					</div>
+					<div class="flex items-center gap-1.5">
+						<span class="size-3 rounded bg-violet-500" />
+						<span>Both</span>
+					</div>
+				</div>
 
-				<div class="space-y-4">
-					<!-- Legend -->
-					<div class="flex gap-4 text-xs">
-						<div class="flex items-center gap-1.5">
-							<span class="size-3 rounded bg-emerald-500" />
-							<span>Start</span>
-						</div>
-						<div class="flex items-center gap-1.5">
-							<span class="size-3 rounded bg-amber-500" />
-							<span>End</span>
-						</div>
-						<div class="flex items-center gap-1.5">
-							<span class="size-3 rounded bg-violet-500" />
-							<span>Both</span>
-						</div>
+				<!-- Calendar Grid -->
+				<div class="grid grid-cols-7 gap-1">
+					<!-- Day headers -->
+					<div
+						v-for="day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']"
+						:key="day"
+						class="text-center text-xs font-medium text-muted py-2"
+					>
+						{{ day }}
 					</div>
 
-					<!-- Calendar Grid -->
-					<div class="grid grid-cols-7 gap-1">
-						<!-- Day headers -->
-						<div
-							v-for="day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']"
-							:key="day"
-							class="text-center text-xs font-medium text-muted py-2"
+					<!-- Calendar days -->
+					<div
+						v-for="(day, index) in calendarDays"
+						:key="index"
+						class="relative aspect-square"
+					>
+						<UDropdownMenu
+							v-if="day.date && day.ferments.length > 0"
+							:items="getDayMenuItems(day)"
 						>
-							{{ day }}
-						</div>
-
-						<!-- Calendar days -->
-						<div
-							v-for="(day, index) in calendarDays"
-							:key="index"
-							class="relative aspect-square"
-						>
-							<UDropdownMenu
-								v-if="day.date && day.ferments.length > 0"
-								:items="getDayMenuItems(day)"
-							>
-								<div
-									class="absolute inset-0 flex items-center justify-center rounded-lg text-sm transition-colors cursor-pointer"
-									:class="getDayClasses(day)"
-								>
-									{{ day.date.getDate() }}
-								</div>
-							</UDropdownMenu>
 							<div
-								v-else-if="day.date"
-								class="absolute inset-0 flex items-center justify-center rounded-lg text-sm transition-colors"
+								class="absolute inset-0 flex items-center justify-center rounded-lg text-sm transition-colors cursor-pointer"
 								:class="getDayClasses(day)"
 							>
 								{{ day.date.getDate() }}
 							</div>
+						</UDropdownMenu>
+						<div
+							v-else-if="day.date"
+							class="absolute inset-0 flex items-center justify-center rounded-lg text-sm transition-colors"
+							:class="getDayClasses(day)"
+						>
+							{{ day.date.getDate() }}
 						</div>
 					</div>
 				</div>
-			</UCard>
-		</div>
+			</div>
+		</UCard>
 	</div>
 </template>
 
