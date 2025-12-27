@@ -8,7 +8,7 @@
 				<template #header>
 					<UDashboardNavbar :title="routeNames[route.name]">
 						<template #right>
-							<NewFermentButton />
+							<NewFermentButton with-shortcut />
 						</template>
 					</UDashboardNavbar>
 				</template>

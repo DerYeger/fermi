@@ -1,5 +1,10 @@
 <template>
-	<UButton icon="lucide:plus" variant="subtle" label="New ferment" @click="showAddModal = true" />
+	<UButton :icon="withShortcut ? undefined : 'lucide:plus'" variant="subtle" @click="showAddModal = true">
+		New ferment
+		<template v-if="withShortcut">
+			<UKbd value="meta" />+<UKbd value="N" />
+		</template>
+	</UButton>
 	<UModal v-model:open="showAddModal" title="Add new ferment">
 		<template #body>
 			<NewFermentForm
@@ -15,8 +20,20 @@
 	import NewFermentForm from "~/components/Forms/NewFermentForm/NewFermentForm.vue";
 	import { getErrorMessage } from "~/types/utils";
 
+	const { withShortcut } = defineProps<{
+		withShortcut?: boolean
+	}>();
+
 	const toast = useToast();
 	const showAddModal = ref(false);
+
+	if (withShortcut) {
+		defineShortcuts({
+			meta_n: () => {
+				showAddModal.value = true;
+			}
+		});
+	}
 
 	async function handleSubmit(ferment: ActiveFerment) {
 		try {

@@ -59,22 +59,22 @@
 				<template v-if="ferment.state === 'completed'">
 					<RatingsCard
 						title="Overall"
-						icon="lucide:star"
+						icon="lucide:trophy"
 						:rating="ferment.overall"
 					/>
 					<RatingsCard
 						title="Flavor"
-						icon="lucide:star"
+						icon="lucide:leafy-green"
 						:rating="ferment.flavor"
 					/>
 					<RatingsCard
 						title="Texture"
-						icon="lucide:star"
+						icon="lucide:carrot"
 						:rating="ferment.texture"
 					/>
 					<RatingsCard
 						title="Process"
-						icon="lucide:star"
+						icon="lucide:chef-hat"
 						:rating="ferment.process"
 					/>
 				</template>
