@@ -4,7 +4,9 @@
 			Mark "{{ ferment.name }}" as complete. Rate your ferment and add any final notes.
 		</p>
 		<UFormField label="End date" name="endDate" required>
-			<InputDatePicker v-model="state.endDate" />
+			<InputDatePicker
+				v-model="state.endDate" :is-date-unavailable="(endDate) => isEndDateUnavailable(ferment.startDate, endDate)"
+			/>
 		</UFormField>
 		<RatingFormFields
 			v-model:stars="state.overall.stars"

@@ -48,7 +48,7 @@
 	import type { FermentImage } from "~/types/ferment";
 	import Compressor from "compressorjs";
 	import { nanoid } from "nanoid";
-import { getErrorMessage } from "~/types/utils";
+	import { getErrorMessage } from "~/types/utils";
 
 	const model = defineModel<FermentImage[]>({
 		required: true

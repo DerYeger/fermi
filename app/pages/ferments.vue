@@ -11,8 +11,8 @@
 		</template>
 	</UEmpty>
 
-	<div v-else>
-		<UScrollArea ref="scrollArea" v-slot="{ item }" :items="data" orientation="vertical" :virtualize="{ gap: 24, lanes, estimateSize: 280 }" :ui="{ root: 'p-1 -mx-1' }">
+	<div v-else ref="scrollAreaWrapper">
+		<UScrollArea v-slot="{ item }" :items="data" orientation="vertical" :virtualize="{ gap: 24, lanes, estimateSize: 280 }" :ui="{ root: 'p-1 -mx-1' }">
 			<FermentCard
 				:ferment="item as ActiveFerment"
 			/>
@@ -24,8 +24,8 @@
 	import type { ActiveFerment } from "~/types/ferment";
 	import NewFermentButton from "~/components/Forms/NewFermentForm/NewFermentButton.vue";
 
-	const scrollArea = useTemplateRef("scrollArea");
-	const { width } = useElementSize(() => scrollArea.value?.$el);
+	const scrollAreaWrapper = useTemplateRef("scrollAreaWrapper");
+	const { width } = useElementSize(scrollAreaWrapper);
 	const lanes = computed(() => {
 		return Math.max(1, Math.floor((width.value ?? 0) / 300));
 	});

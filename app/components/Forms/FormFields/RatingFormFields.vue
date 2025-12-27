@@ -1,16 +1,15 @@
 <template>
 	<UFormField :label="label" :name="name">
-		<div class="flex flex-col gap-2 pt-2">
-			<UFormField label="Rating" :name="`${name}.stars`">
+		<div class="flex flex-col gap-2">
+			<UFormField :name="`${name}.stars`">
 				<div class="flex">
 					<UButton
 						v-for="i in 5"
 						:key="i"
 						variant="ghost"
 						icon="lucide:star"
-						color="warning"
+						:color="isStarActive(i) ? 'warning' : 'neutral'"
 						class="transition-transform hover:scale-110"
-						:class="{ 'text-warning': isStarActive(i), 'text-muted': !isStarActive(i) }"
 						@click="onStarClicked(i)"
 					/>
 				</div>
