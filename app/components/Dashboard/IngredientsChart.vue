@@ -11,13 +11,8 @@
 </template>
 
 <script setup lang="ts">
-	import { PieChart } from "echarts/charts";
-	import { LegendComponent, TitleComponent, TooltipComponent } from "echarts/components";
-	import { use } from "echarts/core";
-	import { CanvasRenderer } from "echarts/renderers";
+	import type { ECBasicOption } from "echarts/types/dist/shared";
 	import VChart from "vue-echarts";
-
-	use([PieChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
 
 	const { data } = useFerments();
 
@@ -36,11 +31,16 @@
 		});
 
 		return Object.entries(counts)
-			.map(([name, value]) => ({ name, value }))
-			.sort((a, b) => b.value - a.value);
+			.map(([name, value]) => ({ name, value }));
 	});
 
-	const ingredientChartOption = computed(() => ({
+	const color = useChartPalette();
+
+	const colorMode = useColorMode();
+
+	const ingredientChartOption = computed<ECBasicOption>(() => ({
+		color,
+		darkMode: colorMode.value === "dark",
 		tooltip: {
 			trigger: "item",
 			formatter: "{b}: {c} ({d}%)"
@@ -48,34 +48,34 @@
 		legend: {
 			type: "scroll",
 			orient: "vertical",
-			right: 10,
-			top: 20,
-			bottom: 20
+			right: 8,
+			top: 16,
+			bottom: 16,
+			textStyle: {
+				color: "var(--ui-text-muted)"
+			}
 		},
 		series: [
 			{
 				type: "pie",
-				radius: ["40%", "70%"],
+				radius: ["50%", "90%"],
 				center: ["35%", "50%"],
-				avoidLabelOverlap: false,
-				itemStyle: {
-					borderRadius: 8,
-					borderColor: "transparent",
-					borderWidth: 2
-				},
 				label: {
 					show: false
-				},
-				emphasis: {
-					label: {
-						show: true,
-						fontSize: 14,
-						fontWeight: "bold"
-					}
 				},
 				labelLine: {
 					show: false
 				},
+				emphasis: {
+					itemStyle: {
+						color: "inherit",
+						shadowBlur: 10,
+						shadowOffsetX: 0,
+						shadowColor: "inherit"
+					}
+				},
+				animationType: "scale",
+				animationEasing: "elasticOut",
 				data: ingredientData.value
 			}
 		]
