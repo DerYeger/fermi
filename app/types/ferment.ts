@@ -1,8 +1,10 @@
+const TrimmedString = z.string().trim();
+
 export const IngredientSchema = z.object({
 	id: z.string(),
-	name: z.string().min(1, "Name is required"),
+	name: TrimmedString.min(1, "Name is required"),
 	amount: z.number("Amount is required").gt(0, "Must be positive"),
-	unit: z.string().min(1, "Unit is required")
+	unit: TrimmedString.min(1, "Unit is required")
 });
 
 export type Ingredient = zInfer<typeof IngredientSchema>;
@@ -15,11 +17,11 @@ export const FermentImageSchema = z.object({
 export type FermentImage = zInfer<typeof FermentImageSchema>;
 
 export const MAX_NOTES_LENGTH = 5000;
-const NotesSchema = z.string().max(MAX_NOTES_LENGTH, "Notes cannot exceed 5000 characters");
+const NotesSchema = TrimmedString.max(MAX_NOTES_LENGTH, "Notes cannot exceed 5000 characters");
 
 const FermentBaseSchema = z.object({
 	id: z.string(),
-	name: z.string().min(1, "Name is required"),
+	name: TrimmedString.min(1, "Name is required"),
 	ingredients: z.array(IngredientSchema).min(1, "At least one ingredient is required"),
 	saltRatio: z.number().min(0, "Cannot be negative"),
 	notes: NotesSchema,
