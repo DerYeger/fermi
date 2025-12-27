@@ -11,7 +11,7 @@
 						Archived
 					</UBadge>
 					<span class="text-sm text-muted">
-						{{ daysFermenting }}
+						{{ formatTimeSince(ferment.startDate) }}
 					</span>
 				</div>
 			</div>
@@ -35,9 +35,14 @@
 					:class="{ 'mb-12': ferment.images.length > 3 }"
 					:dots="ferment.images.length > 3"
 					:prev="{ variant: 'solid' }" :next="{ variant: 'solid' }"
-					:ui="{ item: 'basis-1/3 ps-2 rounded-lg my-auto', container: 'ms-0' }"
+					:ui="{ item: 'basis-1/3 ps-2 rounded-lg my-auto relative', container: 'ms-0' }"
 				>
 					<img :src="item.base64" :alt="`Ferment Image taken on ${item.date}`" :width="480" :height="480">
+					<div class="absolute left-0 right-0 bottom-0 p-1 flex justify-center">
+						<UBadge color="neutral" variant="subtle">
+							{{ ferment.startDate <= item.date ? formatTimeSince(ferment.startDate, item.date) : formatDate(item.date) }}
+						</UBadge>
+					</div>
 				</UCarousel>
 
 				<!-- Notes -->
@@ -184,6 +189,4 @@
 	const { ferment } = defineProps<{
 		ferment: Ferment
 	}>();
-
-	const daysFermenting = useTimeSince(() => ferment.startDate);
 </script>

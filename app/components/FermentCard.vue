@@ -30,7 +30,7 @@
 			<!-- Days fermenting -->
 			<div v-if="ferment.state === 'active'" class="flex items-center gap-2">
 				<UIcon name="lucide:clock" class="size-4" />
-				<span>{{ daysFermenting }}</span>
+				<span>{{ formatTimeSince(ferment.startDate) }}</span>
 			</div>
 
 			<!-- Dates -->
@@ -40,7 +40,10 @@
 			</div>
 			<div class="flex items-center gap-2">
 				<UIcon name="lucide:calendar-check" class="size-4" />
-				<span v-if="ferment.endDate">Ends {{ formatDate(ferment.endDate) }}</span>
+				<span v-if="ferment.endDate" class="flex items-center gap-2">
+					Ends {{ formatDate(ferment.endDate) }}
+					<UBadge v-if="isFermentOverdue(ferment)" color="warning" variant="subtle">Overdue</UBadge>
+				</span>
 				<span v-else>No end date</span>
 			</div>
 
@@ -81,8 +84,6 @@
 	const { ferment } = defineProps<{
 		ferment: ActiveFerment
 	}>();
-
-	const daysFermenting = useTimeSince(() => ferment.startDate);
 
 	function navigateToDetails() {
 		navigateTo({ name: "ferment-id", params: { id: ferment.id } });

@@ -1,15 +1,14 @@
 import type { DateValue } from "@internationalized/date";
+import type { ActiveFerment } from "~/types/ferment";
 
-export function useTimeSince(dateString: MaybeRefOrGetter<string>) {
-	return computed(() => {
-		const diffDays = getDaysBetween(toValue(dateString), getISODate());
+export function formatTimeSince(dateString: MaybeRefOrGetter<string>, startDate = getISODate()) {
+	const diffDays = getDaysBetween(toValue(dateString), startDate);
 
-		return new Intl.NumberFormat("en", {
-			style: "unit",
-			unit: "day",
-			unitDisplay: "long"
-		}).format(diffDays);
-	});
+	return new Intl.NumberFormat("en", {
+		style: "unit",
+		unit: "day",
+		unitDisplay: "long"
+	}).format(diffDays);
 }
 
 export function formatDate(date: string) {
@@ -53,4 +52,10 @@ export function isStartDateUnavailable(endDate: string | undefined, startDate: D
 export function isEndDateUnavailable(startDate: string | undefined, endDate: DateValue) {
 	if (!startDate) return false;
 	return getISODate(endDate.toDate(Intl.DateTimeFormat().resolvedOptions().timeZone)) < startDate;
+}
+
+export function isFermentOverdue(ferment: ActiveFerment) {
+	if (!ferment.endDate) return false;
+	const today = getISODate();
+	return ferment.endDate < today;
 }
