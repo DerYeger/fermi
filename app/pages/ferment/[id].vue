@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 	const route = useRoute("ferment-id");
-	const { data, isLoading } = useFermentById(route.params.id);
+	const { data, isLoading } = useFermentById(() => route.params.id);
 
 	const ferment = computed(() => {
 		return data.value[0];

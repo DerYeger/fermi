@@ -11,7 +11,7 @@
 					icon="lucide:x"
 					variant="ghost"
 					color="error"
-					@click="endDate = ''"
+					@click="endDate = undefined"
 				/>
 			</div>
 		</UFormField>

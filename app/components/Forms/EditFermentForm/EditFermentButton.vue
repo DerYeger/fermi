@@ -43,6 +43,9 @@
 					...data,
 					images: data.images.sort((a, b) => a.date.localeCompare(b.date))
 				}, { updatedAt: getISODatetime() });
+				if (data.state === "active" && !data.endDate) {
+					current.endDate = undefined;
+				}
 			});
 			showEditModal.value = false;
 		} catch (error) {

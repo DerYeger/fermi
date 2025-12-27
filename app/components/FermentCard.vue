@@ -29,6 +29,10 @@
 			<div v-if="ferment.state === 'active'" class="flex items-center gap-2">
 				<UIcon name="lucide:clock" class="size-4" />
 				<span>{{ formatTimeSince(ferment.startDate) }}</span>
+				<template v-if="ferment.endDate && !isFermentOverdue(ferment)">
+					·
+					<span>{{ formatTimeSince(getISODate(), ferment.endDate) }} remaining</span>
+				</template>
 			</div>
 
 			<!-- Dates -->

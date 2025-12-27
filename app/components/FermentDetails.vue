@@ -6,13 +6,17 @@
 				<span class="text-2xl font-bold">
 					{{ ferment.name }}
 				</span>
-				<div class="flex items-center gap-2 mt-1">
+				<div class="flex items-center gap-2 mt-1 text-sm text-muted">
 					<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
 						Completed
 					</UBadge>
-					<span class="text-sm text-muted">
+					<span>
 						{{ formatTimeSince(ferment.startDate) }}
 					</span>
+					<template v-if="ferment.state === 'active' && ferment.endDate && !isFermentOverdue(ferment)">
+						·
+						<span>{{ formatTimeSince(getISODate(), ferment.endDate) }} remaining</span>
+					</template>
 				</div>
 			</div>
 
@@ -41,7 +45,7 @@
 					<img :src="item.base64" :alt="`Ferment Image taken on ${item.date}`" class="rounded-lg" :width="480" :height="480">
 					<div class="absolute left-0 right-0 bottom-0 p-1 flex justify-center">
 						<UBadge color="neutral" variant="subtle">
-							{{ ferment.startDate <= item.date ? formatTimeSince(ferment.startDate, item.date) : formatDate(item.date) }}
+							{{ ferment.startDate <= item.date ? `Day ${getDaysBetween(ferment.startDate, item.date) + 1}` : formatDate(item.date) }}
 						</UBadge>
 					</div>
 				</UCarousel>

@@ -40,7 +40,7 @@
 			return model.value ? getCalendarDate(date) : null;
 		},
 		set(value: CalendarDate | null) {
-			model.value = value ? value.toString() : undefined;
+			model.value = value ? value.toString().split("T")[0]! : undefined;
 		}
 	});
 </script>
