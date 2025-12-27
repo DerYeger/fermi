@@ -4,7 +4,7 @@
 		<ImagesFormField v-model="state.images" />
 		<SaltRatioFormField v-model="state.saltRatio" />
 		<IngredientsFormField v-model="state.ingredients" />
-		<DatesFormField
+		<DateFormFields
 			v-model:start-date="state.startDate"
 			v-model:end-date="state.endDate"
 		/>
@@ -20,7 +20,7 @@
 	import type { ActiveFerment } from "~/types/ferment";
 	import { nanoid } from "nanoid";
 	import FermentFormActions from "~/components/Forms/FermentFormActions.vue";
-	import DatesFormField from "~/components/Forms/FormFields/DatesFormField.vue";
+	import DateFormFields from "~/components/Forms/FormFields/DateFormFields.vue";
 	import ImagesFormField from "~/components/Forms/FormFields/ImagesFormField.vue";
 	import IngredientsFormField from "~/components/Forms/FormFields/IngredientsFormField.vue";
 	import NameFormField from "~/components/Forms/FormFields/NameFormField.vue";

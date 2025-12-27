@@ -30,7 +30,7 @@
 
 	async function handleArchive(data: CompletedFerment) {
 		FermentCollection.update(data.id, (draft) => {
-			Object.assign(draft, data);
+			Object.assign(draft, data, { updatedAt: getISODatetime() });
 		});
 		showArchiveModal.value = false;
 	}

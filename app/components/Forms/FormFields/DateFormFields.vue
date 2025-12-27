@@ -1,11 +1,11 @@
 <template>
 	<div class="grid grid-cols-2 gap-4">
 		<UFormField label="Start date" name="startDate" required>
-			<UInput v-model="startDate" type="date" />
+			<InputDatePicker v-model="startDate" :is-date-unavailable="(startDate) => isStartDateUnavailable(endDate, startDate)" />
 		</UFormField>
 		<UFormField label="End date" name="endDate" :required="isEndDateRequired">
 			<div class="flex gap-2">
-				<UInput v-model="endDate" type="date" class="flex-1" />
+				<InputDatePicker v-model="endDate" :is-date-unavailable="(endDate) => isEndDateUnavailable(startDate, endDate)" />
 				<UButton
 					v-if="!isEndDateRequired && endDate"
 					icon="lucide:x"
@@ -23,11 +23,11 @@
 		isEndDateRequired?: boolean
 	}>();
 
-	const startDate = defineModel<string>("startDate", {
+	const startDate = defineModel<string | undefined>("startDate", {
 		required: true
 	});
 
-	const endDate = defineModel<string>("endDate", {
+	const endDate = defineModel<string | undefined>("endDate", {
 		required: false
 	});
 </script>

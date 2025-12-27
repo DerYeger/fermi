@@ -3,6 +3,9 @@
 		<p class="text-muted">
 			Mark "{{ ferment.name }}" as complete. Rate your ferment and add any final notes.
 		</p>
+		<UFormField label="End date" name="endDate" required>
+			<InputDatePicker v-model="state.endDate" />
+		</UFormField>
 		<RatingFormFields
 			v-model:stars="state.overall.stars"
 			v-model:notes="state.overall.notes"

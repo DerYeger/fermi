@@ -1,3 +1,5 @@
+import type { DateValue } from "@internationalized/date";
+
 export function useTimeSince(dateString: MaybeRefOrGetter<string>) {
 	return computed(() => {
 		const diffDays = getDaysBetween(toValue(dateString), getISODate());
@@ -41,4 +43,14 @@ export function getDaysBetween(startDate: string, endDate: string) {
 	const end = new Date(endDate);
 	const diffTime = Math.abs(end.getTime() - start.getTime());
 	return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+export function isStartDateUnavailable(endDate: string | undefined, startDate: DateValue) {
+	if (!endDate) return false;
+	return getISODate(startDate.toDate(Intl.DateTimeFormat().resolvedOptions().timeZone)) > endDate;
+}
+
+export function isEndDateUnavailable(startDate: string | undefined, endDate: DateValue) {
+	if (!startDate) return false;
+	return getISODate(endDate.toDate(Intl.DateTimeFormat().resolvedOptions().timeZone)) < startDate;
 }

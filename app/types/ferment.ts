@@ -1,5 +1,3 @@
-import { Stream } from "@yeger/streams/sync";
-
 export const IngredientSchema = z.object({
 	id: z.string(),
 	name: z.string().min(1, "Name is required"),
@@ -12,7 +10,7 @@ export type Ingredient = zInfer<typeof IngredientSchema>;
 const FermentImageSchema = z.object({
 	id: z.string(),
 	base64: z.string(),
-	date: z.iso.date()
+	date: z.iso.date("Image date is required")
 });
 export type FermentImage = zInfer<typeof FermentImageSchema>;
 
@@ -26,7 +24,7 @@ const FermentBaseSchema = z.object({
 	saltRatio: z.number().min(0, "Cannot be negative"),
 	notes: NotesSchema,
 	images: z.array(FermentImageSchema),
-	startDate: z.iso.date(),
+	startDate: z.iso.date("Start date is required"),
 	endDate: z.iso.date().optional(),
 	createdAt: z.iso.datetime(),
 	updatedAt: z.iso.datetime()
@@ -45,7 +43,7 @@ export const RatingSchema = z.object({
 
 export const CompletedFermentSchema = FermentBaseSchema.extend({
 	state: z.literal("completed"),
-	endDate: z.iso.date(),
+	endDate: z.iso.date("End date is required"),
 	overall: RatingSchema,
 	flavor: RatingSchema,
 	texture: RatingSchema,
@@ -66,6 +64,6 @@ export function transitionToActive(ferment: CompletedFerment): ActiveFerment {
 		...ferment,
 		state: "active",
 		endDate: undefined,
-		updatedAt: new Date().toISOString()
+		updatedAt: getISODatetime()
 	} satisfies ActiveFerment);
 };
