@@ -1,9 +1,7 @@
 <template>
 	<UCard class="cursor-pointer" @click="navigateToDetails">
 		<template #header>
-			<div class="font-semibold text-lg truncate">
-				{{ ferment.name }}
-			</div>
+			<CardHeader :title="ferment.name" />
 		</template>
 
 		<div class="flex flex-col gap-2 text-sm text-muted">

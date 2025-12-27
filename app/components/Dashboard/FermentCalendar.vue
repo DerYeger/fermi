@@ -1,12 +1,7 @@
 <template>
 	<UCard>
 		<template #header>
-			<div class="flex items-center gap-2">
-				<UIcon name="lucide:calendar" class="size-5" />
-				<span class="font-semibold">
-					Fermentation Calendar
-				</span>
-			</div>
+			<CardHeader title="Fermentation Calendar" icon="lucide:calendar" />
 		</template>
 		<UCalendar :week-starts-on="FIRST_WEEK_DAY" :model-value="getCalendarDate()" variant="subtle" color="neutral">
 			<template #day="{ day }">

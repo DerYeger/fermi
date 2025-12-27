@@ -88,7 +88,7 @@ export function useCompletedFerments() {
 }
 
 export function useFermentById(id: MaybeRefOrGetter<string>) {
-	return useLiveQuery((q) => q.from({ ferment: FermentCollection }).where(({ ferment }) => eq(ferment.id, unref(id))).findOne());
+	return useLiveQuery((q) => q.from({ ferment: FermentCollection }).where(({ ferment }) => eq(ferment.id, unref(id))).findOne(), [id]);
 }
 
 function useIngredients() {

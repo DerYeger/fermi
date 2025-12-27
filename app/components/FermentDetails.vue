@@ -48,81 +48,36 @@
 				<!-- Notes -->
 				<UCard v-if="ferment.notes">
 					<template #header>
-						<div class="flex items-center gap-2">
-							<UIcon name="lucide:notebook-pen" class="size-5" />
-							<h2 class="font-semibold">
-								Notes
-							</h2>
-						</div>
+						<CardHeader title="Notes" icon="lucide:notebook-pen" />
 					</template>
 					<p class="whitespace-pre-wrap">
 						{{ ferment.notes }}
-					</p>
-				</UCard>
-
-				<!-- Completion Notes (for completed) -->
-				<UCard v-if="ferment.state === 'completed' && ferment.overall.notes">
-					<template #header>
-						<div class="flex items-center gap-2">
-							<UIcon name="lucide:clipboard-check" class="size-5" />
-							<h2 class="font-semibold">
-								Completion Notes
-							</h2>
-						</div>
-					</template>
-					<p class="whitespace-pre-wrap">
-						{{ ferment.overall.notes }}
 					</p>
 				</UCard>
 			</div>
 
 			<!-- Sidebar -->
 			<div class="space-y-6">
-				<!-- Rating (for completed) -->
-				<UCard v-if="ferment.state === 'completed' && ferment.overall.stars">
-					<template #header>
-						<div class="flex items-center gap-2">
-							<UIcon name="lucide:star" class="size-5" />
-							<h2 class="font-semibold">
-								Rating
-							</h2>
-						</div>
-					</template>
-					<div class="flex items-center gap-1">
-						<UIcon
-							v-for="i in 5"
-							:key="i"
-							name="lucide:star"
-							:class="i <= ferment.overall.stars ? 'text-yellow-500' : 'text-muted'"
-							class="size-6"
-						/>
-					</div>
-				</UCard>
-
 				<!-- Details -->
 				<UCard>
 					<template #header>
-						<div class="flex items-center gap-2">
-							<UIcon name="lucide:info" class="size-5" />
-							<h2 class="font-semibold">
-								Details
-							</h2>
-						</div>
+						<CardHeader title="Details" icon="lucide:info" />
 					</template>
-					<div class="space-y-4">
+					<div class="flex flex-col gap-4">
 						<div>
 							<div class="text-sm text-muted mb-1">
 								Salt Ratio
 							</div>
-							<div class="font-medium">
+							<div>
 								{{ ferment.saltRatio }}%
 							</div>
 						</div>
+						<USeparator />
 						<div>
 							<div class="text-sm text-muted mb-1">
 								Start Date
 							</div>
-							<div class="font-medium">
+							<div>
 								{{ formatDate(ferment.startDate) }}
 							</div>
 						</div>
@@ -130,15 +85,19 @@
 							<div class="text-sm text-muted mb-1">
 								End Date
 							</div>
-							<div class="font-medium">
+							<div class="flex items-center gap-2">
 								{{ formatDate(ferment.endDate) }}
+								<UBadge v-if="ferment.state === 'active' && isFermentOverdue(ferment)" color="warning" variant="subtle" class="-my-1">
+									Overdue
+								</UBadge>
 							</div>
 						</div>
+						<USeparator />
 						<div>
 							<div class="text-sm text-muted mb-1">
 								Created
 							</div>
-							<div class="font-medium">
+							<div>
 								{{ formatDateTime(ferment.createdAt) }}
 							</div>
 						</div>
@@ -146,7 +105,7 @@
 							<div class="text-sm text-muted mb-1">
 								Last Updated
 							</div>
-							<div class="font-medium">
+							<div>
 								{{ formatDateTime(ferment.updatedAt) }}
 							</div>
 						</div>
@@ -156,24 +115,21 @@
 				<!-- Ingredients -->
 				<UCard v-if="ferment.ingredients.length > 0">
 					<template #header>
-						<div class="flex items-center gap-2">
-							<UIcon name="lucide:list" class="size-5" />
-							<h2 class="font-semibold">
-								Ingredients
-							</h2>
-						</div>
+						<CardHeader title="Ingredients" icon="lucide:list" />
 					</template>
-					<div class="space-y-2">
-						<div
-							v-for="ingredient in ferment.ingredients"
+					<div class="flex flex-col gap-2">
+						<template
+							v-for="(ingredient, index) in ferment.ingredients"
 							:key="ingredient.id"
-							class="flex items-center justify-between py-2 border-b border-default last:border-0"
 						>
-							<span class="font-medium">{{ ingredient.name }}</span>
-							<span v-if="ingredient.amount" class="text-sm text-muted">
-								{{ ingredient.amount }} {{ ingredient.unit }}
-							</span>
-						</div>
+							<div class="flex items-center justify-between">
+								<span>{{ ingredient.name }}</span>
+								<span class="text-sm text-muted">
+									{{ ingredient.quantity }} {{ ingredient.unit }}
+								</span>
+							</div>
+							<USeparator v-if="index < ferment.ingredients.length - 1" />
+						</template>
 					</div>
 				</UCard>
 			</div>

@@ -3,10 +3,9 @@ const TrimmedString = z.string().trim();
 export const IngredientSchema = z.object({
 	id: z.string(),
 	name: TrimmedString.min(1, "Name is required"),
-	amount: z.number("Amount is required").gt(0, "Must be positive"),
+	quantity: z.number("Quantity is required").gt(0, "Must be positive"),
 	unit: TrimmedString.min(1, "Unit is required")
 });
-
 export type Ingredient = zInfer<typeof IngredientSchema>;
 
 export const FermentImageSchema = z.object({
@@ -42,6 +41,7 @@ export const RatingSchema = z.object({
 	stars: z.number().min(1).max(5).optional(),
 	notes: NotesSchema
 });
+export type Rating = zInfer<typeof RatingSchema>;
 
 export const CompletedFermentSchema = FermentBaseSchema.extend({
 	state: z.literal("completed"),

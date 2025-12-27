@@ -1,12 +1,9 @@
 <template>
-	<div class="flex flex-col gap-6">
+	<div class="flex flex-col gap-y-48 sm:gap-6">
 		<!-- Theme -->
 		<UCard>
 			<template #header>
-				<div class="flex items-center gap-2">
-					<UIcon name="lucide:moon" class="size-5" />
-					<span class="font-semibold">Theme</span>
-				</div>
+				<CardHeader title="Theme" icon="lucide:sun-moon" />
 			</template>
 
 			<UColorModeSelect />
@@ -15,10 +12,7 @@
 		<!-- Save Location -->
 		<UCard>
 			<template #header>
-				<div class="flex items-center gap-2">
-					<UIcon name="lucide:folder" class="size-5" />
-					<span class="font-semibold">Data storage</span>
-				</div>
+				<CardHeader title="Data Storage" icon="lucide:folder" />
 			</template>
 
 			<div class="space-y-4">
@@ -66,10 +60,7 @@
 		<!-- Backup Settings -->
 		<UCard>
 			<template #header>
-				<div class="flex items-center gap-2">
-					<UIcon name="lucide:archive" class="size-5" />
-					<span class="font-semibold">Automatic backups</span>
-				</div>
+				<CardHeader title="Automatic Backups" icon="lucide:database-backup" />
 			</template>
 
 			<div class="space-y-4">
@@ -96,10 +87,7 @@
 		<!-- About -->
 		<UCard>
 			<template #header>
-				<div class="flex items-center gap-2">
-					<UIcon name="lucide:info" class="size-5" />
-					<span class="font-semibold">About Fermi</span>
-				</div>
+				<CardHeader title="About Fermi" icon="lucide:info" />
 			</template>
 
 			<div class="space-y-2 text-sm text-muted">

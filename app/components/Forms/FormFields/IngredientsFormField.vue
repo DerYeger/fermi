@@ -18,10 +18,10 @@
 				</UFormField>
 
 				<UFormField
-					:name="`ingredients.${index}.amount`"
+					:name="`ingredients.${index}.quantity`"
 					required
 				>
-					<UInputNumber v-model="ingredient.amount" :min="0" placeholder="Amount" />
+					<UInputNumber v-model="ingredient.quantity" :min="0" placeholder="Quantity" />
 				</UFormField>
 
 				<UFormField
@@ -97,7 +97,7 @@
 		model.value.push({
 			id: nanoid(),
 			name: "",
-			amount: 0,
+			quantity: 0,
 			unit: ""
 		});
 	}
