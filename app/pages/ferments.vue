@@ -11,18 +11,24 @@
 		</template>
 	</UEmpty>
 
-	<div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		<FermentCard
-			v-for="ferment in data"
-			:key="ferment.id"
-			:ferment="ferment as ActiveFerment"
-		/>
+	<div v-else>
+		<UScrollArea ref="scrollArea" v-slot="{ item }" :items="data" orientation="vertical" :virtualize="{ gap: 24, lanes, estimateSize: 280 }" :ui="{ root: 'p-1 -mx-1' }">
+			<FermentCard
+				:ferment="item as ActiveFerment"
+			/>
+		</UScrollArea>
 	</div>
 </template>
 
 <script lang="ts" setup>
 	import type { ActiveFerment } from "~/types/ferment";
 	import NewFermentButton from "~/components/Forms/NewFermentForm/NewFermentButton.vue";
+
+	const scrollArea = useTemplateRef("scrollArea");
+	const { width } = useElementSize(() => scrollArea.value?.$el);
+	const lanes = computed(() => {
+		return Math.max(1, Math.floor((width.value ?? 0) / 300));
+	});
 
 	const { data, isLoading } = useActiveFerments();
 </script>

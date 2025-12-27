@@ -13,9 +13,7 @@
 					</UDashboardNavbar>
 				</template>
 				<template #body>
-					<div class="pa-2">
-						<slot />
-					</div>
+					<slot />
 				</template>
 			</UDashboardPanel>
 		</UDashboardGroup>

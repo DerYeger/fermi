@@ -42,7 +42,7 @@
 				<UIcon name="lucide:calendar-check" class="size-4" />
 				<span v-if="ferment.endDate" class="flex items-center gap-2">
 					Ends {{ formatDate(ferment.endDate) }}
-					<UBadge v-if="isFermentOverdue(ferment)" color="warning" variant="subtle">Overdue</UBadge>
+					<UBadge v-if="isFermentOverdue(ferment)" color="warning" variant="subtle" class="-my-1">Overdue</UBadge>
 				</span>
 				<span v-else>No end date</span>
 			</div>
