@@ -9,7 +9,7 @@
 				Create new ferment
 			</NewFermentButton>
 			<UButton
-				variant="ghost"
+				variant="subtle"
 				label="See active ferments"
 				@click="navigateTo('/ferments')"
 			/>

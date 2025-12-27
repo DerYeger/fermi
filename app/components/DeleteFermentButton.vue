@@ -15,7 +15,7 @@
 				<UButton variant="ghost" @click="showConfirmDialog = false">
 					Cancel
 				</UButton>
-				<UButton color="error" @click="handleDelete">
+				<UButton variant="subtle" color="error" @click="handleDelete">
 					Delete
 				</UButton>
 			</div>

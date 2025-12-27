@@ -17,7 +17,7 @@
 					>
 				</div>
 				<div v-else class="aspect-video bg-elevated flex-center">
-					<UIcon name="lucide:flask-conical" class="size-12" />
+					<UIcon name="lucide:salad" class="size-12" />
 				</div>
 			</div>
 
@@ -50,14 +50,13 @@
 					<UBadge
 						v-for="ingredient in ferment.ingredients.slice(0, 3)"
 						:key="ingredient.id"
-						variant="soft"
+						variant="subtle"
 					>
 						{{ ingredient.name }}
 					</UBadge>
 					<UBadge
 						v-if="ferment.ingredients.length > 3"
-						variant="soft"
-						color="neutral"
+						variant="subtle"
 					>
 						+{{ ferment.ingredients.length - 3 }} more
 					</UBadge>

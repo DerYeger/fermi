@@ -3,7 +3,7 @@
 		<UButton variant="ghost" color="error" @click="emit('cancel')">
 			Cancel
 		</UButton>
-		<UButton type="submit">
+		<UButton variant="subtle" type="submit">
 			{{ submitLabel }}
 		</UButton>
 	</div>

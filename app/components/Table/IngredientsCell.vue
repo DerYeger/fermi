@@ -3,7 +3,7 @@
 		<UBadge
 			v-for="ingredient in ingredients"
 			:key="ingredient.id"
-			variant="outline"
+			variant="subtle"
 			class="max-w-24"
 		>
 			<span class="text-ellipsis overflow-hidden">

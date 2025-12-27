@@ -7,7 +7,7 @@ export const IngredientSchema = z.object({
 
 export type Ingredient = zInfer<typeof IngredientSchema>;
 
-const FermentImageSchema = z.object({
+export const FermentImageSchema = z.object({
 	id: z.string(),
 	base64: z.string(),
 	date: z.iso.date("Image date is required")

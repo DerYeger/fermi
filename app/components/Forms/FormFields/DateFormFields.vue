@@ -10,7 +10,7 @@
 					v-if="!isEndDateRequired && endDate"
 					icon="lucide:x"
 					variant="ghost"
-					color="neutral"
+					color="error"
 					@click="endDate = ''"
 				/>
 			</div>

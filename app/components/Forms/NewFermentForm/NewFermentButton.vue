@@ -1,5 +1,5 @@
 <template>
-	<UButton icon="lucide:plus" variant="outline" @click="showAddModal = true">
+	<UButton icon="lucide:plus" variant="subtle" @click="showAddModal = true">
 		<slot>
 			New ferment
 		</slot>

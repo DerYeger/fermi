@@ -38,13 +38,13 @@
 					<UButton
 						color="error"
 						icon="lucide:trash-2"
-						variant="soft"
+						variant="subtle"
 						@click="removeIngredient(index)"
 					/>
 				</div>
 			</div>
 			<div>
-				<UButton variant="outline" icon="lucide:plus" label="Add ingredient" @click="addIngredient" />
+				<UButton variant="subtle" icon="lucide:plus" label="Add ingredient" @click="addIngredient" />
 			</div>
 		</div>
 	</UFormField>

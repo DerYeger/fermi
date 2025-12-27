@@ -15,7 +15,7 @@
 				<UButton variant="ghost" @click="showConfirmDialog = false">
 					Cancel
 				</UButton>
-				<UButton color="success" @click="handleUnarchive">
+				<UButton variant="subtle" color="success" @click="handleUnarchive">
 					Restore
 				</UButton>
 			</div>

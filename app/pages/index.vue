@@ -9,7 +9,7 @@
 			<p class="text-muted mb-4">
 				No data to visualize yet
 			</p>
-			<UButton to="/">
+			<UButton to="/" variant="subtle">
 				Add Your First Ferment
 			</UButton>
 		</div>

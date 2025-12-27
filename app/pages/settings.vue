@@ -34,12 +34,13 @@
 							readonly
 							class="flex-1"
 						/>
-						<UButton variant="outline" @click="selectFolder">
+						<UButton variant="subtle" @click="selectFolder">
 							Browse
 						</UButton>
 						<UButton
 							v-if="dataDir"
 							variant="ghost"
+							color="error"
 							icon="lucide:x"
 							@click="clearSaveLocation"
 						/>

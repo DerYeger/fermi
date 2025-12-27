@@ -9,7 +9,7 @@
 		:error="{ statusMessage: 'Ferment not found', message: 'The ferment you are looking for does not exist.' }"
 	>
 		<template #actions>
-			<UButton to="/ferments">
+			<UButton variant="subtle" to="/ferments">
 				Back to ferments
 			</UButton>
 		</template>
