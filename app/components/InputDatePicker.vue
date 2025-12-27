@@ -28,7 +28,7 @@
 
 	const inputDate = useTemplateRef("inputDate");
 
-	const model = defineModel<string | undefined>({
+	const model = defineModel<string | null | undefined>({
 		required: true
 	});
 
@@ -40,7 +40,7 @@
 			return model.value ? getCalendarDate(date) : null;
 		},
 		set(value: CalendarDate | null) {
-			model.value = value ? value.toString().split("T")[0]! : undefined;
+			model.value = value?.toString().split("T")[0] ?? null;
 		}
 	});
 </script>

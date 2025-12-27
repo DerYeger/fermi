@@ -48,12 +48,12 @@ export function getDaysBetween(startDate: string, endDate: string) {
 	return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
-export function isStartDateUnavailable(endDate: string | undefined, startDate: DateValue) {
+export function isStartDateUnavailable(endDate: string | undefined | null, startDate: DateValue) {
 	if (!endDate) return false;
 	return getISODate(startDate) > endDate;
 }
 
-export function isEndDateUnavailable(startDate: string | undefined, endDate: DateValue) {
+export function isEndDateUnavailable(startDate: string | undefined | null, endDate: DateValue) {
 	if (!startDate) return false;
 	return getISODate(endDate) < startDate;
 }

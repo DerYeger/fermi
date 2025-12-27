@@ -58,19 +58,19 @@
 		state: "completed",
 		endDate: ferment.endDate ?? getISODate(),
 		overall: {
-			stars: undefined,
+			stars: null,
 			notes: ""
 		},
 		flavor: {
-			stars: undefined,
+			stars: null,
 			notes: ""
 		},
 		texture: {
-			stars: undefined,
+			stars: null,
 			notes: ""
 		},
 		process: {
-			stars: undefined,
+			stars: null,
 			notes: ""
 		}
 	});

@@ -34,17 +34,17 @@
 		label: string
 	}>();
 
-	const stars = defineModel<number | undefined>("stars", {
+	const stars = defineModel<number | null>("stars", {
 		required: true
 	});
 
 	function isStarActive(star: number) {
-		return stars.value !== undefined && star <= stars.value;
+		return stars.value !== null && star <= stars.value;
 	}
 
 	function onStarClicked(star: number) {
 		if (stars.value === star) {
-			stars.value = undefined;
+			stars.value = null;
 		} else {
 			stars.value = star;
 		}

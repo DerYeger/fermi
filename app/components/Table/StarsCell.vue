@@ -6,10 +6,10 @@
 
 <script lang="ts" setup>
 	const { stars } = defineProps<{
-		stars: number | undefined
+		stars: number | null
 	}>();
 
 	function isActive(n: number) {
-		return stars !== undefined && n <= stars;
+		return stars !== null && n <= stars;
 	}
 </script>

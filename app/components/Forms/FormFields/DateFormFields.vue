@@ -11,7 +11,7 @@
 					icon="lucide:x"
 					variant="ghost"
 					color="error"
-					@click="endDate = undefined"
+					@click="endDate = null"
 				/>
 			</div>
 		</UFormField>
@@ -23,11 +23,11 @@
 		isEndDateRequired?: boolean
 	}>();
 
-	const startDate = defineModel<string | undefined>("startDate", {
+	const startDate = defineModel<string | null>("startDate", {
 		required: true
 	});
 
-	const endDate = defineModel<string | undefined>("endDate", {
+	const endDate = defineModel<string | null>("endDate", {
 		required: false
 	});
 </script>

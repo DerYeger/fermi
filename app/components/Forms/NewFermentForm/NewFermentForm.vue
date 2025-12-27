@@ -44,7 +44,7 @@
 		saltRatio: 2,
 		notes: "",
 		startDate: getISODate(now),
-		endDate: undefined,
+		endDate: null,
 		createdAt: getISODatetime(now),
 		updatedAt: getISODatetime(now),
 		state: "active"

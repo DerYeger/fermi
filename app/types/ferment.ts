@@ -26,7 +26,7 @@ const FermentBaseSchema = z.object({
 	notes: NotesSchema,
 	images: z.array(FermentImageSchema),
 	startDate: z.iso.date("Start date is required"),
-	endDate: z.iso.date().optional(),
+	endDate: z.iso.date().nullable(),
 	createdAt: z.iso.datetime(),
 	updatedAt: z.iso.datetime()
 });
@@ -38,7 +38,7 @@ export const ActiveFermentSchema = FermentBaseSchema.extend({
 export type ActiveFerment = zInfer<typeof ActiveFermentSchema>;
 
 export const RatingSchema = z.object({
-	stars: z.number().min(1).max(5).optional(),
+	stars: z.number().min(1).max(5).nullable(),
 	notes: NotesSchema
 });
 export type Rating = zInfer<typeof RatingSchema>;
@@ -65,7 +65,7 @@ export function transitionToActive(ferment: CompletedFerment): ActiveFerment {
 	return ActiveFermentSchema.parse({
 		...ferment,
 		state: "active",
-		endDate: undefined,
+		endDate: null,
 		updatedAt: getISODatetime()
 	} satisfies ActiveFerment);
 };
