@@ -4,7 +4,7 @@
 		label="Ingredients"
 		required
 	>
-		<div class="flex flex-col gap-2 pt-2">
+		<div class="flex flex-col gap-2">
 			<div
 				v-for="(ingredient, index) in model"
 				:key="index"
@@ -12,29 +12,26 @@
 			>
 				<UFormField
 					:name="`ingredients.${index}.name`"
-					label="Name"
 					required
 				>
-					<UInputMenu v-model="ingredient.name" create-item :items="ingredientNames" @create="onCreateName(index, $event)" />
+					<UInputMenu v-model="ingredient.name" create-item placeholder="Name" :items="ingredientNames" @create="onCreateName(index, $event)" />
 				</UFormField>
 
 				<UFormField
 					:name="`ingredients.${index}.amount`"
-					label="Amount"
 					required
 				>
-					<UInputNumber v-model="ingredient.amount" :min="0" />
+					<UInputNumber v-model="ingredient.amount" :min="0" placeholder="Amount" />
 				</UFormField>
 
 				<UFormField
 					:name="`ingredients.${index}.unit`"
-					label="Unit"
 					required
 				>
-					<UInputMenu v-model="ingredient.unit" create-item :items="ingredientUnits" @create="onCreateUnit(index, $event)" />
+					<UInputMenu v-model="ingredient.unit" create-item placeholder="Unit" :items="ingredientUnits" @create="onCreateUnit(index, $event)" />
 				</UFormField>
 
-				<div class="mt-6">
+				<div>
 					<UButton
 						color="error"
 						icon="lucide:trash-2"

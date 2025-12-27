@@ -12,7 +12,7 @@
 			@update:model-value="onUpload"
 		/>
 		<div :class="{ 'mb-2': model.length > 0 }">
-			<UButton variant="subtle" icon="lucide:plus" :loading="isLoadingImages" label="Add image" @click="fileUpload?.inputRef.click()" />
+			<UButton variant="subtle" icon="lucide:upload" :loading="isLoadingImages" label="Select images" @click="fileUpload?.inputRef.click()" />
 		</div>
 		<UScrollArea v-if="model.length > 0" v-slot="{ item, index }" orientation="horizontal" :items="model" :ui="{ item: 'ml-2 first:ml-0' }">
 			<div

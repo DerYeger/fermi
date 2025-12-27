@@ -1,6 +1,6 @@
 <template>
 	<UFormField label="Salt ratio (%)" name="saltRatio" required>
-		<div class="flex gap-1 items-center">
+		<div class="flex gap-2 items-center">
 			<UInputNumber v-model="model" :min="0" :max="100" :step="0.1" />
 			<UButton v-for="preset in presets" :key="preset" :label="`${preset}%`" variant="subtle" class="basis-1/6 justify-center" @click="model = preset" />
 		</div>
