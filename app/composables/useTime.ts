@@ -1,10 +1,13 @@
 import type { DateValue } from "@internationalized/date";
 import type { ActiveFerment } from "~/types/ferment";
+import { CalendarDate } from "@internationalized/date";
+
+const LOCALE = navigator.language;
 
 export function formatTimeSince(dateString: MaybeRefOrGetter<string>, startDate = getISODate()) {
 	const diffDays = getDaysBetween(toValue(dateString), startDate);
 
-	return new Intl.NumberFormat("en", {
+	return new Intl.NumberFormat(LOCALE, {
 		style: "unit",
 		unit: "day",
 		unitDisplay: "long"
@@ -12,7 +15,7 @@ export function formatTimeSince(dateString: MaybeRefOrGetter<string>, startDate 
 }
 
 export function formatDate(date: string) {
-	return Intl.DateTimeFormat("en-US", {
+	return Intl.DateTimeFormat(LOCALE, {
 		month: "short",
 		day: "numeric",
 		year: "numeric"
@@ -20,7 +23,7 @@ export function formatDate(date: string) {
 }
 
 export function formatDateTime(date: string) {
-	return Intl.DateTimeFormat("en-US", {
+	return Intl.DateTimeFormat(LOCALE, {
 		month: "short",
 		day: "numeric",
 		year: "numeric",
@@ -29,8 +32,9 @@ export function formatDateTime(date: string) {
 	}).format(new Date(date));
 }
 
-export function getISODate(date = new Date()) {
-	return date.toISOString().split("T")[0]!;
+export function getISODate(date: Date | DateValue = new Date()) {
+	const isoString = date instanceof Date ? date.toISOString() : date.toString();
+	return isoString.split("T")[0]!;
 }
 
 export function getISODatetime(date = new Date()) {
@@ -46,12 +50,12 @@ export function getDaysBetween(startDate: string, endDate: string) {
 
 export function isStartDateUnavailable(endDate: string | undefined, startDate: DateValue) {
 	if (!endDate) return false;
-	return getISODate(startDate.toDate(Intl.DateTimeFormat().resolvedOptions().timeZone)) > endDate;
+	return getISODate(startDate) > endDate;
 }
 
 export function isEndDateUnavailable(startDate: string | undefined, endDate: DateValue) {
 	if (!startDate) return false;
-	return getISODate(endDate.toDate(Intl.DateTimeFormat().resolvedOptions().timeZone)) < startDate;
+	return getISODate(endDate) < startDate;
 }
 
 export function isFermentOverdue(ferment: ActiveFerment) {
@@ -59,3 +63,9 @@ export function isFermentOverdue(ferment: ActiveFerment) {
 	const today = getISODate();
 	return ferment.endDate < today;
 }
+
+export function getCalendarDate(date: Date = new Date()) {
+	return new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+}
+
+export const FIRST_WEEK_DAY = 1; // Monday

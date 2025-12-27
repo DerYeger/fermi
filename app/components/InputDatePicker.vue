@@ -11,7 +11,7 @@
 					class="px-0"
 				/>
 				<template #content>
-					<UCalendar v-model="internalModel" class="p-2" :is-date-disabled="isDateUnavailable" />
+					<UCalendar v-model="internalModel" :week-starts-on="FIRST_WEEK_DAY" class="p-2" :is-date-disabled="isDateUnavailable" />
 				</template>
 			</UPopover>
 		</template>
@@ -19,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
-	import type { DateValue } from "@internationalized/date";
-	import { CalendarDate } from "@internationalized/date";
+	import type { CalendarDate, DateValue } from "@internationalized/date";
+	import { FIRST_WEEK_DAY } from "#imports";
 
 	defineProps<{
 		isDateUnavailable?: (date: DateValue) => boolean
@@ -37,7 +37,7 @@
 			const value = model.value;
 			if (!value) return null;
 			const date = new Date(model.value || "");
-			return model.value ? new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate()) : null;
+			return model.value ? getCalendarDate(date) : null;
 		},
 		set(value: CalendarDate | null) {
 			model.value = value ? value.toString() : undefined;

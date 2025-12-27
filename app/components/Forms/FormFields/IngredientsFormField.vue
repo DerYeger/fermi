@@ -14,7 +14,7 @@
 					:name="`ingredients.${index}.name`"
 					required
 				>
-					<UInputMenu v-model="ingredient.name" create-item placeholder="Name" :items="ingredientNames" @create="onCreateName(index, $event)" />
+					<UInputMenu v-model="ingredient.name" :autofocus="wasIngredientAdded" create-item placeholder="Name" :items="ingredientNames" @create="onCreateName(index, $event)" />
 				</UFormField>
 
 				<UFormField
@@ -28,7 +28,7 @@
 					:name="`ingredients.${index}.unit`"
 					required
 				>
-					<UInputMenu v-model="ingredient.unit" create-item placeholder="Unit" :items="unitItems" @create="onCreateUnit(index, $event)" />
+					<UInputMenu v-model="ingredient.unit" value-key="value" create-item placeholder="Unit" :items="unitItems" @create="onCreateUnit(index, $event)" />
 				</UFormField>
 
 				<div>
@@ -76,7 +76,7 @@
 		predefinedUnits.forEach(([category, units], index) => {
 			items.push({ type: "label", label: category });
 			for (const unit of units) {
-				items.push({ label: unit, value: unit });
+				items.push({ type: "item", label: unit, value: unit });
 			}
 			if (index < predefinedUnits.length - 1) {
 				items.push({ type: "separator" });
@@ -86,7 +86,7 @@
 			items.push({ type: "separator" });
 			items.push({ type: "label", label: "Custom" });
 			for (const unit of customIngredientUnits.value) {
-				items.push({ label: unit, value: unit });
+				items.push({ type: "item", label: unit, value: unit });
 			}
 		}
 		return items;
@@ -113,6 +113,8 @@
 	}
 
 	function onCreateUnit(index: number, unit: string) {
+		console.log(unit);
+
 		const item = model.value[index];
 		if (!item) return;
 		item.unit = unit.trim();
