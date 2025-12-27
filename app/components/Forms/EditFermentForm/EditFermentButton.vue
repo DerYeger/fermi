@@ -23,9 +23,9 @@
 
 <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
-	import { SchemaValidationError } from "@tanstack/vue-db";
 	import EditActiveFermentForm from "~/components/Forms/EditFermentForm/EditActiveFermentForm.vue";
 	import EditCompletedFermentForm from "~/components/Forms/EditFermentForm/EditCompletedFermentForm.vue";
+	import { getErrorMessage } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
@@ -43,8 +43,7 @@
 			});
 			showEditModal.value = false;
 		} catch (error) {
-			const description = error instanceof SchemaValidationError ? z.prettifyError(error) : String(error);
-			toast.add({ title: "Error updating ferment", description, color: "error" });
+			toast.add({ title: "Error updating ferment", description: getErrorMessage(error), color: "error" });
 		}
 	}
 </script>

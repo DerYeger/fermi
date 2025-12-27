@@ -21,17 +21,23 @@
 <script lang="ts" setup>
 	import type { ActiveFerment, CompletedFerment } from "~/types/ferment";
 	import ArchiveForm from "~/components/Forms/ArchiveFermentForm/ArchiveForm.vue";
+	import { getErrorMessage } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: ActiveFerment
 	}>();
 
 	const showArchiveModal = ref(false);
+	const toast = useToast();
 
 	async function handleArchive(data: CompletedFerment) {
-		FermentCollection.update(data.id, (draft) => {
-			Object.assign(draft, data, { updatedAt: getISODatetime() });
-		});
-		showArchiveModal.value = false;
+		try {
+			FermentCollection.update(data.id, (draft) => {
+				Object.assign(draft, data, { updatedAt: getISODatetime() });
+			});
+			showArchiveModal.value = false;
+		} catch (error) {
+			toast.add({ title: "Error completing ferment", description: getErrorMessage(error), color: "error" });
+		}
 	}
 </script>

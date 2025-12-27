@@ -48,6 +48,7 @@
 	import type { FermentImage } from "~/types/ferment";
 	import Compressor from "compressorjs";
 	import { nanoid } from "nanoid";
+import { getErrorMessage } from "~/types/utils";
 
 	const model = defineModel<FermentImage[]>({
 		required: true
@@ -72,7 +73,7 @@
 			}));
 			model.value.push(...newImages);
 		} catch (error) {
-			toast.add({ title: "Error uploading images", description: String(error), color: "error" });
+			toast.add({ title: "Error uploading images", description: getErrorMessage(error), color: "error" });
 		} finally {
 			isLoadingImages.value = false;
 		}

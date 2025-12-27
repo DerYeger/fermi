@@ -25,6 +25,7 @@
 
   <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
+	import { getErrorMessage } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
@@ -33,12 +34,17 @@
 	const showConfirmDialog = ref(false);
 
 	const route = useRoute();
+	const toast = useToast();
 
 	async function handleDelete() {
-		if (route.name === "ferment-id" && route.params.id === ferment.id) {
-			await useRouter().push({ name: "ferments" }); // Navigate away if currently viewing the ferment being deleted
+		try {
+			if (route.name === "ferment-id" && route.params.id === ferment.id) {
+				await useRouter().push({ name: "ferments" }); // Navigate away if currently viewing the ferment being deleted
+			}
+			showConfirmDialog.value = false;
+			FermentCollection.delete(ferment.id);
+		} catch (error) {
+			toast.add({ title: "Error deleting ferment", description: getErrorMessage(error), color: "error" });
 		}
-		showConfirmDialog.value = false;
-		FermentCollection.delete(ferment.id);
 	}
 </script>

@@ -4,6 +4,7 @@ import { createCollection, eq, useLiveQuery } from "@tanstack/vue-db";
 import { Stream } from "@yeger/streams/sync";
 import { queryClient, queryKeys } from "~/queryClient";
 import { FermentSchema } from "~/types/ferment";
+import { getErrorMessage } from "~/types/utils";
 
 const DATA_FILENAME = "data.json";
 
@@ -27,7 +28,7 @@ export const FermentCollection = createCollection(
 				toast.add({
 					color: "error",
 					title: "Failed to save",
-					description: String(error)
+					description: getErrorMessage(error)
 				});
 			}
 		},
@@ -41,7 +42,7 @@ export const FermentCollection = createCollection(
 				toast.add({
 					color: "error",
 					title: "Failed to update",
-					description: String(error)
+					description: getErrorMessage(error)
 				});
 			}
 		},
@@ -55,7 +56,7 @@ export const FermentCollection = createCollection(
 				toast.add({
 					color: "error",
 					title: "Failed to delete",
-					description: String(error)
+					description: getErrorMessage(error)
 				});
 			}
 		}

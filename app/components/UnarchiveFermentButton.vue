@@ -26,6 +26,7 @@
 <script lang="ts" setup>
 	import type { CompletedFerment } from "~/types/ferment";
 	import { transitionToActive } from "~/types/ferment";
+	import { getErrorMessage } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: CompletedFerment
@@ -34,10 +35,16 @@
 
 	const showConfirmDialog = ref(false);
 
+	const toast = useToast();
+
 	async function handleUnarchive() {
 		if (ferment.state !== "completed") return;
-		FermentCollection.update(ferment.id, (current) => {
-			Object.assign(current, transitionToActive(ferment));
-		});
+		try {
+			FermentCollection.update(ferment.id, (current) => {
+				Object.assign(current, transitionToActive(ferment));
+			});
+		} catch (error) {
+			toast.add({ title: "Error restoring ferment", description: getErrorMessage(error), color: "error" });
+		}
 	}
 </script>

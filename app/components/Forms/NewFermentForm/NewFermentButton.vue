@@ -16,8 +16,8 @@
 
 <script lang="ts" setup>
 	import type { ActiveFerment } from "~/types/ferment";
-	import { SchemaValidationError } from "@tanstack/vue-db";
 	import NewFermentForm from "~/components/Forms/NewFermentForm/NewFermentForm.vue";
+	import { getErrorMessage } from "~/types/utils";
 
 	const toast = useToast();
 	const showAddModal = ref(false);
@@ -27,8 +27,7 @@
 			FermentCollection.insert(ferment);
 			showAddModal.value = false;
 		} catch (error) {
-			const description = error instanceof SchemaValidationError ? z.prettifyError(error) : String(error);
-			toast.add({ title: "Error saving ferment", description, color: "error" });
+			toast.add({ title: "Error saving ferment", description: getErrorMessage(error), color: "error" });
 		}
 	}
 </script>

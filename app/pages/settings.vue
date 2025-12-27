@@ -116,6 +116,7 @@
 
 <script lang="ts" setup>
 	import { FERMI_CONFIG_DEFAULTS } from "~/types/config";
+	import { getErrorMessage } from "~/types/utils";
 
 	const toast = useToast();
 
@@ -140,7 +141,7 @@
 				});
 			}
 		} catch (error) {
-			toast.add({ title: "Error updating save location", description: String(error), color: "error" });
+			toast.add({ title: "Error updating save location", description: getErrorMessage(error), color: "error" });
 		}
 	}
 
@@ -162,7 +163,7 @@
 			}
 			await useTauriShellOpen(path);
 		} catch (error) {
-			toast.add({ title: "Error opening directory", description: String(error), color: "error" });
+			toast.add({ title: "Error opening directory", description: getErrorMessage(error), color: "error" });
 		}
 	}
 </script>
