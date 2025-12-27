@@ -20,7 +20,10 @@
 
 	async function handleSubmit(ferment: ActiveFerment) {
 		try {
-			FermentCollection.insert(ferment);
+			FermentCollection.insert({
+				...ferment,
+				images: ferment.images.sort((a, b) => a.date.localeCompare(b.date))
+			});
 			showAddModal.value = false;
 		} catch (error) {
 			toast.add({ title: "Error saving ferment", description: getErrorMessage(error), color: "error" });

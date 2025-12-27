@@ -3,7 +3,7 @@
 
 	<Empty v-else-if="ferments.length === 0" type="all" />
 
-	<div v-else class="grid grid-flow-row-dense gap-4 sm:gap-6 sm:grid-cols-8 lg:grid-cols-12">
+	<div v-else class="grid grid-flow-row-dense gap-4 sm:grid-cols-8 lg:grid-cols-12">
 		<div class="col-span-4 row-span-2">
 			<IngredientsChart />
 		</div>

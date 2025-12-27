@@ -1,14 +1,14 @@
 <template>
-	<div>
+	<div class="flex flex-col gap-4">
 		<!-- Header -->
-		<div class="flex items-start justify-between gap-4 mb-6">
+		<div class="flex items-start justify-between gap-4">
 			<div>
-				<h1 class="text-2xl font-bold">
+				<span class="text-2xl font-bold">
 					{{ ferment.name }}
-				</h1>
+				</span>
 				<div class="flex items-center gap-2 mt-1">
 					<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
-						Archived
+						Completed
 					</UBadge>
 					<span class="text-sm text-muted">
 						{{ formatTimeSince(ferment.startDate) }}
@@ -25,17 +25,18 @@
 		</div>
 
 		<!-- Content -->
-		<div class="grid gap-6 lg:grid-cols-3">
+		<div class="grid gap-4 lg:grid-cols-3">
 			<!-- Main content -->
-			<div class="lg:col-span-2 space-y-6">
+			<div class="lg:col-span-2 flex flex-col gap-4">
 				<!-- Image -->
 				<UCarousel
+					v-if="ferment.images.length"
 					v-slot="{ item }"
 					:items="ferment.images"
-					:class="{ 'mb-12': ferment.images.length > 3 }"
+					:class="{ 'mb-8': ferment.images.length > 3 }"
 					:dots="ferment.images.length > 3"
 					:prev="{ variant: 'solid' }" :next="{ variant: 'solid' }"
-					:ui="{ item: 'basis-1/3 ps-2 rounded-lg my-auto relative', container: 'ms-0' }"
+					:ui="{ item: 'basis-1/3 ps-0 ml-2 first:ml-0 rounded-lg my-auto relative', container: 'ms-0' }"
 				>
 					<img :src="item.base64" :alt="`Ferment Image taken on ${item.date}`" :width="480" :height="480">
 					<div class="absolute left-0 right-0 bottom-0 p-1 flex justify-center">
@@ -54,10 +55,33 @@
 						{{ ferment.notes }}
 					</p>
 				</UCard>
+
+				<template v-if="ferment.state === 'completed'">
+					<RatingsCard
+						title="Overall"
+						icon="lucide:star"
+						:rating="ferment.overall"
+					/>
+					<RatingsCard
+						title="Flavor"
+						icon="lucide:star"
+						:rating="ferment.flavor"
+					/>
+					<RatingsCard
+						title="Texture"
+						icon="lucide:star"
+						:rating="ferment.texture"
+					/>
+					<RatingsCard
+						title="Process"
+						icon="lucide:star"
+						:rating="ferment.process"
+					/>
+				</template>
 			</div>
 
 			<!-- Sidebar -->
-			<div class="space-y-6">
+			<div class="max-lg:row-start-1 flex flex-col gap-4">
 				<!-- Details -->
 				<UCard>
 					<template #header>

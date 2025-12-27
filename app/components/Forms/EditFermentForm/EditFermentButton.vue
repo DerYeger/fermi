@@ -39,7 +39,10 @@
 	async function handleSubmit(data: Ferment) {
 		try {
 			FermentCollection.update(ferment.id, (current) => {
-				Object.assign(current, data, { updatedAt: getISODatetime() });
+				Object.assign(current, {
+					...data,
+					images: data.images.sort((a, b) => a.date.localeCompare(b.date))
+				}, { updatedAt: getISODatetime() });
 			});
 			showEditModal.value = false;
 		} catch (error) {

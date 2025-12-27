@@ -1,12 +1,14 @@
 <template>
 	<UCard>
 		<template #header>
-			<CardHeader title="Notes" icon="lucide:notebook-pen" />
+			<CardHeader :title="title" :icon="icon" />
 		</template>
-		<StarsCell :stars="rating.stars" class="mb-4" />
-		<p class="whitespace-pre-wrap">
-			{{ rating.notes }}
-		</p>
+		<div class="flex flex-col gap-2">
+			<StarsCell :stars="rating.stars" />
+			<p v-if="rating.notes" class="whitespace-pre-wrap">
+				{{ rating.notes }}
+			</p>
+		</div>
 	</UCard>
 </template>
 
@@ -15,6 +17,8 @@
 	import StarsCell from "~/components/Table/StarsCell.vue";
 
 	defineProps<{
+		title: string
+		icon: string
 		rating: Rating
 	}>();
 </script>
