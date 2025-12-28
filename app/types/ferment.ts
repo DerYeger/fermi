@@ -37,11 +37,54 @@ export const ActiveFermentSchema = FermentBaseSchema.extend({
 });
 export type ActiveFerment = zInfer<typeof ActiveFermentSchema>;
 
+export const MAX_STARS = 5;
 export const RatingSchema = z.object({
-	stars: z.number().min(1).max(5).nullable(),
+	stars: z.number().min(1).max(MAX_STARS).nullable(),
 	notes: NotesSchema
+}).default({
+	stars: null,
+	notes: ""
 });
 export type Rating = zInfer<typeof RatingSchema>;
+
+export interface RatingCategory {
+	key: string
+	name: string
+	icon: string
+	placeholder: string
+}
+export const RATING_CATEGORIES = [
+	{
+		key: "overall",
+		name: "Overall",
+		icon: "lucide:trophy",
+		placeholder: "Overall impression"
+	},
+	{
+		key: "flavor",
+		name: "Flavor",
+		icon: "lucide:leafy-green",
+		placeholder: "Saltiness, sourness, and taste"
+	},
+	{
+		key: "texture",
+		name: "Texture",
+		icon: "lucide:utensils",
+		placeholder: "Texture, crunchiness, and fizz"
+	},
+	{
+		key: "smell",
+		name: "Smell",
+		icon: "lucide:soup",
+		placeholder: "Aroma and smell"
+	},
+	{
+		key: "process",
+		name: "Process",
+		icon: "lucide:chef-hat",
+		placeholder: "Preparation and fermentation process"
+	}
+] as const satisfies RatingCategory[];
 
 export const CompletedFermentSchema = FermentBaseSchema.extend({
 	state: z.literal("completed"),
@@ -49,6 +92,7 @@ export const CompletedFermentSchema = FermentBaseSchema.extend({
 	overall: RatingSchema,
 	flavor: RatingSchema,
 	texture: RatingSchema,
+	smell: RatingSchema,
 	process: RatingSchema
 });
 export type CompletedFerment = zInfer<typeof CompletedFermentSchema>;

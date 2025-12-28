@@ -62,24 +62,11 @@
 
 				<template v-if="ferment.state === 'completed'">
 					<RatingsCard
-						title="Overall"
-						icon="lucide:trophy"
-						:rating="ferment.overall"
-					/>
-					<RatingsCard
-						title="Flavor"
-						icon="lucide:leafy-green"
-						:rating="ferment.flavor"
-					/>
-					<RatingsCard
-						title="Texture"
-						icon="lucide:carrot"
-						:rating="ferment.texture"
-					/>
-					<RatingsCard
-						title="Process"
-						icon="lucide:chef-hat"
-						:rating="ferment.process"
+						v-for="rating of RATING_CATEGORIES"
+						:key="rating.key"
+						:title="rating.name"
+						:icon="rating.icon"
+						:rating="ferment[rating.key]"
 					/>
 				</template>
 			</div>
@@ -169,6 +156,7 @@
 	import type { Ferment } from "~/types/ferment";
 	import ArchiveFermentButton from "~/components/Forms/ArchiveFermentForm/ArchiveFermentButton.vue";
 	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
+	import { RATING_CATEGORIES } from "~/types/ferment";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment

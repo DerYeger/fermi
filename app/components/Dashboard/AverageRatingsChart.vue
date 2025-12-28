@@ -17,28 +17,29 @@
 	import type { ECBasicOption } from "echarts/types/dist/shared";
 	import { Stream } from "@yeger/streams/sync";
 	import VChart from "vue-echarts";
+	import { MAX_STARS, RATING_CATEGORIES } from "~/types/ferment";
 
 	const { data, isLoading } = useCompletedFerments();
 
 	const hasData = computed(() => !!data.value?.length);
 
-	type Count = [number, number, number, number, number];
+	type StarCount = [number, number, number, number, number];
 
 	const chartData = computed(() => {
-		const ratings = ["overall", "flavor", "texture", "process"] as const;
-		const counts: Record<typeof ratings[number], Count> = {
+		const counts: Record<typeof RATING_CATEGORIES[number]["key"], StarCount> = {
 			overall: [0, 0, 0, 0, 0],
 			flavor: [0, 0, 0, 0, 0],
 			texture: [0, 0, 0, 0, 0],
+			smell: [0, 0, 0, 0, 0],
 			process: [0, 0, 0, 0, 0]
 		};
 
 		data.value.forEach((ferment) => {
 			if (ferment.state !== "completed") return;
-			ratings.forEach((rating) => {
-				const ratingValue = ferment[rating];
+			RATING_CATEGORIES.forEach((rating) => {
+				const ratingValue = ferment[rating.key];
 				if (typeof ratingValue.stars === "number") {
-					counts[rating][ratingValue.stars - 1]! += 1;
+					counts[rating.key][ratingValue.stars - 1]! += 1;
 				}
 			});
 		});
@@ -51,11 +52,11 @@
 		});
 	});
 
-	const yellow = useCssVar("--color-warning");
+	const color = useCssVar("--color-warning");
 	const colorMode = useColorMode();
 
 	const chartOptions = computed<ECBasicOption>(() => ({
-		color: yellow,
+		color,
 		darkMode: colorMode.value === "dark",
 		tooltip: {
 			trigger: "item",
@@ -65,7 +66,7 @@
 		yAxis: {
 			type: "value",
 			min: 1,
-			max: 5,
+			max: MAX_STARS,
 			step: 1,
 			splitLine: {
 				lineStyle: {

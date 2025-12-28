@@ -1,36 +1,18 @@
 <template>
 	<UForm :schema="CompletedFermentSchema" :state="state" class="flex flex-col gap-8" @submit="handleSubmit">
-		<p class="text-muted">
-			Mark "{{ ferment.name }}" as complete. Rate your ferment and add any final notes.
-		</p>
 		<UFormField label="End date" name="endDate" required>
 			<InputDatePicker
 				v-model="state.endDate" :is-date-unavailable="(endDate) => isEndDateUnavailable(ferment.startDate, endDate)"
 			/>
 		</UFormField>
 		<RatingFormFields
-			v-model:stars="state.overall.stars"
-			v-model:notes="state.overall.notes"
-			label="Overall"
-			name="overall"
-		/>
-		<RatingFormFields
-			v-model:stars="state.flavor.stars"
-			v-model:notes="state.flavor.notes"
-			label="Flavor"
-			name="flavor"
-		/>
-		<RatingFormFields
-			v-model:stars="state.texture.stars"
-			v-model:notes="state.texture.notes"
-			label="Texture"
-			name="texture"
-		/>
-		<RatingFormFields
-			v-model:stars="state.process.stars"
-			v-model:notes="state.process.notes"
-			label="Process"
-			name="process"
+			v-for="rating of RATING_CATEGORIES"
+			:key="rating.key"
+			v-model:stars="state[rating.key].stars"
+			v-model:notes="state[rating.key].notes"
+			:label="rating.name"
+			:name="rating.key"
+			:placeholder="rating.placeholder"
 		/>
 		<FermentFormActions submit-label="Complete" @cancel="emit('cancel')" />
 	</UForm>
@@ -41,7 +23,7 @@
 	import type { ActiveFerment, CompletedFerment } from "~/types/ferment";
 	import FermentFormActions from "~/components/Forms/FermentFormActions.vue";
 	import RatingFormFields from "~/components/Forms/FormFields/RatingFormFields.vue";
-	import { CompletedFermentSchema } from "~/types/ferment";
+	import { CompletedFermentSchema, RATING_CATEGORIES } from "~/types/ferment";
 	import { deepClone } from "~/types/utils";
 
 	const { ferment } = defineProps<{
@@ -66,6 +48,10 @@
 			notes: ""
 		},
 		texture: {
+			stars: null,
+			notes: ""
+		},
+		smell: {
 			stars: null,
 			notes: ""
 		},

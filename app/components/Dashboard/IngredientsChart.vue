@@ -14,7 +14,7 @@
 	import type { ECBasicOption } from "echarts/types/dist/shared";
 	import VChart from "vue-echarts";
 
-	const { data, isLoading } = useFerments();
+	const { data, isLoading } = useIngredients();
 
 	const chartData = computed(() => {
 		const counts: Record<string, number> = {};

@@ -17,52 +17,49 @@
 	import type { ECBasicOption } from "echarts/types/dist/shared";
 	import { Stream } from "@yeger/streams/sync";
 	import VChart from "vue-echarts";
+	import { MAX_STARS, RATING_CATEGORIES } from "~/types/ferment";
 
 	const { data, isLoading } = useCompletedFerments();
 
 	const hasData = computed(() => !!data.value?.length);
 
-	const ratings = ["overall", "flavor", "texture", "process"] as const;
-
 	const chartData = computed(() => {
 		return Stream.from(data.value).map((ferment) => {
 			if (ferment.state !== "completed") return null;
-			return ratings.map((rating) => ferment[rating].stars ?? 0);
+			return RATING_CATEGORIES.map((rating) => ferment[rating.key].stars ?? 0);
 		}).filterNonNull().toArray();
 	});
 
 	const colorMode = useColorMode();
 	const textMuted = useCssVar("--ui-text-muted");
-	const yellow = useCssVar("--color-warning");
-
-	const SPLITS = 5;
+	const color = useCssVar("--color-warning");
 
 	const chartOptions = computed<ECBasicOption>(() => ({
-		color: yellow,
+		color,
 		darkMode: colorMode.value === "dark",
 		tooltip: {
 			show: false
 		},
 		radar: {
-			indicator: ratings.map((name) => ({
-				name: name.substring(0, 1).toUpperCase() + name.substring(1),
+			indicator: RATING_CATEGORIES.map((rating) => ({
+				name: rating.name,
 				min: 0,
-				max: SPLITS
+				max: MAX_STARS
 			})),
 			radius: "75%",
 			axisName: {
-				color: yellow
+				color
 			},
 			axisLine: {
 				lineStyle: {
-					color: yellow
+					color
 				}
 			},
 			shape: "circle",
-			splitNumber: SPLITS,
+			splitNumber: MAX_STARS,
 			splitLine: {
 				lineStyle: {
-					color: Array.from({ length: SPLITS }, (_, i) => `rgba(from ${textMuted} r g b / ${0.15 * (i / 2 + 1)})`)
+					color: Array.from({ length: MAX_STARS }, (_, i) => `rgba(from ${textMuted} r g b / ${0.15 * (i / 2 + 1)})`)
 				}
 			},
 			splitArea: {

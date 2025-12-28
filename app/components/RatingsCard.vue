@@ -1,13 +1,15 @@
 <template>
 	<UCard>
 		<template #header>
-			<CardHeader :title="title" :icon="icon" />
+			<CardHeader :title="title" :icon="icon">
+				<StarsCell :stars="rating.stars" />
+			</CardHeader>
 		</template>
-		<div class="flex flex-col gap-2">
-			<StarsCell :stars="rating.stars" />
-			<p v-if="rating.notes" class="whitespace-pre-wrap">
-				{{ rating.notes }}
-			</p>
+		<div v-if="rating.notes" class="whitespace-pre-wrap">
+			{{ rating.notes }}
+		</div>
+		<div v-else class="text-muted">
+			No notes
 		</div>
 	</UCard>
 </template>

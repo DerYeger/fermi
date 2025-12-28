@@ -14,10 +14,10 @@
 					/>
 				</div>
 			</UFormField>
-			<UFormField label="Notes" :name="`${name}.notes`">
+			<UFormField :name="`${name}.notes`">
 				<UTextarea
 					v-model="notes"
-					placeholder="Notes..."
+					:placeholder="`${placeholder}...`"
 					:rows="4"
 					:maxlength="MAX_NOTES_LENGTH"
 				/>
@@ -32,6 +32,7 @@
 	defineProps<{
 		name: string
 		label: string
+		placeholder: string
 	}>();
 
 	const stars = defineModel<number | null>("stars", {
