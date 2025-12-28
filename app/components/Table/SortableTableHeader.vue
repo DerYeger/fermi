@@ -6,6 +6,7 @@
 			:label="label"
 			:icon="isSorted ? (isSorted === 'asc' ? 'lucide:arrow-up-narrow-wide' : 'lucide:arrow-down-wide-narrow') : 'lucide:arrow-up-down'"
 			class="-mx-2.5"
+			:ui="{ leadingIcon: isSorted ? 'text-primary' : 'text-muted' }"
 			@click="toggleSorting"
 		/>
 	</div>

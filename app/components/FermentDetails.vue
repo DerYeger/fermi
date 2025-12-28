@@ -49,26 +49,21 @@
 						</UBadge>
 					</div>
 				</UCarousel>
+				<div v-else class="max-lg:hidden w-full flex-1 overflow-hidden rounded-lg">
+					<div class="bg-elevated h-full flex-center">
+						<UIcon name="lucide:salad" class="size-16 text-muted" />
+					</div>
+				</div>
 
 				<!-- Notes -->
 				<UCard v-if="ferment.notes">
 					<template #header>
 						<CardHeader title="Notes" icon="lucide:notebook-pen" />
 					</template>
-					<p class="whitespace-pre-wrap">
+					<div class="whitespace-pre-wrap">
 						{{ ferment.notes }}
-					</p>
+					</div>
 				</UCard>
-
-				<template v-if="ferment.state === 'completed'">
-					<RatingsCard
-						v-for="rating of RATING_CATEGORIES"
-						:key="rating.key"
-						:title="rating.name"
-						:icon="rating.icon"
-						:rating="ferment[rating.key]"
-					/>
-				</template>
 			</div>
 
 			<!-- Sidebar -->
@@ -148,6 +143,16 @@
 					</div>
 				</UCard>
 			</div>
+
+			<template v-if="ferment.state === 'completed'">
+				<RatingsCard
+					v-for="rating of RATING_CATEGORIES"
+					:key="rating.key"
+					:title="rating.name"
+					:icon="rating.icon"
+					:rating="ferment[rating.key]"
+				/>
+			</template>
 		</div>
 	</div>
 </template>
