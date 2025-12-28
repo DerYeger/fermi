@@ -1,11 +1,11 @@
 <template>
-	<UCard>
+	<UCard :ui="{ body: 'p-0!' }">
 		<template #header>
 			<CardHeader title="Ingredient Usage" icon="lucide:pie-chart" />
 		</template>
-
-		<div class="h-80">
-			<VChart :option="ingredientChartOption" autoresize />
+		<Loader v-if="isLoading" />
+		<div v-else class="h-80">
+			<VChart :option="chartOptions" autoresize />
 		</div>
 	</UCard>
 </template>
@@ -14,10 +14,9 @@
 	import type { ECBasicOption } from "echarts/types/dist/shared";
 	import VChart from "vue-echarts";
 
-	const { data } = useFerments();
+	const { data, isLoading } = useFerments();
 
-	// Ingredient Pie Chart
-	const ingredientData = computed(() => {
+	const chartData = computed(() => {
 		const counts: Record<string, number> = {};
 
 		data.value.forEach((ferment) => {
@@ -35,10 +34,8 @@
 	});
 
 	const color = useChartPalette();
-
 	const colorMode = useColorMode();
-
-	const ingredientChartOption = computed<ECBasicOption>(() => ({
+	const chartOptions = computed<ECBasicOption>(() => ({
 		color,
 		darkMode: colorMode.value === "dark",
 		tooltip: {
@@ -63,9 +60,6 @@
 				label: {
 					show: false
 				},
-				labelLine: {
-					show: false
-				},
 				emphasis: {
 					itemStyle: {
 						color: "inherit",
@@ -74,9 +68,7 @@
 						shadowColor: "inherit"
 					}
 				},
-				animationType: "scale",
-				animationEasing: "elasticOut",
-				data: ingredientData.value
+				data: chartData.value
 			}
 		]
 	}));

@@ -10,8 +10,11 @@
 		<UScrollArea v-slot="{ item, index }" :items="data" orientation="vertical" class="max-h-96">
 			<UButton variant="link" :to="{ name: 'ferment-id', params: { id: item.id } }">
 				{{ item.name }}
+				<UBadge class="ml-2" color="neutral" variant="subtle">
+					{{ formatTimeSince(today, item.startDate) }} old
+				</UBadge>
 				<UBadge class="ml-2" color="warning" variant="subtle">
-					{{ formatTimeSince(item.endDate!, today) }}
+					{{ formatTimeSince(item.endDate!, today) }} overdue
 				</UBadge>
 			</UButton>
 			<USeparator v-if="index < data.length - 1" class="my-2" />

@@ -16,14 +16,16 @@
 </template>
 
 <script lang="ts" setup>
+	import AverageRatingsChart from "~/components/Dashboard/AverageRatingsChart.vue";
 	import FermentCalendar from "~/components/Dashboard/FermentCalendar.vue";
 	import IngredientsChart from "~/components/Dashboard/IngredientsChart.vue";
 	import KPICard from "~/components/Dashboard/KPICard.vue";
 	import OverdueFerments from "~/components/Dashboard/OverdueFerments.vue";
+	import RatingsChart from "~/components/Dashboard/RatingsChart.vue";
 
 	const { data: ferments, isLoading } = useFerments();
 
-	const items = [KPICard, IngredientsChart, FermentCalendar, OverdueFerments];
+	const items = [KPICard, IngredientsChart, FermentCalendar, RatingsChart, OverdueFerments, AverageRatingsChart];
 
 	const scrollAreaWrapper = useTemplateRef("scrollAreaWrapper");
 	const { width } = useElementSize(scrollAreaWrapper);
