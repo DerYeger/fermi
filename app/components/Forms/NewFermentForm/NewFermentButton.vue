@@ -1,10 +1,7 @@
 <template>
-	<UButton :icon="withShortcut ? undefined : 'lucide:plus'" variant="subtle" @click="showAddModal = true">
-		New ferment
-		<template v-if="withShortcut">
-			<UKbd value="meta" />+<UKbd value="N" />
-		</template>
-	</UButton>
+	<UTooltip :kbds="withShortcut ? ['meta', 'N'] : undefined" :content="{ side: 'bottom' }">
+		<UButton icon="lucide:plus" label="New ferment" variant="subtle" @click="showAddModal = true" />
+	</UTooltip>
 	<UModal v-model:open="showAddModal" title="Add new ferment">
 		<template #body>
 			<NewFermentForm

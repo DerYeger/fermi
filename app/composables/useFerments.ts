@@ -145,17 +145,34 @@ export function useIngredientUnits(otherUnits: MaybeRefOrGetter<string[]>): Comp
 	);
 }
 
-async function loadAllFerments() {
+async function loadAllFerments(): Promise<Ferment[]> {
 	const dirs = await useTauriFsReadDir(dataDir.value || "", getOptions());
-	return Promise.all(
+	const parsed = await Promise.allSettled(
 		dirs.filter((dir) => dir.isDirectory && dir.name.startsWith(FERMENT_DIR_PREFIX))
 			.map((dir) => loadFermentById(dir.name.substring(FERMENT_DIR_PREFIX.length)))
 	);
+	const ferments: Ferment[] = [];
+	let failed = 0;
+	for (const result of parsed) {
+		if (result.status === "fulfilled") {
+			ferments.push(result.value);
+		} else {
+			failed++;
+		}
+	}
+	if (failed > 0) {
+		toast.add({
+			color: "warning",
+			title: "Some ferments failed to load",
+			description: `${failed} ferment${failed > 1 ? "s" : ""} have invalid data.`
+		});
+	}
+	return ferments;
 }
 
 async function loadFermentById(id: string) {
 	const content: string = await useTauriFsReadTextFile(getFermentFile(id), getOptions());
-	return JSON.parse(content);
+	return FermentSchema.parse(JSON.parse(content));
 }
 
 async function writeFermentData(data: Ferment) {
