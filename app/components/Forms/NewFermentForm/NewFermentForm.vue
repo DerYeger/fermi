@@ -33,8 +33,6 @@
 		cancel: []
 	}>();
 
-	const now = new Date();
-
 	const state = reactive<ActiveFerment>({
 		id: createId(),
 		name: "",
@@ -42,10 +40,10 @@
 		ingredients: [],
 		saltRatio: 2,
 		notes: "",
-		startDate: getISODate(now),
+		startDate: getISODate(),
 		endDate: null,
-		createdAt: getISODatetime(now),
-		updatedAt: getISODatetime(now),
+		createdAt: getISODatetime(),
+		updatedAt: getISODatetime(),
 		state: "active"
 	});
 

@@ -4,6 +4,8 @@ import { CalendarDate } from "@internationalized/date";
 
 const LOCALE = navigator.language;
 
+const now = useNow({ interval: 60 * 60 * 1000 });
+
 export function formatTimeSince(dateString: MaybeRefOrGetter<string>, startDate = getISODate()) {
 	const diffDays = getDaysBetween(toValue(dateString), startDate);
 
@@ -32,12 +34,12 @@ export function formatDateTime(date: string) {
 	}).format(new Date(date));
 }
 
-export function getISODate(date: Date | DateValue = new Date()) {
+export function getISODate(date: Date | DateValue = now.value) {
 	const isoString = date instanceof Date ? date.toISOString() : date.toString();
 	return isoString.split("T")[0]!;
 }
 
-export function getISODatetime(date = new Date()) {
+export function getISODatetime(date = now.value) {
 	return date.toISOString();
 }
 
@@ -64,7 +66,7 @@ export function isFermentOverdue(ferment: ActiveFerment) {
 	return ferment.endDate < today;
 }
 
-export function getCalendarDate(date: Date = new Date()) {
+export function getCalendarDate(date: Date = now.value) {
 	return new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 }
 

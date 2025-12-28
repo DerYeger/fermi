@@ -36,7 +36,7 @@
 		get() {
 			const value = model.value;
 			if (!value) return null;
-			const date = new Date(model.value || "");
+			const date = new Date(model.value ?? "");
 			return model.value ? getCalendarDate(date) : null;
 		},
 		set(value: CalendarDate | null) {
