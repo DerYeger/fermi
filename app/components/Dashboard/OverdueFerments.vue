@@ -7,7 +7,7 @@
 		<div v-if="data.length === 0" class="p-4 flex-center text-sm text-muted">
 			No overdue ferments.
 		</div>
-		<UScrollArea v-slot="{ item, index }" :items="data" orientation="vertical" class="max-h-96">
+		<UScrollArea v-else v-slot="{ item, index }" :items="data" orientation="vertical" class="max-h-96">
 			<UButton variant="link" :to="{ name: 'ferment-id', params: { id: item.id } }">
 				{{ item.name }}
 				<UBadge class="ml-2" color="neutral" variant="subtle">

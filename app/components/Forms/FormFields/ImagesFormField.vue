@@ -48,7 +48,6 @@
   <script setup lang="ts">
 	import type { FermentImage } from "~/types/ferment";
 	import Compressor from "compressorjs";
-	import { nanoid } from "nanoid";
 	import { getErrorMessage } from "~/types/utils";
 
 	const model = defineModel<FermentImage[]>({
@@ -68,7 +67,7 @@
 			const processImages = await Promise.all(files.map(processFile));
 			const initialDate = getISODate();
 			const newImages: FermentImage[] = processImages.map((base64) => ({
-				id: nanoid(),
+				id: createId(),
 				base64,
 				date: initialDate
 			}));

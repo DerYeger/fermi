@@ -1,9 +1,12 @@
 <template>
-	<UCard :ui="{ body: 'p-0!' }">
+	<UCard :ui="{ body: hasData ? 'p-0!' : undefined }">
 		<template #header>
 			<CardHeader title="Average Ratings" icon="lucide:chart-column" />
 		</template>
 		<Loader v-if="isLoading" />
+		<div v-if="!hasData" class="p-4 flex-center text-sm text-muted">
+			No ratings.
+		</div>
 		<div v-else class="h-80">
 			<VChart :option="chartOptions" autoresize />
 		</div>
@@ -16,6 +19,8 @@
 	import VChart from "vue-echarts";
 
 	const { data, isLoading } = useCompletedFerments();
+
+	const hasData = computed(() => !!data.value?.length);
 
 	type Count = [number, number, number, number, number];
 

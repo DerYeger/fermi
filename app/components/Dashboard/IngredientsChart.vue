@@ -21,11 +21,7 @@
 
 		data.value.forEach((ferment) => {
 			ferment.ingredients.forEach((ingredient) => {
-				const name = ingredient.name.trim().toLowerCase();
-				if (name) {
-					const displayName = ingredient.name.trim();
-					counts[displayName] = (counts[displayName] || 0) + 1;
-				}
+				counts[ingredient.name] = (counts[ingredient.name] ?? 0) + 1;
 			});
 		});
 

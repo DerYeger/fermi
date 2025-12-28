@@ -7,7 +7,7 @@
 		<div class="flex flex-col gap-2">
 			<div
 				v-for="(ingredient, index) in model"
-				:key="index"
+				:key="ingredient.id"
 				class="grid grid-cols-[4fr_2fr_2fr_max-content] gap-2"
 			>
 				<UFormField
@@ -50,7 +50,6 @@
 <script setup lang="ts">
 	import type { InputMenuItem } from "@nuxt/ui";
 	import type { Ingredient } from "~/types/ferment";
-	import { nanoid } from "nanoid";
 	import { PREDEFINED_UNITS } from "~/composables/useFerments";
 
 	const model = defineModel<Ingredient[]>({
@@ -95,7 +94,7 @@
 	function addIngredient() {
 		wasIngredientAdded.value = true;
 		model.value.push({
-			id: nanoid(),
+			id: createId(),
 			name: "",
 			quantity: 0,
 			unit: ""

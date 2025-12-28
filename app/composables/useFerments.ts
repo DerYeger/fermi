@@ -6,6 +6,7 @@ import { queryClient, queryKeys } from "~/queryClient";
 import { FermentSchema } from "~/types/ferment";
 import { getErrorMessage } from "~/types/utils";
 
+const FERMENT_DIR_PREFIX = "fermi_";
 const DATA_FILENAME = "data.json";
 
 const toast = useToast();
@@ -146,7 +147,10 @@ export function useIngredientUnits(otherUnits: MaybeRefOrGetter<string[]>): Comp
 
 async function loadAllFerments() {
 	const dirs = await useTauriFsReadDir(dataDir.value || "", getOptions());
-	return Promise.all(dirs.filter((dir) => dir.isDirectory).map((dir) => loadFermentById(dir.name)));
+	return Promise.all(
+		dirs.filter((dir) => dir.isDirectory && dir.name.startsWith(FERMENT_DIR_PREFIX))
+			.map((dir) => loadFermentById(dir.name.substring(FERMENT_DIR_PREFIX.length)))
+	);
 }
 
 async function loadFermentById(id: string) {
@@ -202,10 +206,11 @@ async function createBackup(id: string) {
 }
 
 function getFermentDir(id: string) {
+	const dir = `${FERMENT_DIR_PREFIX}${id}`;
 	if (dataDir.value) {
-		return `${dataDir.value}/${id}`;
+		return `${dataDir.value}/${dir}`;
 	}
-	return `${id}`;
+	return dir;
 }
 
 function getFermentFile(id: string) {

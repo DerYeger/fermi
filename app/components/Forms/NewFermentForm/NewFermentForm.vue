@@ -18,7 +18,6 @@
 <script lang="ts" setup>
 	import type { FormSubmitEvent } from "@nuxt/ui";
 	import type { ActiveFerment } from "~/types/ferment";
-	import { nanoid } from "nanoid";
 	import FermentFormActions from "~/components/Forms/FermentFormActions.vue";
 	import DateFormFields from "~/components/Forms/FormFields/DateFormFields.vue";
 	import ImagesFormField from "~/components/Forms/FormFields/ImagesFormField.vue";
@@ -37,7 +36,7 @@
 	const now = new Date();
 
 	const state = reactive<ActiveFerment>({
-		id: nanoid(),
+		id: createId(),
 		name: "",
 		images: [],
 		ingredients: [],
