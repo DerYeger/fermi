@@ -21,8 +21,8 @@
 	import type { CellContext, ColumnDef, HeaderContext } from "@tanstack/vue-table";
 	import type { CompletedFerment } from "~/types/ferment";
 	import { createColumnHelper } from "@tanstack/vue-table";
+	import IngredientBadges from "~/components/IngredientBadges.vue";
 	import FermentActionsCell from "~/components/Table/FermentActionsCell.vue";
-	import IngredientsCell from "~/components/Table/IngredientsCell.vue";
 	import SortableTableHeader from "~/components/Table/SortableTableHeader.vue";
 	import StarsCell from "~/components/Table/StarsCell.vue";
 	import { RATING_CATEGORIES } from "~/types/ferment";
@@ -72,7 +72,7 @@
 			id: "ingredients",
 			header: "Ingredients",
 			cell: (ctx) =>
-				h(IngredientsCell, { ingredients: ctx.row.original.ingredients })
+				h(IngredientBadges, { ingredients: ctx.row.original.ingredients })
 		}),
 		columnHelper.accessor("saltRatio", {
 			id: "saltRatio",

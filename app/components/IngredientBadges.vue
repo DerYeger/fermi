@@ -1,14 +1,21 @@
 <template>
-	<div class="flex gap-1 flex-wrap">
+	<div class="flex flex-wrap gap-1">
 		<UBadge
-			v-for="ingredient in ingredients"
+			v-for="ingredient in ingredients.slice(0, LIMIT)"
 			:key="ingredient.id"
 			variant="subtle"
 			class="max-w-24"
 		>
-			<span class="text-ellipsis overflow-hidden">
+			<span class="truncate">
 				{{ ingredient.name }}
 			</span>
+		</UBadge>
+		<UBadge
+			v-if="ingredients.length > LIMIT"
+			variant="subtle"
+			color="neutral"
+		>
+			+{{ ingredients.length - LIMIT }} more
 		</UBadge>
 	</div>
 </template>
@@ -19,4 +26,6 @@
 	const { ingredients } = defineProps<{
 		ingredients: Ingredient[]
 	}>();
+
+	const LIMIT = 3;
 </script>

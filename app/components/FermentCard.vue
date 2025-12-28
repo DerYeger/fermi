@@ -51,21 +51,9 @@
 
 			<!-- Ingredients -->
 			<div v-if="ferment.ingredients.length > 0" class="mt-2">
-				<div class="flex flex-wrap gap-1">
-					<UBadge
-						v-for="ingredient in ferment.ingredients.slice(0, 3)"
-						:key="ingredient.id"
-						variant="subtle"
-					>
-						{{ ingredient.name }}
-					</UBadge>
-					<UBadge
-						v-if="ferment.ingredients.length > 3"
-						variant="subtle"
-					>
-						+{{ ferment.ingredients.length - 3 }} more
-					</UBadge>
-				</div>
+				<IngredientBadges
+					:ingredients="ferment.ingredients"
+				/>
 			</div>
 		</div>
 		<template #footer>
