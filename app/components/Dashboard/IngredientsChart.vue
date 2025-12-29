@@ -1,9 +1,12 @@
 <template>
-	<UCard :ui="{ body: 'p-0!' }">
+	<UCard :ui="{ body: hasData ? 'p-0!' : undefined }">
 		<template #header>
 			<CardHeader title="Ingredient Usage" icon="hugeicons:pie-chart" />
 		</template>
 		<Loader v-if="isLoading" />
+		<div v-if="!hasData" class="p-4 flex-center text-sm text-muted">
+			No data
+		</div>
 		<div v-else class="h-80">
 			<VChart :option="chartOptions" autoresize />
 		</div>
@@ -29,6 +32,8 @@
 		return Object.entries(counts)
 			.map(([name, value]) => ({ name: limitLength(name, 20), value }));
 	});
+
+	const hasData = computed(() => chartData.value.length > 0);
 
 	const color = useChartPalette();
 	const colorMode = useColorMode();

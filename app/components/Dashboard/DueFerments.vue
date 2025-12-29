@@ -5,7 +5,7 @@
 		</template>
 		<Loader v-if="isLoading" class="p-4" />
 		<div v-if="data.length === 0" class="p-4 flex-center text-sm text-muted">
-			No ferments are due today.
+			No ferments are due today
 		</div>
 		<UScrollArea v-else v-slot="{ item, index }" :items="data" orientation="vertical" class="max-h-96">
 			<UButton variant="link" :to="`/ferments/${item.id}`">

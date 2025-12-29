@@ -5,7 +5,7 @@
 		</template>
 		<Loader v-if="activeFerments.isLoading.value || completedFerments.isLoading.value" />
 		<div v-if="!activeFerments.data.value?.length && !completedFerments.data.value?.length" class="p-4 flex-center text-sm text-muted">
-			No ferments.
+			No ferments
 		</div>
 		<div class="grid sm:grid-cols-3 gap-2">
 			<div class="flex flex-col items-center">

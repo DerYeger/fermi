@@ -5,7 +5,7 @@
 		</template>
 		<Loader v-if="isLoading" />
 		<div v-if="!hasData" class="p-4 flex-center text-sm text-muted">
-			No ratings.
+			No data
 		</div>
 		<div v-else class="h-80">
 			<VChart :option="chartOptions" autoresize />
@@ -20,8 +20,6 @@
 	import { MAX_STARS, RATING_CATEGORIES } from "~/types/ferment";
 
 	const { data, isLoading } = useCompletedFerments();
-
-	const hasData = computed(() => !!data.value?.length);
 
 	type StarCount = [number, number, number, number, number];
 
@@ -51,6 +49,8 @@
 			return { name: category.substring(0, 1).toUpperCase() + category.substring(1), average };
 		});
 	});
+
+	const hasData = computed(() => chartData.value.some((category) => category.average > 0));
 
 	const color = useCssVar("--color-warning");
 	const colorMode = useColorMode();

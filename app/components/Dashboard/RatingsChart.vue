@@ -5,7 +5,7 @@
 		</template>
 		<Loader v-if="isLoading" />
 		<div v-if="!hasData" class="p-4 flex-center text-sm text-muted">
-			No ratings.
+			No data
 		</div>
 		<div v-else class="h-80">
 			<VChart :option="chartOptions" autoresize />
@@ -21,14 +21,14 @@
 
 	const { data, isLoading } = useCompletedFerments();
 
-	const hasData = computed(() => !!data.value?.length);
-
 	const chartData = computed(() => {
 		return Stream.from(data.value).map((ferment) => {
 			if (ferment.state !== "completed") return null;
 			return RATING_CATEGORIES.map((rating) => ferment[rating.key].stars ?? 0);
 		}).filterNonNull().toArray();
 	});
+
+	const hasData = computed(() => chartData.value.some((category) => category.some((star) => star > 0)));
 
 	const colorMode = useColorMode();
 	const textMuted = useCssVar("--ui-text-muted");

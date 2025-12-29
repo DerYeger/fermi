@@ -8,7 +8,7 @@
 			v-slot="{ item }"
 			:items="items"
 			orientation="vertical"
-			:virtualize="{ gap: 16, lanes, estimateSize: 280 }" :ui="{ root: 'p-1 -m-1' }"
+			:virtualize="{ gap: 16, lanes, estimateSize: 500 }" :ui="{ root: 'p-1 -m-1' }"
 		>
 			<component :is="item" :key="item.name" />
 		</UScrollArea>
