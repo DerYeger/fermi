@@ -22,11 +22,11 @@
 						desc: true
 					}]
 				}"
+				:ui="{ tr: 'border-b border-default' }"
 			>
 				<template #expanded="{ row }">
 					<div
 						class="sticky left-0 max-h-[60vh] flex flex-col -m-4"
-						:class="{ 'border-b border-default': row.index === data.length - 1 }"
 						:style="{ width: `${tableSize.width.value}px` }"
 					>
 						<div class="flex-1 overflow-y-auto p-4 mask-[linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%-1rem),transparent)]">

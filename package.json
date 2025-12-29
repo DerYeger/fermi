@@ -15,6 +15,7 @@
 		"preinstall": "npx only-allow bun",
 		"postinstall": "nuxt prepare",
 		"lint": "eslint . --fix",
+		"typecheck": "nuxt typecheck",
 		"bump": "bumpp",
 		"tauri": "tauri",
 		"tauri:dev": "tauri dev",
@@ -54,10 +55,8 @@
 		"bumpp": "10.3.2",
 		"eslint": "9.39.2",
 		"nuxt-svgo": "4.2.6",
-		"typescript": "5.7.3"
-	},
-	"resolutions": {
-		"typescript": "npm:tslite@latest"
+		"typescript": "5.9.3",
+		"vue-tsc": "3.2.1"
 	},
 	"trustedDependencies": [
 		"@parcel/watcher",
