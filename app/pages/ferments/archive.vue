@@ -109,7 +109,6 @@
 			});
 			items.push(...columnVisibilityItems);
 		}
-
 		return items;
 	});
 
@@ -162,7 +161,12 @@
 		}),
 		columnHelper.accessor("name", {
 			id: "name",
-			header: createSortableHeader(columnLabels.name)
+			header: createSortableHeader(columnLabels.name),
+			meta: {
+				class: {
+					td: "max-w-[30ch] truncate"
+				}
+			}
 		}),
 		columnHelper.accessor("container", {
 			id: "container",

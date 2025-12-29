@@ -2,7 +2,7 @@
 	<div class="flex flex-col gap-4">
 		<!-- Header -->
 		<div v-if="withHeader" class="flex items-center justify-between gap-4 flex-wrap">
-			<div class="text-2xl font-bold">
+			<div class="text-2xl font-bold max-w-full truncate">
 				{{ ferment.name }}
 			</div>
 
@@ -129,7 +129,7 @@
 
 			<!-- Ingredients -->
 			<div class="lg:col-span-2 lg:row-span-2">
-				<UCard class="min-h-full">
+				<UCard class="min-h-full flex flex-col" :ui="{ body: 'flex-1 flex flex-col' }">
 					<template #header>
 						<CardHeader title="Ingredients" icon="hugeicons:left-to-right-list-dash" />
 					</template>
@@ -138,8 +138,8 @@
 							v-for="(ingredient, index) in ferment.ingredients"
 							:key="ingredient.id"
 						>
-							<div class="flex items-center justify-between">
-								<span>{{ ingredient.name }}</span>
+							<div class="flex items-center justify-between gap-1">
+								<span class="flex-1 truncate">{{ ingredient.name }}</span>
 								<span class="text-sm text-muted">
 									{{ ingredient.quantity }} {{ ingredient.unit }}
 								</span>
@@ -147,7 +147,7 @@
 							<USeparator v-if="index < ferment.ingredients.length - 1" />
 						</template>
 					</div>
-					<div v-else class="flex-center text-sm text-muted">
+					<div v-else class="flex-1 flex-center text-sm text-muted">
 						No ingredients
 					</div>
 				</UCard>
@@ -155,14 +155,14 @@
 
 			<!-- Notes -->
 			<div class="lg:row-span-2 lg:col-span-2">
-				<UCard class="min-h-full">
+				<UCard class="min-h-full flex flex-col" :ui="{ body: 'flex-1 flex flex-col' }">
 					<template #header>
 						<CardHeader title="Notes" icon="hugeicons:note-01" />
 					</template>
 					<div v-if="ferment.notes" class="whitespace-pre-wrap">
 						{{ ferment.notes }}
 					</div>
-					<div v-else class="flex-center text-sm text-muted">
+					<div v-else class="flex-1 flex-center text-sm text-muted">
 						No notes
 					</div>
 				</UCard>
@@ -176,7 +176,6 @@
 					class="lg:col-span-2"
 				>
 					<RatingsCard
-						class="min-h-full"
 						:title="rating.name"
 						:icon="rating.icon"
 						:rating="ferment[rating.key]"
