@@ -1,23 +1,9 @@
 <template>
 	<div class="flex flex-col gap-4">
 		<!-- Header -->
-		<div v-if="withHeader" class="flex items-start justify-between gap-4">
-			<div>
-				<span class="text-2xl font-bold">
-					{{ ferment.name }}
-				</span>
-				<div class="flex items-center gap-2 mt-1 text-sm text-muted">
-					<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
-						Completed
-					</UBadge>
-					<span>
-						{{ formatTimeSince(ferment.startDate) }}
-					</span>
-					<template v-if="ferment.state === 'active' && ferment.endDate && !isFermentOverdue(ferment)">
-						·
-						<span>{{ formatTimeSince(getISODate(), ferment.endDate) }} remaining</span>
-					</template>
-				</div>
+		<div v-if="withHeader" class="flex items-center justify-between gap-4 flex-wrap">
+			<div class="text-2xl font-bold">
+				{{ ferment.name }}
 			</div>
 
 			<div class="flex items-center gap-2">
@@ -30,52 +16,16 @@
 		</div>
 
 		<!-- Content -->
-		<div class="grid gap-4 lg:grid-cols-3">
-			<!-- Main content -->
+		<div class="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
+			<!-- Details -->
 			<div class="lg:col-span-2 flex flex-col gap-4">
-				<!-- Image -->
-				<UCarousel
-					v-if="ferment.images.length"
-					v-slot="{ item }"
-					:items="ferment.images"
-					:class="{ 'mb-8': ferment.images.length > 3 }"
-					:dots="ferment.images.length > 3"
-					:prev="{ variant: 'solid' }" :next="{ variant: 'solid' }"
-					:ui="{ item: 'basis-[calc((100%-1rem)/3)] ps-0 ml-2 first:ml-0 rounded-lg my-auto relative', container: 'ms-0' }"
-				>
-					<img :src="item.base64" :alt="`Ferment Image taken on ${item.date}`" class="rounded-lg" :width="480" :height="480">
-					<div class="absolute left-0 right-0 bottom-0 p-1 flex justify-center">
-						<UBadge color="neutral" variant="subtle">
-							{{ ferment.startDate <= item.date ? `Day ${getDaysBetween(ferment.startDate, item.date) + 1}` : formatDate(item.date) }}
-						</UBadge>
-					</div>
-				</UCarousel>
-				<div v-else class="max-lg:hidden w-full flex-1 overflow-hidden rounded-lg">
-					<div class="bg-elevated h-full flex-center">
-						<UIcon name="hugeicons:iconjar" class="size-16 text-muted" />
-					</div>
-				</div>
-
-				<!-- Notes -->
-				<UCard>
+				<UCard class="min-h-full">
 					<template #header>
-						<CardHeader title="Notes" icon="hugeicons:note-01" />
-					</template>
-					<div v-if="ferment.notes" class="whitespace-pre-wrap">
-						{{ ferment.notes }}
-					</div>
-					<div v-else class="text-muted">
-						No notes
-					</div>
-				</UCard>
-			</div>
-
-			<!-- Sidebar -->
-			<div class="max-lg:row-start-1 flex flex-col gap-4">
-				<!-- Details -->
-				<UCard>
-					<template #header>
-						<CardHeader title="Details" icon="hugeicons:information-square" />
+						<CardHeader title="Details" icon="hugeicons:information-square">
+							<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
+								Completed
+							</UBadge>
+						</CardHeader>
 					</template>
 					<div class="flex flex-col gap-4">
 						<div v-if="ferment.container">
@@ -92,6 +42,23 @@
 							</div>
 							<div>
 								{{ formatPercentage(ferment.saltRatio) }}
+							</div>
+						</div>
+						<USeparator />
+						<div>
+							<div class="text-sm text-muted mb-1">
+								Duration
+							</div>
+							<div>
+								{{ formatTimeSince(ferment.startDate, ferment.endDate ?? getISODate()) }}
+							</div>
+						</div>
+						<div v-if="ferment.state === 'active' && ferment.endDate && !isFermentOverdue(ferment)">
+							<div class="text-sm text-muted mb-1">
+								Remaining
+							</div>
+							<div>
+								{{ formatTimeSince(getISODate(), ferment.endDate) }}
 							</div>
 						</div>
 						<USeparator />
@@ -133,13 +100,40 @@
 						</div>
 					</div>
 				</UCard>
+			</div>
 
-				<!-- Ingredients -->
-				<UCard>
+			<!-- Images -->
+			<div class="md:col-span-2 lg:col-span-4" :class="{ 'max-md:hidden': !ferment.images.length }">
+				<UCarousel
+					v-if="ferment.images.length"
+					v-slot="{ item }"
+					:items="ferment.images"
+					:class="{ 'mb-8': ferment.images.length > 3 }"
+					:dots="ferment.images.length > 3"
+					:prev="{ variant: 'solid' }" :next="{ variant: 'solid' }"
+					:ui="{ item: 'basis-[calc((100%-1rem)/3)] ps-0 ml-2 first:ml-0 rounded-lg my-auto relative', container: 'ms-0' }"
+				>
+					<img :src="item.base64" :alt="`Ferment Image taken on ${item.date}`" class="rounded-lg" :width="480" :height="480">
+					<div class="absolute left-0 right-0 bottom-0 p-1 flex justify-center">
+						<UBadge color="neutral" variant="subtle">
+							{{ ferment.startDate <= item.date ? `Day ${getDaysBetween(ferment.startDate, item.date) + 1}` : formatDate(item.date) }}
+						</UBadge>
+					</div>
+				</UCarousel>
+				<div v-else class="w-full flex-1 overflow-hidden rounded-lg">
+					<div class="bg-elevated h-full flex-center">
+						<UIcon name="hugeicons:iconjar" class="size-16 text-muted" />
+					</div>
+				</div>
+			</div>
+
+			<!-- Ingredients -->
+			<div class="lg:col-span-2 lg:row-span-2">
+				<UCard class="min-h-full">
 					<template #header>
 						<CardHeader title="Ingredients" icon="hugeicons:left-to-right-list-dash" />
 					</template>
-					<div class="flex flex-col gap-2">
+					<div v-if="ferment.ingredients.length > 0" class="flex flex-col gap-2">
 						<template
 							v-for="(ingredient, index) in ferment.ingredients"
 							:key="ingredient.id"
@@ -153,17 +147,41 @@
 							<USeparator v-if="index < ferment.ingredients.length - 1" />
 						</template>
 					</div>
+					<div v-else class="flex-center text-sm text-muted">
+						No ingredients
+					</div>
 				</UCard>
 			</div>
 
+			<!-- Notes -->
+			<div class="lg:row-span-2 lg:col-span-2">
+				<UCard class="min-h-full">
+					<template #header>
+						<CardHeader title="Notes" icon="hugeicons:note-01" />
+					</template>
+					<div v-if="ferment.notes" class="whitespace-pre-wrap">
+						{{ ferment.notes }}
+					</div>
+					<div v-else class="flex-center text-sm text-muted">
+						No notes
+					</div>
+				</UCard>
+			</div>
+
+			<!-- Ratings -->
 			<template v-if="ferment.state === 'completed'">
-				<RatingsCard
+				<div
 					v-for="rating of RATING_CATEGORIES"
 					:key="rating.key"
-					:title="rating.name"
-					:icon="rating.icon"
-					:rating="ferment[rating.key]"
-				/>
+					class="lg:col-span-2"
+				>
+					<RatingsCard
+						class="min-h-full"
+						:title="rating.name"
+						:icon="rating.icon"
+						:rating="ferment[rating.key]"
+					/>
+				</div>
 			</template>
 		</div>
 	</div>

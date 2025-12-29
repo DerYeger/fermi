@@ -9,7 +9,7 @@
 							<UNavigationMenu highlight :items="navigationItems" :ui="{ item: 'max-md:[&_span.truncate]:hidden' }" />
 						</template>
 						<template #right>
-							<UDashboardSearchButton />
+							<UDashboardSearchButton class="max-sm:hidden" />
 							<NewFermentButton with-shortcut />
 						</template>
 					</UDashboardToolbar>

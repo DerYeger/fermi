@@ -5,10 +5,10 @@
 				<StarsCell :stars="rating.stars" />
 			</CardHeader>
 		</template>
-		<div v-if="rating.notes" class="whitespace-pre-wrap">
+		<div v-if="rating.notes" class="whitespace-pre-wrap text-sm">
 			{{ rating.notes }}
 		</div>
-		<div v-else class="text-muted">
+		<div v-else class="flex-center text-sm text-muted">
 			No notes
 		</div>
 	</UCard>
