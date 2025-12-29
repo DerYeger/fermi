@@ -15,6 +15,7 @@
 				sticky
 				:data="ferments"
 				:columns="columns"
+				:get-row-id="(row) => row.id"
 				:initial-state="{
 					sorting: [{
 						id: 'endDate',
@@ -23,8 +24,14 @@
 				}"
 			>
 				<template #expanded="{ row }">
-					<div class="sticky left-0 max-h-[50vh] w-dvw overflow-y-auto p-4 -m-4 mask-[linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%-1rem),transparent)]">
-						<FermentDetails :ferment="row.original" :with-header="false" />
+					<div
+						class="sticky left-0 max-h-[60vh] flex flex-col -m-4"
+						:class="{ 'border-b border-default': row.index === data.length - 1 }"
+						:style="{ width: `${tableSize.width.value}px` }"
+					>
+						<div class="flex-1 overflow-y-auto p-4 mask-[linear-gradient(to_bottom,transparent,black_1rem,black_calc(100%-1rem),transparent)]">
+							<FermentDetails :ferment="row.original" :with-header="false" />
+						</div>
 					</div>
 				</template>
 			</UTable>
@@ -51,9 +58,15 @@
 		createdAt: false,
 		updatedAt: false
 	});
-	const expanded = ref<Record<number, boolean>>({});
+	const expanded = ref<Record<string, boolean>>({});
 
 	const table = useTemplateRef("table");
+
+	const tableSize = useElementSize(() => table.value?.$el);
+
+	watchEffect(() => {
+		console.log(table.value?.$el, tableSize?.width.value);
+	});
 
 	const columnLabels = {
 		...RATING_CATEGORIES.reduce((acc, rating) => {
@@ -142,7 +155,9 @@
 							row.getIsExpanded() ? "duration-200 rotate-180" : ""
 						]
 					},
-					onClick: () => row.toggleExpanded()
+					onClick: () => {
+						expanded.value = { [row.id]: !row.getIsExpanded() };
+					}
 				})
 		}),
 		columnHelper.accessor("name", {

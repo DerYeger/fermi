@@ -2,7 +2,6 @@
 	<UFormField
 		name="ingredients"
 		label="Ingredients"
-		required
 	>
 		<div class="flex flex-col gap-2">
 			<IngredientFormField

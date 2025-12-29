@@ -7,7 +7,7 @@
 			@click="navigateTo(`/ferments/${ferment.id}`)"
 		/>
 		<EditFermentButton :ferment="ferment" hide-label />
-		<UnarchiveFermentButton :ferment="ferment" hide-label />
+		<UnarchiveFermentButton :ferment="ferment" hide-label @before-unarchive="emit('beforeUnarchive')" />
 		<DeleteFermentButton :ferment="ferment" />
 	</div>
 </template>
@@ -18,5 +18,9 @@
 
 	const { ferment } = defineProps<{
 		ferment: CompletedFerment
+	}>();
+
+	const emit = defineEmits<{
+		beforeUnarchive: []
 	}>();
 </script>

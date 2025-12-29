@@ -36,14 +36,20 @@
 
 	const showConfirmDialog = ref(false);
 
-	const toast = useToast();
+  const toast = useToast();
+
+  const emit = defineEmits<{
+      beforeUnarchive: []
+  }>();
 
 	async function handleUnarchive() {
 		if (ferment.state !== "completed") return;
-		try {
+    try {
+      emit("beforeUnarchive");
 			FermentCollection.update(ferment.id, (current) => {
 				Object.assign(current, transitionToActive(ferment));
-			});
+      });
+      showConfirmDialog.value = false;
 		} catch (error) {
 			toast.add({ title: "Error restoring ferment", description: getErrorMessage(error), color: "error" });
 		}

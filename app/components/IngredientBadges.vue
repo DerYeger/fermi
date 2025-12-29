@@ -1,5 +1,5 @@
 <template>
-	<div class="flex flex-wrap gap-1">
+	<div v-if="ingredients.length > 0" class="flex flex-wrap gap-1">
 		<UBadge
 			v-for="ingredient in ingredients.slice(0, LIMIT)"
 			:key="ingredient.id"
