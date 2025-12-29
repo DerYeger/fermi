@@ -1,10 +1,11 @@
-import type { Row } from "@tanstack/table-core";
+import type { HeaderContext, Row } from "@tanstack/table-core";
 
 interface FilterBase {
 	id: string
+	isFiltered: boolean
 }
 
-export type MultiSelectFilterState = string[];
+export type MultiSelectFilterState = Set<string>;
 
 export interface MultiSelectFilter extends FilterBase {
 	type: "multi-select"
@@ -14,14 +15,25 @@ export interface MultiSelectFilter extends FilterBase {
 }
 
 export function isMultiSelectFilterApplicable<T>(row: Row<T>, columnId: string, filterValue: MultiSelectFilterState) {
-	if (filterValue.length === 0) {
+	if (filterValue.size === 0) {
 		return true;
 	}
-	const value = row.getValue<string | string[]>(columnId);
-	if (Array.isArray(value)) {
-		return value.some((v) => filterValue.includes(v));
-	}
-	return filterValue.includes(value);
+	return row.getUniqueValues<string>(columnId).some((value) => filterValue.has(value));
+}
+
+export function multiSelectFilter<TData, TValue>(ctx: HeaderContext<TData, TValue>): MultiSelectFilter {
+	const id = ctx.column.id;
+	const items: string[] = [...ctx.column.getFacetedUniqueValues().keys()].filter(Boolean);
+	return {
+		type: "multi-select",
+		id,
+		items,
+		isFiltered: ctx.column.getIsFiltered(),
+		onUpdate: (state) => {
+			const column = ctx.table.getColumn(id);
+			column?.setFilterValue(state.size ? state : undefined);
+		}
+	};
 }
 
 export interface NumberRangeFilterState {
@@ -35,7 +47,7 @@ export interface NumberRangeFilter extends FilterBase {
 	max: number
 	step: number
 	onUpdate: (range: NumberRangeFilterState) => void
-	formatValue?: (value: number) => string | number
+	percentage?: boolean
 }
 
 export function isNumberRangeFilterApplicable<T>(row: Row<T>, columnId: string, filterValue: NumberRangeFilterState) {
@@ -47,6 +59,24 @@ export function isNumberRangeFilterApplicable<T>(row: Row<T>, columnId: string, 
 		return false;
 	}
 	return true;
+}
+
+export function createNumberRangeFilter<TData, TValue>(data: MaybeRefOrGetter<Pick<NumberRangeFilter, "min" | "max" | "percentage" | "step">>) {
+	return (ctx: HeaderContext<TData, TValue>): NumberRangeFilter => {
+		const id = ctx.column.id;
+		return {
+			...data,
+			...toValue(data),
+			id,
+			type: "number-range",
+			isFiltered: ctx.column.getIsFiltered(),
+			onUpdate: (state) => {
+				const column = ctx.table.getColumn(id);
+				const isApplied = (state.min !== toValue(data).min || state.max !== toValue(data).max);
+				column?.setFilterValue(isApplied ? state : undefined);
+			}
+		};
+	};
 }
 
 export type Filter = MultiSelectFilter | NumberRangeFilter;

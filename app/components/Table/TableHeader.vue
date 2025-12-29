@@ -1,13 +1,14 @@
 <template>
 	<div class="flex items-center">
-		<UButton
-			variant="link"
-			:color="isSorted ? 'primary' : 'neutral'"
-			:icon="isSorted ? (isSorted === 'asc' ? 'hugeicons:sort-by-up-02' : 'hugeicons:sort-by-down-02') : 'hugeicons:arrow-up-down'"
-			@click="toggleSorting"
+		<SortButton
+			v-if="isSorted !== null"
+			:is-sorted="isSorted"
+			@toggle-sorting="emit('toggleSorting', $event)"
 		/>
 		{{ label }}
-		<MultiSelectFilter v-if="filter?.type === 'multi-select'" v-bind="filter" />
+		<MultiSelectFilter
+			v-if="filter?.type === 'multi-select'" v-bind="filter"
+		/>
 		<NumberRangeFilter v-else-if="filter?.type === 'number-range'" v-bind="filter" />
 	</div>
 </template>
@@ -17,18 +18,15 @@
 	import type { Filter } from "~/types/filter";
 	import MultiSelectFilter from "~/components/Table/MultiSelectFilter.vue";
 	import NumberRangeFilter from "~/components/Table/NumberRangeFilter.vue";
+	import SortButton from "~/components/Table/SortButton.vue";
 
 	const { label, isSorted, filter } = defineProps<{
 		label: string
-		isSorted: false | SortDirection
+		isSorted: false | SortDirection | null
 		filter?: Filter
 	}>();
 
 	const emit = defineEmits<{
 		toggleSorting: [desc: boolean]
 	}>();
-
-	function toggleSorting() {
-		emit("toggleSorting", isSorted === "asc");
-	}
 </script>

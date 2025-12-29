@@ -11,30 +11,26 @@
 			value: 'hidden',
 			placeholder: 'hidden',
 			content: 'min-w-fit',
-			item: 'max-w-50 truncate',
+			item: 'min-w-25 max-w-50 truncate',
 			empty: 'min-w-25',
 			trailing: 'static p-1.5',
-			trailingIcon: open || model.length > 0 ? 'text-primary' : 'text-muted hover:text-default'
+			trailingIcon: open || isFiltered ? 'text-primary' : 'text-muted hover:text-default'
 		}"
 	/>
 </template>
 
 <script lang="ts" setup>
 	import type { MultiSelectFilter } from "~/types/filter";
+	import { deepEquals } from "@tanstack/vue-db";
 
-	const { id, items, onUpdate } = defineProps<MultiSelectFilter>();
+	const { id, items, isFiltered, onUpdate } = defineProps<MultiSelectFilter>();
 
 	const model = useLocalStorage(() => `multi-select-filter-${id}`, [] as string[]);
 
 	const open = ref(false);
 
-	watch(model, (newValue) => {
-		onUpdate(newValue);
-	}, { immediate: true });
-
-	watch(() => items, (newItems) => {
-		// Remove any selected values that are no longer in the items list
-		const newItemSet = new Set(newItems);
-		model.value = model.value.filter((value) => newItemSet.has(value));
+	watch(model, (newValue, oldValue) => {
+		if (deepEquals(newValue, oldValue)) return;
+		onUpdate(new Set(newValue));
 	}, { immediate: true });
 </script>

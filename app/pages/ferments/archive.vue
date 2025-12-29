@@ -22,6 +22,10 @@
 						desc: true
 					}]
 				}"
+				:faceted-options="{
+					getFacetedRowModel: getFacetedRowModel(),
+					getFacetedUniqueValues: getFacetedUniqueValues()
+				}"
 				:ui="{ tr: 'border-b border-default' }"
 			>
 				<template #expanded="{ row }">
@@ -43,14 +47,14 @@
 	import type { ContextMenuItem } from "@nuxt/ui";
 	import type { CellContext, ColumnDef, HeaderContext } from "@tanstack/vue-table";
 	import type { CompletedFerment } from "~/types/ferment";
-	import type { Filter, MultiSelectFilter, NumberRangeFilter } from "~/types/filter";
-	import { createColumnHelper } from "@tanstack/vue-table";
+	import type { Filter } from "~/types/filter";
+	import { createColumnHelper, getFacetedRowModel, getFacetedUniqueValues } from "@tanstack/vue-table";
 	import IngredientBadges from "~/components/IngredientBadges.vue";
 	import FermentActionsCell from "~/components/Table/FermentActionsCell.vue";
-	import SortableTableHeader from "~/components/Table/SortableTableHeader.vue";
 	import StarsCell from "~/components/Table/StarsCell.vue";
-	import { RATING_CATEGORIES } from "~/types/ferment";
-	import { isMultiSelectFilterApplicable, isNumberRangeFilterApplicable } from "~/types/filter";
+	import TableHeader from "~/components/Table/TableHeader.vue";
+	import { MAX_STARS, RATING_CATEGORIES } from "~/types/ferment";
+	import { createNumberRangeFilter, isMultiSelectFilterApplicable, isNumberRangeFilterApplicable, multiSelectFilter } from "~/types/filter";
 	import { formatPercentage } from "~/types/utils";
 
 	const { data, isLoading } = useCompletedFerments();
@@ -63,7 +67,6 @@
 	const expanded = ref<Record<string, boolean>>({});
 
 	const table = useTemplateRef("table");
-
 	const tableSize = useElementSize(() => table.value?.$el);
 
 	const columnLabels = {
@@ -113,39 +116,18 @@
 	const UBadge = resolveComponent("UBadge");
 	const UButton = resolveComponent("UButton");
 
-	function createSortableHeader<T>(label: string, filter?: MaybeRefOrGetter<Filter>) {
-		return (context: HeaderContext<CompletedFerment, T>) => {
-			const isSorted = context.column.getIsSorted();
-			return h(SortableTableHeader, {
+	function createHeader<T>(label: string, createFilter?: (ctx: HeaderContext<CompletedFerment, T>) => Filter) {
+		return (ctx: HeaderContext<CompletedFerment, T>) => {
+			const isSorted = ctx.column.getCanSort() ? ctx.column.getIsSorted() : null;
+			return h(TableHeader, {
 				label,
 				isSorted,
-				filter: filter ? toValue(filter) : undefined,
+				filter: createFilter?.(ctx),
 				onToggleSorting:
-					(desc: boolean) => {
-						context.column.toggleSorting(desc);
+					(desc) => {
+						ctx.column.toggleSorting(desc);
 					}
 			});
-		};
-	}
-
-	function createMultiSelectFilter(id: string, items: string[]): MultiSelectFilter {
-		return {
-			type: "multi-select",
-			id,
-			items,
-			onUpdate: (selected: string[]) => {
-				table.value?.tableApi?.getColumn(id)?.setFilterValue(selected);
-			}
-		};
-	}
-
-	function createNumberRangeFilter(data: Omit<NumberRangeFilter, "type" | "onUpdate">): NumberRangeFilter {
-		return {
-			...data,
-			type: "number-range",
-			onUpdate: (range) => {
-				table.value?.tableApi?.getColumn(data.id)?.setFilterValue(range);
-			}
 		};
 	}
 
@@ -156,8 +138,6 @@
 		};
 	}
 
-	const containers = useFermentContainers([]);
-	const fermentNames = useFermentNames([]);
 	const saltRatioLimits = computed(() => {
 		let min = Infinity;
 		let max = 0;
@@ -217,7 +197,7 @@
 		}),
 		columnHelper.accessor("name", {
 			id: "name",
-			header: createSortableHeader(columnLabels.name, () => createMultiSelectFilter("name", fermentNames.value)),
+			header: createHeader(columnLabels.name, multiSelectFilter),
 			filterFn: isMultiSelectFilterApplicable,
 			meta: {
 				class: {
@@ -227,7 +207,7 @@
 		}),
 		columnHelper.accessor("container", {
 			id: "container",
-			header: createSortableHeader(columnLabels.container, () => createMultiSelectFilter("container", containers.value)),
+			header: createHeader(columnLabels.container, multiSelectFilter),
 			filterFn: isMultiSelectFilterApplicable,
 			cell: (ctx) => {
 				const container = ctx.getValue();
@@ -237,51 +217,49 @@
 				return h(UBadge, { color: "secondary", variant: "subtle", label: ctx.getValue() });
 			}
 		}),
-		columnHelper.display({
+		columnHelper.accessor("ingredients", {
 			id: "ingredients",
-			header: columnLabels.ingredients,
+			getUniqueValues: (row) => row.ingredients.map((ing) => ing.name),
+			header: createHeader(columnLabels.ingredients, multiSelectFilter),
 			filterFn: isMultiSelectFilterApplicable,
 			cell: (ctx) =>
-				h(IngredientBadges, { ingredients: ctx.row.original.ingredients })
+				h(IngredientBadges, { ingredients: ctx.getValue() })
 		}),
 		columnHelper.accessor("saltRatio", {
 			id: "saltRatio",
-			header: createSortableHeader(columnLabels.saltRatio, () => createNumberRangeFilter({
-				id: "saltRatio",
+			header: createHeader(columnLabels.saltRatio, createNumberRangeFilter(() => ({
 				...saltRatioLimits.value,
 				step: 0.001,
-				formatValue: formatPercentage
-			})),
+				percentage: true
+			}))),
 			filterFn: isNumberRangeFilterApplicable,
 			cell: (ctx) => formatPercentage(ctx.getValue())
 		}),
 		columnHelper.accessor((row) => getDaysBetween(row.startDate, row.endDate), {
 			id: "duration",
-			header: createSortableHeader(columnLabels.duration, () => createNumberRangeFilter({
-				id: "duration",
+			header: createHeader(columnLabels.duration, createNumberRangeFilter(() => ({
 				...durationLimits.value,
 				step: 1
-			})),
+			}))),
 			filterFn: isNumberRangeFilterApplicable,
 			cell: (ctx) => `${ctx.getValue()} days`
 		}),
 		columnHelper.accessor("startDate", {
 			id: "startDate",
-			header: createSortableHeader(columnLabels.startDate),
+			header: createHeader(columnLabels.startDate),
 			cell: (ctx) => formatDate(ctx.getValue())
 		}),
 		columnHelper.accessor("endDate", {
 			id: "endDate",
-			header: createSortableHeader(columnLabels.endDate),
+			header: createHeader(columnLabels.endDate),
 			cell: (ctx) => formatDate(ctx.getValue())
 		}),
 		...RATING_CATEGORIES.map((rating) =>
 			columnHelper.accessor((row) => row[rating.key].stars, {
 				id: rating.key,
-				header: createSortableHeader(columnLabels[rating.key], () => createNumberRangeFilter({
-					id: rating.key,
+				header: createHeader(columnLabels[rating.key], createNumberRangeFilter({
 					min: 0,
-					max: 5,
+					max: MAX_STARS,
 					step: 1
 				})),
 				filterFn: isNumberRangeFilterApplicable,
@@ -301,14 +279,13 @@
 		}),
 		columnHelper.accessor("createdAt", {
 			id: "createdAt",
-			header: createSortableHeader(columnLabels.createdAt),
+			header: createHeader(columnLabels.createdAt),
 			cell: (ctx) => formatDateTime(ctx.getValue())
 		}),
 		columnHelper.accessor("updatedAt", {
 			id: "updatedAt",
-			header: createSortableHeader(columnLabels.updatedAt),
+			header: createHeader(columnLabels.updatedAt),
 			cell: (ctx) => formatDateTime(ctx.getValue())
 		})
-
 	] as ColumnDef<CompletedFerment>[];
 </script>
