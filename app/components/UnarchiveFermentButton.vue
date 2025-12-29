@@ -36,6 +36,7 @@
 
 	const showConfirmDialog = ref(false);
 
+  const route = useRoute();
   const toast = useToast();
 
   const emit = defineEmits<{
@@ -50,6 +51,17 @@
 				Object.assign(current, transitionToActive(ferment));
       });
       showConfirmDialog.value = false;
+      toast.add({
+				title: "Ferment restored",
+				color: "success",
+				actions: route.name === "ferments-id" && route.params.id === ferment.id
+					? undefined
+					: [{
+						label: "View",
+						variant: "subtle",
+						to: `/ferments/${ferment.id}`
+					}]
+			});
 		} catch (error) {
 			toast.add({ title: "Error restoring ferment", description: getErrorMessage(error), color: "error" });
 		}

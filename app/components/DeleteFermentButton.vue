@@ -38,11 +38,34 @@
 
 	async function handleDelete() {
 		try {
+			showConfirmDialog.value = false;
+			FermentCollection.delete(ferment.id);
+			toast.add({
+				title: "Ferment deleted",
+				color: "success",
+				actions: [
+					{
+						label: "Undo",
+						variant: "subtle",
+						color: "warning",
+						onClick: () => {
+							FermentCollection.insert(ferment);
+							toast.add({
+								title: "Ferment restored",
+								color: "success",
+								actions: [{
+									label: "View",
+									variant: "subtle",
+									to: `/ferments/${ferment.id}`
+								}]
+							});
+						}
+					}
+				]
+			});
 			if (route.name === "ferments-id" && route.params.id === ferment.id) {
 				await useRouter().push({ name: "ferments" }); // Navigate away if currently viewing the ferment being deleted
 			}
-			showConfirmDialog.value = false;
-			FermentCollection.delete(ferment.id);
 		} catch (error) {
 			toast.add({ title: "Error deleting ferment", description: getErrorMessage(error), color: "error" });
 		}

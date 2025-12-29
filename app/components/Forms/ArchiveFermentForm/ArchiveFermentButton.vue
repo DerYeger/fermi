@@ -31,12 +31,25 @@
 	const showArchiveModal = ref(false);
 	const toast = useToast();
 
+	const route = useRoute();
+
 	async function handleArchive(data: CompletedFerment) {
 		try {
 			FermentCollection.update(data.id, (draft) => {
 				Object.assign(draft, data, { updatedAt: getISODatetime() });
 			});
 			showArchiveModal.value = false;
+			toast.add({
+				title: "Ferment completed",
+				color: "success",
+				actions: route.name === "ferments-id" && route.params.id === ferment.id
+					? undefined
+					: [{
+						label: "View",
+						variant: "subtle",
+						to: `/ferments/${ferment.id}`
+					}]
+			});
 		} catch (error) {
 			toast.add({ title: "Error completing ferment", description: getErrorMessage(error), color: "error" });
 		}

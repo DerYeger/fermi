@@ -39,6 +39,15 @@
 				images: ferment.images.sort((a, b) => a.date.localeCompare(b.date))
 			});
 			showAddModal.value = false;
+			toast.add({
+				title: "Ferment created",
+				color: "success",
+				actions: [{
+					label: "View",
+					variant: "subtle",
+					to: `/ferments/${ferment.id}`
+				}]
+			});
 		} catch (error) {
 			toast.add({ title: "Error saving ferment", description: getErrorMessage(error), color: "error" });
 		}
