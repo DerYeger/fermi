@@ -33,7 +33,11 @@ export default eslintConfig(
 			"node/prefer-global/process": ["off"]
 		}
 	},
-
+	{
+		ignores: [
+			"src-tauri/**"
+		]
+	},
 	// Vue
 	{
 		files: ["**/*.vue"],
