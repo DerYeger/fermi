@@ -9,12 +9,13 @@
 			<UInputMenu
 				v-model="ingredient.name"
 				v-model:open="nameInputOpen"
+				v-model:search-term="nameSearchTerm"
 				:autofocus="wasIngredientAdded"
 				create-item
 				placeholder="Name"
 				:items="ingredientNames"
 				@create="onCreateName"
-				@blur="nameInputOpen = false"
+				@blur="onBlurName"
 			/>
 		</UFormField>
 
@@ -32,12 +33,13 @@
 			<UInputMenu
 				v-model="ingredient.unit"
 				v-model:open="unitInputOpen"
+				v-model:search-term="unitSearchTerm"
 				value-key="value"
 				create-item
 				placeholder="Unit"
 				:items="unitItems"
 				@create="onCreateUnit"
-				@blur="unitInputOpen = false"
+				@blur="onBlurUnit"
 			/>
 		</UFormField>
 
@@ -72,7 +74,10 @@
 	});
 
 	const nameInputOpen = ref(false);
+	const nameSearchTerm = ref("");
+
 	const unitInputOpen = ref(false);
+	const unitSearchTerm = ref("");
 
 	function onCreateName(name: string) {
 		ingredient.value.name = name.trim();
@@ -80,5 +85,21 @@
 
 	function onCreateUnit(unit: string) {
 		ingredient.value.unit = unit.trim();
+	}
+
+	function onBlurName() {
+		const trimmedSearchTerm = nameSearchTerm.value.trim();
+		if (!ingredient.value.name && trimmedSearchTerm) {
+			onCreateName(trimmedSearchTerm);
+		}
+		nameInputOpen.value = false;
+	}
+
+	function onBlurUnit() {
+		const trimmedSearchTerm = unitSearchTerm.value.trim();
+		if (!ingredient.value.unit && trimmedSearchTerm) {
+			onCreateUnit(trimmedSearchTerm);
+		}
+		unitInputOpen.value = false;
 	}
 </script>

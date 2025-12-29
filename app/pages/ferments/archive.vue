@@ -60,6 +60,7 @@
 			return acc;
 		}, {} as Record<typeof RATING_CATEGORIES[number]["key"], string>),
 		name: "Name",
+		container: "Container",
 		ingredients: "Ingredients",
 		saltRatio: "Salt",
 		duration: "Duration",
@@ -98,6 +99,7 @@
 		return items;
 	});
 
+	const UBadge = resolveComponent("UBadge");
 	const UButton = resolveComponent("UButton");
 
 	function createSortableHeader<T>(label: string) {
@@ -145,6 +147,17 @@
 		columnHelper.accessor("name", {
 			id: "name",
 			header: createSortableHeader(columnLabels.name)
+		}),
+		columnHelper.accessor("container", {
+			id: "container",
+			header: createSortableHeader(columnLabels.container),
+			cell: (ctx) => {
+				const container = ctx.getValue();
+				if (!container) {
+					return null;
+				}
+				return h(UBadge, { color: "secondary", variant: "subtle", label: ctx.getValue() });
+			}
 		}),
 		columnHelper.display({
 			id: "ingredients",
