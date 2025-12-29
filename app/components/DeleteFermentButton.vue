@@ -23,7 +23,7 @@
 	</UModal>
 </template>
 
-  <script lang="ts" setup>
+<script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
 	import { getErrorMessage } from "~/types/utils";
 

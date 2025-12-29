@@ -57,7 +57,8 @@
 			</div>
 		</div>
 		<template #footer>
-			<div class="flex gap-2">
+			<div class="flex gap-2 justify-between">
+				<FavoriteFermentButton :ferment="ferment" />
 				<EditFermentButton :ferment="ferment" />
 				<ArchiveFermentButton :ferment="ferment" />
 				<DeleteFermentButton :ferment="ferment" />

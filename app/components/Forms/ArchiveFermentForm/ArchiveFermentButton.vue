@@ -1,8 +1,8 @@
 <template>
 	<UButton
 		variant="ghost"
-		size="sm"
 		color="warning"
+		size="sm"
 		icon="hugeicons:archive-03"
 		@click.stop="showArchiveModal = true"
 	>

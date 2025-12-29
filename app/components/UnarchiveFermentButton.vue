@@ -1,8 +1,8 @@
 <template>
 	<UButton
 		:label="hideLabel ? undefined : 'Restore'"
-		color="warning"
 		variant="ghost"
+		color="warning"
 		size="sm"
 		icon="hugeicons:unarchive-03"
 		@click.stop="showConfirmDialog = true"
@@ -36,22 +36,17 @@
 
 	const showConfirmDialog = ref(false);
 
-  const route = useRoute();
-  const toast = useToast();
-
-  const emit = defineEmits<{
-      beforeUnarchive: []
-  }>();
+	const route = useRoute();
+	const toast = useToast();
 
 	async function handleUnarchive() {
 		if (ferment.state !== "completed") return;
-    try {
-      emit("beforeUnarchive");
+		try {
 			FermentCollection.update(ferment.id, (current) => {
 				Object.assign(current, transitionToActive(ferment));
-      });
-      showConfirmDialog.value = false;
-      toast.add({
+			});
+			showConfirmDialog.value = false;
+			toast.add({
 				title: "Ferment restored",
 				color: "success",
 				actions: route.name === "ferments-id" && route.params.id === ferment.id

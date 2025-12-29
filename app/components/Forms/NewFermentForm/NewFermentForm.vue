@@ -49,7 +49,8 @@
 		endDate: null,
 		createdAt: getISODatetime(),
 		updatedAt: getISODatetime(),
-		state: "active"
+		state: "active",
+		isFavorite: false
 	});
 
 	function handleSubmit(event: FormSubmitEvent<ActiveFerment>) {

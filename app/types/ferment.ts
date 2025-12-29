@@ -29,7 +29,8 @@ const FermentBaseSchema = z.object({
 	startDate: z.iso.date("Start date is required"),
 	endDate: z.iso.date().nullable(),
 	createdAt: z.iso.datetime(),
-	updatedAt: z.iso.datetime()
+	updatedAt: z.iso.datetime(),
+	isFavorite: z.boolean()
 });
 export type FermentBase = zInfer<typeof FermentBaseSchema>;
 
