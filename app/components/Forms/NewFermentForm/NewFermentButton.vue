@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 	import type { ActiveFerment } from "~/types/ferment";
 	import NewFermentForm from "~/components/Forms/NewFermentForm/NewFermentForm.vue";
-	import { getErrorMessage } from "~/types/utils";
+	import { getErrorMessage, sortImages } from "~/types/utils";
 
 	const { withShortcut } = defineProps<{
 		withShortcut?: boolean
@@ -36,7 +36,7 @@
 		try {
 			FermentCollection.insert({
 				...ferment,
-				images: ferment.images.sort((a, b) => a.date.localeCompare(b.date))
+				images: sortImages(ferment.images)
 			});
 			showAddModal.value = false;
 			toast.add({

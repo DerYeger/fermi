@@ -48,7 +48,8 @@
   <script setup lang="ts">
 	import type { FermentImage } from "~/types/ferment";
 	import Compressor from "compressorjs";
-	import { getErrorMessage } from "~/types/utils";
+	import ExifReader from "exifreader";
+	import { getErrorMessage, sortImages } from "~/types/utils";
 
 	const model = defineModel<FermentImage[]>({
 		required: true
@@ -64,14 +65,8 @@
 		if (!files) return;
 		isLoadingImages.value = true;
 		try {
-			const processImages = await Promise.all(files.map(processFile));
-			const initialDate = getISODate();
-			const newImages: FermentImage[] = processImages.map((base64) => ({
-				id: createId(),
-				base64,
-				date: initialDate
-			}));
-			model.value.push(...newImages);
+			const processedImages = await Promise.all(files.map(processFile));
+			model.value.push(...sortImages(processedImages));
 		} catch (error) {
 			toast.add({ title: "Error uploading images", description: getErrorMessage(error), color: "error" });
 		} finally {
@@ -79,7 +74,21 @@
 		}
 	}
 
-	async function processFile(file: File): Promise<string> {
+	async function processFile(file: File): Promise<FermentImage> {
+		const [base64, date] = await Promise.all([
+			compressImage(file),
+			getImageDate(file)
+		]);
+		console.log(date);
+
+		return {
+			id: createId(),
+			base64,
+			date
+		};
+	}
+
+	async function compressImage(file: File): Promise<string> {
 		return await new Promise<string>((resolve, reject) =>
 			new Compressor(file, {
 				quality: 0.8,
@@ -96,6 +105,21 @@
 					reject(err);
 				}
 			}));
+	}
+
+	async function getImageDate(file: File): Promise<string> {
+		try {
+			const exif = await ExifReader.load(file);
+			const rawExifDate = (exif.DateTimeOriginal?.description
+				?? exif["Date Created"]?.description
+				?? exif["Modify Date"]?.description);
+			const exifDate = rawExifDate
+				?.split(" ")[0]
+				?.replace(/:/g, "-");
+			return exifDate ?? getISODate();
+		} catch {
+			return getISODate();
+		}
 	}
 
 	function removeImage(index: number) {

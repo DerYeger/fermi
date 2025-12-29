@@ -1,3 +1,4 @@
+import type { FermentImage } from "~/types/ferment";
 import { SchemaValidationError } from "@tanstack/vue-db";
 
 export function deepClone<T>(obj: T): T {
@@ -21,4 +22,8 @@ export function limitLength(str: string, maxLength: number): string {
 export function formatPercentage(value: number): string {
 	const rounded = Math.round(value * 1000) / 10;
 	return `${rounded}%`;
+}
+
+export function sortImages(images: FermentImage[]): FermentImage[] {
+	return images.toSorted((a, b) => a.date.localeCompare(b.date));
 }

@@ -25,7 +25,7 @@
 	import type { Ferment } from "~/types/ferment";
 	import EditActiveFermentForm from "~/components/Forms/EditFermentForm/EditActiveFermentForm.vue";
 	import EditCompletedFermentForm from "~/components/Forms/EditFermentForm/EditCompletedFermentForm.vue";
-	import { getErrorMessage } from "~/types/utils";
+	import { getErrorMessage, sortImages } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
@@ -41,7 +41,7 @@
 			FermentCollection.update(ferment.id, (current) => {
 				Object.assign(current, {
 					...data,
-					images: data.images.sort((a, b) => a.date.localeCompare(b.date))
+					images: sortImages(data.images)
 				}, { updatedAt: getISODatetime() });
 			});
 			showEditModal.value = false;

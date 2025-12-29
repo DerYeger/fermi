@@ -36,6 +36,7 @@
 		"@yeger/streams": "2.0.1",
 		"compressorjs": "1.2.1",
 		"echarts": "6.0.0",
+		"exifreader": "4.33.1",
 		"key-hierarchy": "3.0.9",
 		"nanoid": "5.1.6",
 		"nuxt": "4.2.2",

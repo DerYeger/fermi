@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 	import type { ActiveFerment, CompletedFerment } from "~/types/ferment";
 	import ArchiveForm from "~/components/Forms/ArchiveFermentForm/ArchiveForm.vue";
-	import { getErrorMessage } from "~/types/utils";
+	import { getErrorMessage, sortImages } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: ActiveFerment
@@ -36,7 +36,10 @@
 	async function handleArchive(data: CompletedFerment) {
 		try {
 			FermentCollection.update(data.id, (draft) => {
-				Object.assign(draft, data, { updatedAt: getISODatetime() });
+				Object.assign(draft, {
+					...data,
+					images: sortImages(data.images)
+				}, { updatedAt: getISODatetime() });
 			});
 			showArchiveModal.value = false;
 			toast.add({
