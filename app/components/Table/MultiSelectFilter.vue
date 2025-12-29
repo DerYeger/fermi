@@ -7,12 +7,14 @@
 		multiple
 		:items="items"
 		:ui="{
+			base: 'p-0 cursor-pointer',
 			value: 'hidden',
 			placeholder: 'hidden',
 			content: 'min-w-fit',
 			item: 'max-w-50 truncate',
-			empty: 'min-w-24',
-			trailingIcon: open || model.length > 0 ? 'text-primary' : undefined
+			empty: 'min-w-25',
+			trailing: 'static p-1.5',
+			trailingIcon: open || model.length > 0 ? 'text-primary' : 'text-muted hover:text-default'
 		}"
 	/>
 </template>

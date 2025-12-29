@@ -3,9 +3,7 @@
 		<UButton
 			icon="hugeicons:filter"
 			variant="link"
-			:ui="{
-				leadingIcon: open || isApplied ? 'text-primary' : 'text-muted'
-			}"
+			:color="open || isApplied ? 'primary' : 'neutral'"
 		/>
 		<template #content>
 			<div v-if="min !== max" class="w-64 px-4 pt-4 pb-2 flex flex-col gap-4">

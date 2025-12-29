@@ -1,14 +1,12 @@
 <template>
 	<div class="flex items-center">
 		<UButton
-			color="neutral"
-			variant="ghost"
-			:label="label"
+			variant="link"
+			:color="isSorted ? 'primary' : 'neutral'"
 			:icon="isSorted ? (isSorted === 'asc' ? 'hugeicons:sort-by-up-02' : 'hugeicons:sort-by-down-02') : 'hugeicons:arrow-up-down'"
-			class="-mx-2.5"
-			:ui="{ leadingIcon: isSorted ? 'text-primary' : 'text-muted' }"
 			@click="toggleSorting"
 		/>
+		{{ label }}
 		<MultiSelectFilter v-if="filter?.type === 'multi-select'" v-bind="filter" />
 		<NumberRangeFilter v-else-if="filter?.type === 'number-range'" v-bind="filter" />
 	</div>

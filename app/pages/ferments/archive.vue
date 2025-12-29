@@ -76,8 +76,8 @@
 		ingredients: "Ingredients",
 		saltRatio: "Salt",
 		duration: "Duration",
-		startDate: "Start date",
-		endDate: "End date",
+		startDate: "Start",
+		endDate: "End",
 		createdAt: "Created at",
 		updatedAt: "Updated at"
 	} as const satisfies Partial<Record<keyof CompletedFerment | "duration", string>>;
@@ -278,7 +278,13 @@
 		...RATING_CATEGORIES.map((rating) =>
 			columnHelper.accessor((row) => row[rating.key].stars, {
 				id: rating.key,
-				header: createSortableHeader(columnLabels[rating.key]),
+				header: createSortableHeader(columnLabels[rating.key], () => createNumberRangeFilter({
+					id: rating.key,
+					min: 0,
+					max: 5,
+					step: 1
+				})),
+				filterFn: isNumberRangeFilterApplicable,
 				cell: createStarsCell()
 			})),
 		columnHelper.display({
