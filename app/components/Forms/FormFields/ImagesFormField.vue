@@ -28,17 +28,18 @@
 							:name="`images.${index}.date`"
 							required
 						>
-							<InputDatePicker v-model="item.date" />
+							<UFieldGroup>
+								<InputDatePicker v-model="item.date" />
+								<UButton
+									color="error"
+									icon="hugeicons:delete-02"
+									variant="subtle"
+									@click="removeImage(index)"
+								/>
+							</UFieldGroup>
 						</UFormField>
 					</div>
-					<div>
-						<UButton
-							color="error"
-							icon="hugeicons:delete-02"
-							variant="subtle"
-							@click="removeImage(index)"
-						/>
-					</div>
+					<div />
 				</div>
 			</div>
 		</UScrollArea>

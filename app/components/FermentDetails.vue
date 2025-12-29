@@ -103,7 +103,7 @@
 			</div>
 
 			<!-- Images -->
-			<div class="md:col-span-2 lg:col-span-4" :class="{ 'max-md:hidden': !ferment.images.length }">
+			<div class="md:col-span-2 lg:col-span-4 flex flex-col" :class="{ 'max-md:hidden': !ferment.images.length }">
 				<UCarousel
 					v-if="ferment.images.length"
 					v-slot="{ item }"

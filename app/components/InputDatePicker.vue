@@ -1,22 +1,16 @@
 <template>
-	<UInputDate ref="inputDate" v-model="internalModel" :is-date-unavailable="isDateUnavailable">
-		<template #trailing>
-			<UPopover :reference="inputDate?.inputsRef[3]?.$el">
-				<UButton
-					:tabindex="-1"
-					color="neutral"
-					variant="link"
-					size="sm"
-					icon="hugeicons:calendar-03"
-					aria-label="Select a date"
-					class="px-0"
-				/>
-				<template #content>
-					<UCalendar v-model="internalModel" :week-starts-on="FIRST_WEEK_DAY" class="p-2" :is-date-disabled="isDateUnavailable" />
-				</template>
-			</UPopover>
+	<UPopover>
+		<UButton
+			color="neutral"
+			variant="subtle"
+			icon="hugeicons:calendar-03"
+		>
+			{{ modelValue ? formatDate(modelValue) : 'Select a date' }}
+		</UButton>
+		<template #content>
+			<UCalendar v-model="internalModel" :week-starts-on="FIRST_WEEK_DAY" class="p-2" :is-date-disabled="isDateUnavailable" />
 		</template>
-	</UInputDate>
+	</UPopover>
 </template>
 
 <script setup lang="ts">
@@ -26,8 +20,6 @@
 	defineProps<{
 		isDateUnavailable?: (date: DateValue) => boolean
 	}>();
-
-	const inputDate = useTemplateRef("inputDate");
 
 	const model = defineModel<string | null | undefined>({
 		required: true

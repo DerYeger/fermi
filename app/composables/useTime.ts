@@ -6,32 +6,35 @@ const LOCALE = navigator.language;
 
 const now = useNow({ interval: 60 * 60 * 1000 });
 
+const timeSinceFormat = Intl.NumberFormat(LOCALE, {
+	style: "unit",
+	unit: "day",
+	unitDisplay: "long"
+});
 export function formatTimeSince(dateString: MaybeRefOrGetter<string>, startDate = getISODate()) {
 	const diffDays = getDaysBetween(toValue(dateString), startDate);
 
-	return new Intl.NumberFormat(LOCALE, {
-		style: "unit",
-		unit: "day",
-		unitDisplay: "long"
-	}).format(diffDays);
+	return timeSinceFormat.format(diffDays);
 }
 
+const dateFormat = Intl.DateTimeFormat(LOCALE, {
+	month: "short",
+	day: "numeric",
+	year: "numeric"
+});
 export function formatDate(date: string) {
-	return Intl.DateTimeFormat(LOCALE, {
-		month: "short",
-		day: "numeric",
-		year: "numeric"
-	}).format(new Date(date));
+	return dateFormat.format(new Date(date));
 }
 
+const timeFormat = Intl.DateTimeFormat(LOCALE, {
+	month: "short",
+	day: "numeric",
+	year: "numeric",
+	hour: "numeric",
+	minute: "2-digit"
+});
 export function formatDateTime(date: string) {
-	return Intl.DateTimeFormat(LOCALE, {
-		month: "short",
-		day: "numeric",
-		year: "numeric",
-		hour: "numeric",
-		minute: "2-digit"
-	}).format(new Date(date));
+	return timeFormat.format(new Date(date));
 }
 
 export function getISODate(date: Date | DateValue = now.value) {

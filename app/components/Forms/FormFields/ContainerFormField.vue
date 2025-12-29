@@ -1,6 +1,6 @@
 <template>
 	<UFormField label="Container" name="container">
-		<div class="flex gap-2">
+		<UFieldGroup>
 			<UInputMenu
 				v-model="internalModel"
 				v-model:open="open"
@@ -14,11 +14,11 @@
 			<UButton
 				v-if="internalModel"
 				icon="hugeicons:cancel-01"
-				variant="ghost"
+				variant="subtle"
 				color="error"
-				@click="internalModel = undefined"
+				@click="onClear"
 			/>
-		</div>
+		</UFieldGroup>
 	</UFormField>
 </template>
 
@@ -47,6 +47,11 @@
 			onCreate(trimmedSearchTerm);
 		}
 		open.value = false;
+	}
+
+	function onClear() {
+		internalModel.value = undefined;
+		searchTerm.value = "";
 	}
 
 	const containers = useFermentContainers(() => [model.value?.trim() ?? ""].filter(Boolean));

@@ -5,14 +5,16 @@
 		</UFormField>
 		<UFormField label="End date" name="endDate" :required="isEndDateRequired">
 			<div class="flex gap-2">
-				<InputDatePicker v-model="endDate" :is-date-unavailable="(endDate) => isEndDateUnavailable(startDate, endDate)" />
-				<UButton
-					v-if="!isEndDateRequired && endDate"
-					icon="hugeicons:cancel-01"
-					variant="ghost"
-					color="error"
-					@click="endDate = null"
-				/>
+				<UFieldGroup>
+					<InputDatePicker v-model="endDate" :is-date-unavailable="(endDate) => isEndDateUnavailable(startDate, endDate)" />
+					<UButton
+						v-if="!isEndDateRequired && endDate"
+						icon="hugeicons:cancel-01"
+						variant="subtle"
+						color="error"
+						@click="endDate = null"
+					/>
+				</UFieldGroup>
 			</div>
 		</UFormField>
 	</div>
