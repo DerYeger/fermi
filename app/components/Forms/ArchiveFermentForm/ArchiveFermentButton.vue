@@ -2,6 +2,7 @@
 	<UButton
 		variant="ghost"
 		size="sm"
+		color="warning"
 		icon="lucide:archive"
 		@click.stop="showArchiveModal = true"
 	>

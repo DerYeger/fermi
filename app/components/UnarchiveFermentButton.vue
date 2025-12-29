@@ -1,6 +1,7 @@
 <template>
 	<UButton
 		:label="hideLabel ? undefined : 'Restore'"
+		color="warning"
 		variant="ghost"
 		size="sm"
 		icon="lucide:archive-restore"
@@ -15,7 +16,7 @@
 				<UButton variant="ghost" @click="showConfirmDialog = false">
 					Cancel
 				</UButton>
-				<UButton variant="subtle" color="success" @click="handleUnarchive">
+				<UButton variant="subtle" color="warning" @click="handleUnarchive">
 					Restore
 				</UButton>
 			</div>

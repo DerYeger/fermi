@@ -69,8 +69,7 @@
 	const customIngredientUnits = useIngredientUnits(draftedIngredientUnits);
 
 	const unitItems = computed<InputMenuItem[]>(() => {
-		const items: InputMenuItem[] = [
-		];
+		const items: InputMenuItem[] = [];
 		const predefinedUnits = Object.entries(PREDEFINED_UNITS);
 		predefinedUnits.forEach(([category, units], index) => {
 			items.push({ type: "label", label: category });

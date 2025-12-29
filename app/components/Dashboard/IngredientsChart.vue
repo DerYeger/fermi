@@ -13,6 +13,7 @@
 <script setup lang="ts">
 	import type { ECBasicOption } from "echarts/types/dist/shared";
 	import VChart from "vue-echarts";
+	import { limitLength } from "~/types/utils";
 
 	const { data, isLoading } = useIngredients();
 
@@ -26,7 +27,7 @@
 		});
 
 		return Object.entries(counts)
-			.map(([name, value]) => ({ name, value }));
+			.map(([name, value]) => ({ name: limitLength(name, 20), value }));
 	});
 
 	const color = useChartPalette();

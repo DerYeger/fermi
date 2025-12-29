@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col gap-4">
 		<!-- Header -->
-		<div class="flex items-start justify-between gap-4">
+		<div v-if="withHeader" class="flex items-start justify-between gap-4">
 			<div>
 				<span class="text-2xl font-bold">
 					{{ ferment.name }}
@@ -163,7 +163,8 @@
 	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
 	import { RATING_CATEGORIES } from "~/types/ferment";
 
-	const { ferment } = defineProps<{
+	const { ferment, withHeader = true } = defineProps<{
 		ferment: Ferment
+		withHeader?: boolean
 	}>();
 </script>
