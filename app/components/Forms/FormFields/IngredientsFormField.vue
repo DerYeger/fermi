@@ -5,41 +5,17 @@
 		required
 	>
 		<div class="flex flex-col gap-2">
-			<div
+			<IngredientFormField
 				v-for="(ingredient, index) in model"
 				:key="ingredient.id"
-				class="grid grid-cols-[4fr_2fr_2fr_max-content] gap-2"
-			>
-				<UFormField
-					:name="`ingredients.${index}.name`"
-					required
-				>
-					<UInputMenu v-model="ingredient.name" :autofocus="wasIngredientAdded" create-item placeholder="Name" :items="ingredientNames" @create="onCreateName(index, $event)" />
-				</UFormField>
-
-				<UFormField
-					:name="`ingredients.${index}.quantity`"
-					required
-				>
-					<UInputNumber v-model="ingredient.quantity" :min="0" placeholder="Quantity" />
-				</UFormField>
-
-				<UFormField
-					:name="`ingredients.${index}.unit`"
-					required
-				>
-					<UInputMenu v-model="ingredient.unit" value-key="value" create-item placeholder="Unit" :items="unitItems" @create="onCreateUnit(index, $event)" />
-				</UFormField>
-
-				<div>
-					<UButton
-						color="error"
-						icon="lucide:trash-2"
-						variant="subtle"
-						@click="removeIngredient(index)"
-					/>
-				</div>
-			</div>
+				:model-value="ingredient"
+				:index="index"
+				:ingredient-names="ingredientNames"
+				:unit-items="unitItems"
+				:was-ingredient-added="wasIngredientAdded"
+				@update:model-value="model[index] = $event"
+				@remove="removeIngredient(index)"
+			/>
 			<div>
 				<UButton variant="subtle" icon="lucide:plus" label="Add ingredient" @click="addIngredient" />
 			</div>
@@ -50,6 +26,7 @@
 <script setup lang="ts">
 	import type { InputMenuItem } from "@nuxt/ui";
 	import type { Ingredient } from "~/types/ferment";
+	import IngredientFormField from "~/components/Forms/FormFields/IngredientFormField.vue";
 	import { PREDEFINED_UNITS } from "~/composables/useFerments";
 
 	const model = defineModel<Ingredient[]>({
@@ -102,19 +79,5 @@
 
 	function removeIngredient(index: number) {
 		model.value.splice(index, 1);
-	}
-
-	function onCreateName(index: number, name: string) {
-		const item = model.value[index];
-		if (!item) return;
-		item.name = name.trim();
-	}
-
-	function onCreateUnit(index: number, unit: string) {
-		console.log(unit);
-
-		const item = model.value[index];
-		if (!item) return;
-		item.unit = unit.trim();
 	}
 </script>

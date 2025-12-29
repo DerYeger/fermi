@@ -1,6 +1,9 @@
 <template>
 	<UForm :schema="CompletedFermentSchema" :state="state" class="flex flex-col gap-8" @submit="handleSubmit">
-		<NameFormField v-model="state.name" />
+		<div class="flex gap-4">
+			<NameFormField v-model="state.name" />
+			<ContainerFormField v-model="state.container" />
+		</div>
 		<ImagesFormField v-model="state.images" />
 		<SaltRatioFormField v-model="state.saltRatio" />
 		<IngredientsFormField v-model="state.ingredients" />
@@ -29,6 +32,7 @@
 	import type { FormSubmitEvent } from "@nuxt/ui";
 	import type { CompletedFerment } from "~/types/ferment";
 	import FermentFormActions from "~/components/Forms/FermentFormActions.vue";
+	import ContainerFormField from "~/components/Forms/FormFields/ContainerFormField.vue";
 	import DateFormFields from "~/components/Forms/FormFields/DateFormFields.vue";
 	import ImagesFormField from "~/components/Forms/FormFields/ImagesFormField.vue";
 	import IngredientsFormField from "~/components/Forms/FormFields/IngredientsFormField.vue";

@@ -5,6 +5,7 @@
 				v-model="state.endDate" :is-date-unavailable="(endDate) => isEndDateUnavailable(ferment.startDate, endDate)"
 			/>
 		</UFormField>
+		<ImagesFormField v-model="state.images" />
 		<RatingFormFields
 			v-for="rating of RATING_CATEGORIES"
 			:key="rating.key"
@@ -22,6 +23,7 @@
 	import type { FormSubmitEvent } from "@nuxt/ui";
 	import type { ActiveFerment, CompletedFerment } from "~/types/ferment";
 	import FermentFormActions from "~/components/Forms/FermentFormActions.vue";
+	import ImagesFormField from "~/components/Forms/FormFields/ImagesFormField.vue";
 	import RatingFormFields from "~/components/Forms/FormFields/RatingFormFields.vue";
 	import { CompletedFermentSchema, RATING_CATEGORIES } from "~/types/ferment";
 	import { deepClone } from "~/types/utils";

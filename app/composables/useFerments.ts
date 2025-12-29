@@ -111,6 +111,19 @@ export function useFermentNames(otherNames: MaybeRefOrGetter<string[]>): Compute
 	);
 }
 
+export function useFermentContainers(otherContainers: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
+	const query = useLiveQuery((q) => q.from({ ferment: FermentCollection }).select(({ ferment }) => ({ container: ferment.container })));
+	return computed(() =>
+		Stream.from(query.data.value ?? [])
+			.map((item) => item.container)
+			.filterNonNull()
+			.concat(toValue(otherContainers))
+			.distinct()
+			.toArray()
+			.sort((a, b) => a.localeCompare(b))
+	);
+}
+
 export function useIngredientNames(otherNames: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
 	const query = useIngredients();
 	return computed(() =>

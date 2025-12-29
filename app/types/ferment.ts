@@ -21,8 +21,9 @@ const NotesSchema = TrimmedString.max(MAX_NOTES_LENGTH, "Notes cannot exceed 500
 const FermentBaseSchema = z.object({
 	id: z.string(),
 	name: TrimmedString.min(1, "Name is required"),
+	container: TrimmedString.nullable().transform((val) => val || null),
 	ingredients: z.array(IngredientSchema).min(1, "At least one ingredient is required"),
-	saltRatio: z.number().min(0, "Cannot be negative"),
+	saltRatio: z.number().min(0, "Cannot be negative").max(1, "Cannot exceed 100%"),
 	notes: NotesSchema,
 	images: z.array(FermentImageSchema),
 	startDate: z.iso.date("Start date is required"),

@@ -1,6 +1,14 @@
 <template>
 	<UFormField label="Name" name="name" required>
-		<UInputMenu v-model="model" create-item :items="names" placeholder="e.g., Garlic Honey, Kimchi, Sauerkraut..." @create="model = $event.trim()" />
+		<UInputMenu
+			v-model="model"
+			v-model:open="open"
+			create-item
+			:items="names"
+			placeholder="Garlic Honey, Kimchi, Sauerkraut..."
+			@create="onCreate"
+			@blur="open = false"
+		/>
 	</UFormField>
 </template>
 
@@ -10,4 +18,10 @@
 	});
 
 	const names = useFermentNames(() => [model.value.trim()].filter(Boolean));
+
+	const open = ref(false);
+
+	function onCreate(item: string) {
+		model.value = item.trim();
+	}
 </script>

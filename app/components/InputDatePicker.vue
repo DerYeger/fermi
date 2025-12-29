@@ -3,6 +3,7 @@
 		<template #trailing>
 			<UPopover :reference="inputDate?.inputsRef[3]?.$el">
 				<UButton
+					:tabindex="-1"
 					color="neutral"
 					variant="link"
 					size="sm"
