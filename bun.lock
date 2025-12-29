@@ -4,6 +4,7 @@
     "": {
       "name": "nuxtor",
       "dependencies": {
+        "@iconify-json/hugeicons": "1.2.21",
         "@nuxt/ui": "4.3.0",
         "@tanstack/query-db-collection": "1.0.12",
         "@tanstack/vue-db": "0.0.92",
@@ -226,6 +227,8 @@
     "@humanwhocodes/module-importer": ["@humanwhocodes/module-importer@1.0.1", "", {}, "sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA=="],
 
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
+
+    "@iconify-json/hugeicons": ["@iconify-json/hugeicons@1.2.21", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-B9oZOO6PuTMdj2yg1JamuzVAKDnTfscDT0B4nsz429AUb3T26b4vIt/VEcRSM/WK2g1O17UpiY/cDHSv3gWbAQ=="],
 
     "@iconify/collections": ["@iconify/collections@1.0.632", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-7P03mskPh9cg6O/hnURtQ6nCNKamtKrTGHnVsGX6mJaTpsaLGlpsyGEpayS7trMLvtSvIgKhpN0SPzLwa8HKnA=="],
 

@@ -7,7 +7,7 @@
 						v-for="i in 5"
 						:key="i"
 						variant="ghost"
-						icon="lucide:star"
+						icon="hugeicons:star"
 						:color="isStarActive(i) ? 'warning' : 'neutral'"
 						class="transition-transform hover:scale-110"
 						@click="onStarClicked(i)"

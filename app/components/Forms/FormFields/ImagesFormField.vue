@@ -12,7 +12,7 @@
 			@update:model-value="onUpload"
 		/>
 		<div :class="{ 'mb-2': model.length > 0 }">
-			<UButton variant="subtle" icon="lucide:upload" :loading="isLoadingImages" label="Select images" @click="fileUpload?.inputRef.click()" />
+			<UButton variant="subtle" icon="hugeicons:image-upload" :loading="isLoadingImages" label="Select images" @click="fileUpload?.inputRef.click()" />
 		</div>
 		<UScrollArea v-if="model.length > 0" v-slot="{ item, index }" orientation="horizontal" :items="model" :ui="{ item: 'ml-2 first:ml-0' }">
 			<div
@@ -34,7 +34,7 @@
 					<div>
 						<UButton
 							color="error"
-							icon="lucide:trash-2"
+							icon="hugeicons:delete-02"
 							variant="subtle"
 							@click="removeImage(index)"
 						/>

@@ -1,7 +1,7 @@
 <template>
 	<UCard>
 		<template #header>
-			<CardHeader title="Calendar" icon="lucide:calendar" />
+			<CardHeader title="Calendar" icon="hugeicons:calendar-03" />
 		</template>
 		<UCalendar :week-starts-on="FIRST_WEEK_DAY" :model-value="getCalendarDate()" variant="subtle" color="neutral">
 			<template #day="{ day }">

@@ -4,7 +4,7 @@
 		color="warning"
 		variant="ghost"
 		size="sm"
-		icon="lucide:archive-restore"
+		icon="hugeicons:unarchive-03"
 		@click.stop="showConfirmDialog = true"
 	/>
 	<UModal v-model:open="showConfirmDialog" title="Restore ferment">

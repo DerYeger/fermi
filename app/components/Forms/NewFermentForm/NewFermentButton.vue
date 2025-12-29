@@ -1,6 +1,6 @@
 <template>
 	<UTooltip :kbds="withShortcut ? ['meta', 'N'] : undefined" :content="{ side: 'bottom' }">
-		<UButton icon="lucide:plus" label="New ferment" variant="subtle" @click="showAddModal = true" />
+		<UButton icon="hugeicons:plus-sign" label="New ferment" variant="subtle" @click="showAddModal = true" />
 	</UTooltip>
 	<UModal v-model:open="showAddModal" title="Add new ferment">
 		<template #body>

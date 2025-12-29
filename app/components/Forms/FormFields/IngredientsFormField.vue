@@ -17,7 +17,7 @@
 				@remove="removeIngredient(index)"
 			/>
 			<div>
-				<UButton variant="subtle" icon="lucide:plus" label="Add ingredient" @click="addIngredient" />
+				<UButton variant="subtle" icon="hugeicons:plus-sign" label="Add ingredient" @click="addIngredient" />
 			</div>
 		</div>
 	</UFormField>

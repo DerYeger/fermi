@@ -1,7 +1,7 @@
 <template>
 	<UCard>
 		<template #header>
-			<CardHeader title="Today" icon="lucide:calendar-check" />
+			<CardHeader title="Today" icon="hugeicons:checkmark-square-01" />
 		</template>
 		<Loader v-if="isLoading" class="p-4" />
 		<div v-if="data.length === 0" class="p-4 flex-center text-sm text-muted">

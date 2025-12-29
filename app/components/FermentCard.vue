@@ -15,19 +15,19 @@
 					>
 				</div>
 				<div v-else class="aspect-video bg-elevated flex-center">
-					<UIcon name="lucide:salad" class="size-12" />
+					<UIcon name="hugeicons:iconjar" class="size-12" />
 				</div>
 			</div>
 
 			<!-- Salt ratio -->
 			<div class="flex items-center gap-2">
-				<UIcon name="lucide:gem" class="size-4" />
-				<span>{{ ferment.saltRatio }}% salt</span>
+				<UIcon name="hugeicons:gem" class="size-4" />
+				<span>{{ formatPercentage(ferment.saltRatio) }} salt</span>
 			</div>
 
 			<!-- Days fermenting -->
 			<div v-if="ferment.state === 'active'" class="flex items-center gap-2">
-				<UIcon name="lucide:clock" class="size-4" />
+				<UIcon name="hugeicons:date-time" class="size-4" />
 				<span>{{ formatTimeSince(ferment.startDate) }}</span>
 				<template v-if="ferment.endDate && !isFermentOverdue(ferment)">
 					·
@@ -37,11 +37,11 @@
 
 			<!-- Dates -->
 			<div class="flex items-center gap-2">
-				<UIcon name="lucide:calendar" class="size-4" />
+				<UIcon name="hugeicons:calendar-add-01" class="size-4" />
 				<span>Started {{ formatDate(ferment.startDate) }}</span>
 			</div>
 			<div class="flex items-center gap-2">
-				<UIcon name="lucide:calendar-check" class="size-4" />
+				<UIcon name="hugeicons:calendar-minus-01" class="size-4" />
 				<span v-if="ferment.endDate" class="flex items-center gap-2">
 					Ends {{ formatDate(ferment.endDate) }}
 					<UBadge v-if="isFermentOverdue(ferment)" color="warning" variant="subtle" class="-my-1">Overdue</UBadge>
@@ -70,6 +70,7 @@
 	import type { ActiveFerment } from "~/types/ferment";
 	import ArchiveFermentButton from "~/components/Forms/ArchiveFermentForm/ArchiveFermentButton.vue";
 	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
+	import { formatPercentage } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: ActiveFerment

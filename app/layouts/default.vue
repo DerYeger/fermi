@@ -77,17 +77,17 @@
 		{
 			type: "link",
 			label: "Dashboard",
-			icon: "lucide:home",
+			icon: "hugeicons:home-07",
 			to: "/"
 		},
 		{
 			type: "link",
 			label: "Ferments",
-			icon: "lucide:salad",
+			icon: "hugeicons:vegetarian-food",
 			to: "/ferments"
 		},
-		{ type: "link", label: "Archive", icon: "lucide:archive", to: "/ferments/archive" },
-		{ type: "link", icon: "lucide:settings-2", to: "/settings" }
+		{ type: "link", label: "Archive", icon: "hugeicons:archive-03", to: "/ferments/archive" },
+		{ type: "link", icon: "hugeicons:settings-05", to: "/settings" }
 	] as const satisfies NavigationMenuItem[];
 
 	defineShortcuts({

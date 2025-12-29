@@ -1,7 +1,7 @@
 <template>
 	<div class="flex items-center h-full">
 		<UButton
-			icon="lucide:eye"
+			icon="hugeicons:view"
 			variant="ghost"
 			size="sm"
 			@click="navigateTo(`/ferments/${ferment.id}`)"

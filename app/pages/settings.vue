@@ -3,7 +3,7 @@
 		<!-- Theme -->
 		<UCard>
 			<template #header>
-				<CardHeader title="Theme" icon="lucide:sun-moon" />
+				<CardHeader title="Theme" icon="hugeicons:gibbous-moon" />
 			</template>
 
 			<UColorModeSelect />
@@ -12,7 +12,7 @@
 		<!-- Save Location -->
 		<UCard>
 			<template #header>
-				<CardHeader title="Data Storage" icon="lucide:folder" />
+				<CardHeader title="Data Storage" icon="hugeicons:folder-01" />
 			</template>
 
 			<div class="space-y-4">
@@ -35,7 +35,7 @@
 							v-if="dataDir"
 							variant="ghost"
 							color="error"
-							icon="lucide:x"
+							icon="hugeicons:cancel-01"
 							@click="clearSaveLocation"
 						/>
 					</div>
@@ -48,7 +48,7 @@
 					<UButton
 						variant="ghost"
 						size="sm"
-						icon="lucide:folder-open"
+						icon="hugeicons:folder-02"
 						@click="openDataDirectory"
 					>
 						Open in File Browser
@@ -60,7 +60,7 @@
 		<!-- Backup Settings -->
 		<UCard>
 			<template #header>
-				<CardHeader title="Automatic Backups" icon="lucide:database-backup" />
+				<CardHeader title="Automatic Backups" icon="hugeicons:database-restore" />
 			</template>
 
 			<div class="space-y-4">
@@ -87,7 +87,7 @@
 		<!-- About -->
 		<UCard>
 			<template #header>
-				<CardHeader title="About Fermi" icon="lucide:info" />
+				<CardHeader title="About Fermi" icon="hugeicons:information-square" />
 			</template>
 
 			<div class="space-y-2 text-sm text-muted">

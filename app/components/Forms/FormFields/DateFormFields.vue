@@ -8,7 +8,7 @@
 				<InputDatePicker v-model="endDate" :is-date-unavailable="(endDate) => isEndDateUnavailable(startDate, endDate)" />
 				<UButton
 					v-if="!isEndDateRequired && endDate"
-					icon="lucide:x"
+					icon="hugeicons:cancel-01"
 					variant="ghost"
 					color="error"
 					@click="endDate = null"

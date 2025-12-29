@@ -4,7 +4,7 @@
 			color="neutral"
 			variant="ghost"
 			:label="label"
-			:icon="isSorted ? (isSorted === 'asc' ? 'lucide:arrow-up-narrow-wide' : 'lucide:arrow-down-wide-narrow') : 'lucide:arrow-up-down'"
+			:icon="isSorted ? (isSorted === 'asc' ? 'hugeicons:sort-by-up-02' : 'hugeicons:sort-by-down-02') : 'hugeicons:arrow-up-down'"
 			class="-mx-2.5"
 			:ui="{ leadingIcon: isSorted ? 'text-primary' : 'text-muted' }"
 			@click="toggleSorting"
@@ -20,7 +20,7 @@
 		isSorted: false | SortDirection
 	}>();
 
-	const emit = defineEmits <{
+	const emit = defineEmits<{
 		toggleSorting: [desc: boolean]
 	}>();
 

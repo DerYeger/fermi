@@ -3,7 +3,7 @@
 		variant="ghost"
 		size="sm"
 		color="warning"
-		icon="lucide:archive"
+		icon="hugeicons:archive-03"
 		@click.stop="showArchiveModal = true"
 	>
 		Complete

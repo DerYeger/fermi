@@ -1,5 +1,5 @@
 <template>
-	<UButton :label="hideLabel ? undefined : 'Edit'" variant="ghost" size="sm" icon="lucide:pencil" @click.stop="showEditModal = true" />
+	<UButton :label="hideLabel ? undefined : 'Edit'" variant="ghost" size="sm" icon="hugeicons:edit-03" @click.stop="showEditModal = true" />
 	<UModal
 		v-model:open="showEditModal"
 		title="Edit ferment"

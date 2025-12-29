@@ -51,14 +51,14 @@
 				</UCarousel>
 				<div v-else class="max-lg:hidden w-full flex-1 overflow-hidden rounded-lg">
 					<div class="bg-elevated h-full flex-center">
-						<UIcon name="lucide:salad" class="size-16 text-muted" />
+						<UIcon name="hugeicons:iconjar" class="size-16 text-muted" />
 					</div>
 				</div>
 
 				<!-- Notes -->
 				<UCard>
 					<template #header>
-						<CardHeader title="Notes" icon="lucide:notebook-pen" />
+						<CardHeader title="Notes" icon="hugeicons:note-01" />
 					</template>
 					<div v-if="ferment.notes" class="whitespace-pre-wrap">
 						{{ ferment.notes }}
@@ -74,15 +74,23 @@
 				<!-- Details -->
 				<UCard>
 					<template #header>
-						<CardHeader title="Details" icon="lucide:info" />
+						<CardHeader title="Details" icon="hugeicons:information-square" />
 					</template>
 					<div class="flex flex-col gap-4">
+						<div v-if="ferment.container">
+							<div class="text-sm text-muted mb-1">
+								Container
+							</div>
+							<div>
+								{{ ferment.container }}
+							</div>
+						</div>
 						<div>
 							<div class="text-sm text-muted mb-1">
 								Salt Ratio
 							</div>
 							<div>
-								{{ ferment.saltRatio }}%
+								{{ formatPercentage(ferment.saltRatio) }}
 							</div>
 						</div>
 						<USeparator />
@@ -128,7 +136,7 @@
 				<!-- Ingredients -->
 				<UCard>
 					<template #header>
-						<CardHeader title="Ingredients" icon="lucide:list" />
+						<CardHeader title="Ingredients" icon="hugeicons:left-to-right-list-dash" />
 					</template>
 					<div class="flex flex-col gap-2">
 						<template
@@ -165,6 +173,7 @@
 	import ArchiveFermentButton from "~/components/Forms/ArchiveFermentForm/ArchiveFermentButton.vue";
 	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
 	import { RATING_CATEGORIES } from "~/types/ferment";
+	import { formatPercentage } from "~/types/utils";
 
 	const { ferment, withHeader = true } = defineProps<{
 		ferment: Ferment

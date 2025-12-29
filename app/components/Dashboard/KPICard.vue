@@ -1,7 +1,7 @@
 <template>
 	<UCard>
 		<template #header>
-			<CardHeader title="Overview" icon="lucide:chart-bar" />
+			<CardHeader title="Overview" icon="hugeicons:analytics-up" />
 		</template>
 		<Loader v-if="activeFerments.isLoading.value || completedFerments.isLoading.value" />
 		<div v-if="!activeFerments.data.value?.length && !completedFerments.data.value?.length" class="p-4 flex-center text-sm text-muted">

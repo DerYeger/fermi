@@ -1,7 +1,7 @@
 <template>
 	<UCard :ui="{ body: 'p-0!' }">
 		<template #header>
-			<CardHeader title="Ingredient Usage" icon="lucide:pie-chart" />
+			<CardHeader title="Ingredient Usage" icon="hugeicons:pie-chart" />
 		</template>
 		<Loader v-if="isLoading" />
 		<div v-else class="h-80">

@@ -42,6 +42,7 @@
 	import SortableTableHeader from "~/components/Table/SortableTableHeader.vue";
 	import StarsCell from "~/components/Table/StarsCell.vue";
 	import { RATING_CATEGORIES } from "~/types/ferment";
+	import { formatPercentage } from "~/types/utils";
 
 	const { data, isLoading } = useCompletedFerments();
 	const ferments = data as Ref<CompletedFerment[]>;
@@ -132,7 +133,7 @@
 				h(UButton, {
 					color: "neutral",
 					variant: "ghost",
-					icon: "i-lucide-chevron-down",
+					icon: "hugeicons:arrow-down-01",
 					square: true,
 					"aria-label": "Expand",
 					ui: {
@@ -168,7 +169,7 @@
 		columnHelper.accessor("saltRatio", {
 			id: "saltRatio",
 			header: createSortableHeader(columnLabels.saltRatio),
-			cell: (ctx) => `${ctx.getValue()}%`
+			cell: (ctx) => formatPercentage(ctx.getValue())
 		}),
 		columnHelper.accessor((row) => getDaysBetween(row.startDate, row.endDate), {
 			id: "duration",

@@ -13,7 +13,7 @@
 			/>
 			<UButton
 				v-if="internalModel"
-				icon="lucide:x"
+				icon="hugeicons:cancel-01"
 				variant="ghost"
 				color="error"
 				@click="internalModel = undefined"

@@ -7,7 +7,7 @@
 					color="neutral"
 					variant="link"
 					size="sm"
-					icon="i-lucide-calendar"
+					icon="hugeicons:calendar-03"
 					aria-label="Select a date"
 					class="px-0"
 				/>

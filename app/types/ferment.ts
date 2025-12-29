@@ -58,31 +58,31 @@ export const RATING_CATEGORIES = [
 	{
 		key: "overall",
 		name: "Overall",
-		icon: "lucide:trophy",
+		icon: "hugeicons:star-award-01",
 		placeholder: "Overall impression"
 	},
 	{
 		key: "flavor",
 		name: "Flavor",
-		icon: "lucide:leafy-green",
+		icon: "hugeicons:vegetarian-food",
 		placeholder: "Saltiness, sourness, and taste"
 	},
 	{
 		key: "texture",
 		name: "Texture",
-		icon: "lucide:utensils",
+		icon: "hugeicons:kitchen-utensils",
 		placeholder: "Texture, crunchiness, and fizz"
 	},
 	{
 		key: "smell",
 		name: "Smell",
-		icon: "lucide:soup",
+		icon: "hugeicons:nose",
 		placeholder: "Aroma and smell"
 	},
 	{
 		key: "process",
 		name: "Process",
-		icon: "lucide:chef-hat",
+		icon: "hugeicons:chef-hat",
 		placeholder: "Preparation and fermentation process"
 	}
 ] as const satisfies RatingCategory[];

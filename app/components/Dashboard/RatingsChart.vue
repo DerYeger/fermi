@@ -1,7 +1,7 @@
 <template>
 	<UCard :ui="{ body: hasData ? 'p-0!' : undefined }">
 		<template #header>
-			<CardHeader title="Ratings" icon="lucide:radar" />
+			<CardHeader title="Ratings" icon="hugeicons:chart-radar" />
 		</template>
 		<Loader v-if="isLoading" />
 		<div v-if="!hasData" class="p-4 flex-center text-sm text-muted">

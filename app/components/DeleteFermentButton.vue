@@ -2,7 +2,7 @@
 	<UButton
 		variant="ghost"
 		size="sm"
-		icon="lucide:trash-2"
+		icon="hugeicons:delete-02"
 		color="error"
 		@click.stop="showConfirmDialog = true"
 	/>

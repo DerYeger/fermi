@@ -46,7 +46,7 @@
 		<div>
 			<UButton
 				color="error"
-				icon="lucide:trash-2"
+				icon="hugeicons:delete-02"
 				variant="subtle"
 				@click="emit('remove')"
 			/>
