@@ -79,8 +79,6 @@
 			compressImage(file),
 			getImageDate(file)
 		]);
-		console.log(date);
-
 		return {
 			id: createId(),
 			base64,
