@@ -76,6 +76,6 @@
 	}>();
 
 	function navigateToDetails() {
-		navigateTo({ name: "ferment-id", params: { id: ferment.id } });
+		navigateTo(`/ferments/${ferment.id}`);
 	}
 </script>

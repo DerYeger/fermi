@@ -8,7 +8,7 @@
 			No ferments are due today.
 		</div>
 		<UScrollArea v-else v-slot="{ item, index }" :items="data" orientation="vertical" class="max-h-96">
-			<UButton variant="link" :to="{ name: 'ferment-id', params: { id: item.id } }">
+			<UButton variant="link" :to="`/ferments/${item.id}`">
 				{{ item.name }}
 				<UBadge class="ml-2" color="neutral" variant="subtle">
 					{{ formatTimeSince(today, item.startDate) }} old

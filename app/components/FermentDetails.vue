@@ -56,12 +56,15 @@
 				</div>
 
 				<!-- Notes -->
-				<UCard v-if="ferment.notes">
+				<UCard>
 					<template #header>
 						<CardHeader title="Notes" icon="lucide:notebook-pen" />
 					</template>
-					<div class="whitespace-pre-wrap">
+					<div v-if="ferment.notes" class="whitespace-pre-wrap">
 						{{ ferment.notes }}
+					</div>
+					<div v-else class="text-muted">
+						No notes
 					</div>
 				</UCard>
 			</div>
@@ -123,7 +126,7 @@
 				</UCard>
 
 				<!-- Ingredients -->
-				<UCard v-if="ferment.ingredients.length > 0">
+				<UCard>
 					<template #header>
 						<CardHeader title="Ingredients" icon="lucide:list" />
 					</template>

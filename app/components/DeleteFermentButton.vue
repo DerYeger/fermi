@@ -38,7 +38,7 @@
 
 	async function handleDelete() {
 		try {
-			if (route.name === "ferment-id" && route.params.id === ferment.id) {
+			if (route.name === "ferments-id" && route.params.id === ferment.id) {
 				await useRouter().push({ name: "ferments" }); // Navigate away if currently viewing the ferment being deleted
 			}
 			showConfirmDialog.value = false;

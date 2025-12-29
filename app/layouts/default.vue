@@ -86,7 +86,7 @@
 			icon: "lucide:salad",
 			to: "/ferments"
 		},
-		{ type: "link", label: "Archive", icon: "lucide:archive", to: "/archive" },
+		{ type: "link", label: "Archive", icon: "lucide:archive", to: "/ferments/archive" },
 		{ type: "link", icon: "lucide:settings-2", to: "/settings" }
 	] as const satisfies NavigationMenuItem[];
 

@@ -4,7 +4,7 @@
 			icon="lucide:eye"
 			variant="ghost"
 			size="sm"
-			@click="navigateTo(`/ferment/${ferment.id}`)"
+			@click="navigateTo(`/ferments/${ferment.id}`)"
 		/>
 		<EditFermentButton :ferment="ferment" hide-label />
 		<UnarchiveFermentButton :ferment="ferment" hide-label />

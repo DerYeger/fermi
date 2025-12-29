@@ -124,7 +124,7 @@
 				items.push({
 					type: "link",
 					label: ferment.name,
-					to: { name: "ferment-id", params: { id: ferment.id } }
+					to: `/ferments/${ferment.id}`
 				});
 			}
 			);
@@ -142,7 +142,7 @@
 				items.push({
 					type: "link",
 					label: ferment.name,
-					to: { name: "ferment-id", params: { id: ferment.id } }
+					to: `/ferments/${ferment.id}`
 				});
 			});
 		}
