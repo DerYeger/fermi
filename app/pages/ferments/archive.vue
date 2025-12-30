@@ -96,7 +96,8 @@
 				type: "checkbox" as const,
 				checked: column.getIsVisible(),
 				onUpdateChecked(checked: boolean) {
-					tableApi?.getColumn(column.id)?.toggleVisibility(!!checked);
+					const isVisible = !!checked;
+					column.toggleVisibility(isVisible);
 				},
 				onSelect(e: Event) {
 					e.preventDefault();

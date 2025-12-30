@@ -18,7 +18,8 @@ export function multiSelectFilterFn<T>(row: Row<T>, columnId: string, filterValu
 	if (filterValue.size === 0) {
 		return true;
 	}
-	return row.getUniqueValues<string>(columnId).some((value) => filterValue.has(value));
+	const rowValue = row.getUniqueValues<string>(columnId);
+	return rowValue.some((value) => filterValue.has(value));
 }
 
 export function multiSelectFilter<TData, TValue>(ctx: HeaderContext<TData, TValue>): MultiSelectFilter {
@@ -51,11 +52,11 @@ export interface NumberRangeFilter extends FilterBase {
 }
 
 export function numberRangeFilterFn<T>(row: Row<T>, columnId: string, filterValue: NumberRangeFilterState) {
-	const value = row.getValue<number>(columnId);
-	if (filterValue.min !== undefined && value < filterValue.min) {
+	const rowValue = row.getValue<number>(columnId);
+	if (filterValue.min !== undefined && rowValue < filterValue.min) {
 		return false;
 	}
-	if (filterValue.max !== undefined && value > filterValue.max) {
+	if (filterValue.max !== undefined && rowValue > filterValue.max) {
 		return false;
 	}
 	return true;

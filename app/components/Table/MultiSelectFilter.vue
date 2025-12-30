@@ -25,7 +25,7 @@
 
 	const { id, items, isFiltered, onUpdate } = defineProps<MultiSelectFilter>();
 
-	const model = useLocalStorage(() => `multi-select-filter-${id}`, [] as string[]);
+	const model = useLocalStorage<string[]>(() => `multi-select-filter-${id}`, []);
 
 	const open = ref(false);
 
