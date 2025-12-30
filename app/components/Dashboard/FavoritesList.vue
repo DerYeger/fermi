@@ -2,7 +2,7 @@
 	<FermentList
 		v-slot="{ ferment }"
 		title="Favorites"
-		icon="lucide:heart"
+		icon="hugeicons:favourite"
 		:is-loading="isLoading"
 		:items="data"
 		no-items-text="No favorites"

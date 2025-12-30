@@ -2,7 +2,7 @@
 	<UButton
 		variant="ghost"
 		size="sm"
-		icon="hugeicons:heart"
+		icon="hugeicons:favourite"
 		:color="isFavorite ? 'error' : 'neutral'"
 		@click.stop="isFavorite = !isFavorite"
 	/>
