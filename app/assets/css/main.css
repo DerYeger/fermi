@@ -2,7 +2,7 @@
 @import "@nuxt/ui";
 
 @theme {
-	--font-heading: "Montserrat", sans-serif;
+	--font-heading: "Inter", sans-serif;
 	--font-sans: "Inter", sans-serif;
 
 	--color-primary: var(--ui-color-primary-500);

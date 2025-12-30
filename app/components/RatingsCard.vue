@@ -20,6 +20,9 @@
 
 	defineProps<{
 		title: string
+		/**
+		 * @IconifyIcon
+		 */
 		icon: string
 		rating: Rating
 	}>();

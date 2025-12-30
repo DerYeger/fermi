@@ -27,6 +27,18 @@ export default defineNuxtConfig({
 	css: [
 		"@/assets/css/main.css"
 	],
+	fonts: {
+		provider: "local",
+		families: [
+			{ name: "Inter", provider: "local" }
+		]
+	},
+	icon: {
+		clientBundle: {
+			scan: true
+		},
+		serverBundle: false
+	},
 	svgo: {
 		autoImportPath: "@/assets/"
 	},

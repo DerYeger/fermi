@@ -53,9 +53,13 @@ export type Rating = zInfer<typeof RatingSchema>;
 export interface RatingCategory {
 	key: string
 	name: string
+	/**
+	 * @IconifyIcon
+	 */
 	icon: string
 	placeholder: string
 }
+
 export const RATING_CATEGORIES = [
 	{
 		key: "overall",

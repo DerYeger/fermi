@@ -23,6 +23,9 @@
 <script setup lang="ts" generic="T">
 	defineProps<{
 		title: string
+		/**
+		 * @IconifyIcon
+		 */
 		icon: string
 		noItemsText: string
 		isLoading: boolean
