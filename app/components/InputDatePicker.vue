@@ -4,6 +4,7 @@
 			color="neutral"
 			variant="subtle"
 			icon="hugeicons:calendar-03"
+			class="whitespace-pre"
 		>
 			{{ modelValue ? formatDate(modelValue) : 'Select a date' }}
 		</UButton>

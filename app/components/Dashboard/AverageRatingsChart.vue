@@ -4,7 +4,7 @@
 			<CardHeader title="Average Ratings" icon="hugeicons:chart-01" />
 		</template>
 		<Loader v-if="isLoading" />
-		<div v-if="!hasData" class="p-4 flex-center text-sm text-muted">
+		<div v-if="!hasData" class="px-4 py-1.5 flex-center text-sm text-muted">
 			No data
 		</div>
 		<div v-else class="h-80">

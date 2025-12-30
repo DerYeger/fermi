@@ -18,6 +18,7 @@
 <script lang="ts" setup>
 	import AverageRatingsChart from "~/components/Dashboard/AverageRatingsChart.vue";
 	import DueFerments from "~/components/Dashboard/DueFerments.vue";
+	import FavoritesList from "~/components/Dashboard/FavoritesList.vue";
 	import FermentCalendar from "~/components/Dashboard/FermentCalendar.vue";
 	import IngredientsChart from "~/components/Dashboard/IngredientsChart.vue";
 	import KPICard from "~/components/Dashboard/KPICard.vue";
@@ -26,7 +27,7 @@
 
 	const { data: ferments, isLoading } = useFerments();
 
-	const items = [KPICard, DueFerments, IngredientsChart, FermentCalendar, RatingsChart, OverdueFerments, AverageRatingsChart];
+	const items = [KPICard, DueFerments, FavoritesList, IngredientsChart, FermentCalendar, RatingsChart, OverdueFerments, AverageRatingsChart];
 
 	const scrollAreaWrapper = useTemplateRef("scrollAreaWrapper");
 	const { width } = useElementSize(scrollAreaWrapper);

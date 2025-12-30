@@ -4,19 +4,19 @@
 			<CardHeader title="Overdue" icon="hugeicons:alert-02" />
 		</template>
 		<Loader v-if="isLoading" class="p-4" />
-		<div v-if="data.length === 0" class="p-4 flex-center text-sm text-muted">
+		<div v-if="data.length === 0" class="px-4 py-1.5 flex-center text-sm text-muted">
 			No overdue ferments
 		</div>
-		<UScrollArea v-else v-slot="{ item, index }" :items="data" orientation="vertical" class="max-h-96">
-			<UButton variant="link" :to="`/ferments/${item.id}`">
-				{{ item.name }}
-				<UBadge class="ml-2" color="neutral" variant="subtle">
+		<UScrollArea v-else v-slot="{ item, index }" :items="data" orientation="vertical" class="max-h-96" :ui="{ item: 'max-w-full' }">
+			<div class="max-w-full flex gap-2 items-center">
+				<UButton color="neutral" icon="hugeicons:view" variant="link" class="flex-1 truncate" :label="item.name" :to="`/ferments/${item.id}`" />
+				<UBadge color="neutral" variant="subtle">
 					{{ formatTimeSince(today, item.startDate) }} old
 				</UBadge>
-				<UBadge class="ml-2" color="warning" variant="subtle">
+				<UBadge color="warning" variant="subtle">
 					{{ formatTimeSince(item.endDate!, today) }} overdue
 				</UBadge>
-			</UButton>
+			</div>
 			<USeparator v-if="index < data.length - 1" class="my-2" />
 		</UScrollArea>
 	</UCard>
