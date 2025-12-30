@@ -7,7 +7,7 @@
 		:items="items"
 		:no-items-text="noItemsText"
 	>
-		<UButton color="neutral" icon="hugeicons:view" variant="link" class="w-full flex items-center justify-between gap-2" :to="`/ferments/${item.id}`">
+		<UButton color="neutral" icon="hugeicons:arrow-right-02" variant="link" class="w-full flex items-center justify-between gap-2" :to="`/ferments/${item.id}`">
 			<div class="flex-1 truncate">
 				{{ item.name }}
 			</div>

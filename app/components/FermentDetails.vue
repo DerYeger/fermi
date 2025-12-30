@@ -1,5 +1,5 @@
 <template>
-	<div class="flex flex-col gap-4">
+	<div class="flex text-default text-base flex-col gap-4">
 		<!-- Header -->
 		<div v-if="withHeader" class="flex items-center justify-between gap-4 flex-wrap">
 			<div class="text-2xl font-bold max-w-full truncate">
