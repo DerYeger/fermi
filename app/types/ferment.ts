@@ -19,6 +19,7 @@ export const MAX_NOTES_LENGTH = 5000;
 const NotesSchema = TrimmedString.max(MAX_NOTES_LENGTH, "Notes cannot exceed 5000 characters");
 
 const FermentBaseSchema = z.object({
+	version: z.literal(1),
 	id: z.string(),
 	name: TrimmedString.min(1, "Name is required"),
 	container: TrimmedString.nullable().transform((val) => val || null),
