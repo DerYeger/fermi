@@ -161,7 +161,8 @@ export function useIngredientUnits(otherUnits: MaybeRefOrGetter<string[]>): Comp
 let loadFailuresNotified = false;
 
 async function loadAllFerments(): Promise<Ferment[]> {
-	const allDirs = await useTauriFsReadDir(dataDir.value || "", getOptions());
+	const dataDir = await getDataDir();
+	const allDirs = await useTauriFsReadDir(dataDir);
 	const fermentIds = allDirs.filter((dir) => dir.isDirectory && dir.name.startsWith(FERMENT_DIR_PREFIX)).map((dir) => dir.name.substring(FERMENT_DIR_PREFIX.length));
 	const parsed = await Promise.allSettled(
 		fermentIds.map((id) => loadFermentById(id))
@@ -209,7 +210,8 @@ async function loadAllFerments(): Promise<Ferment[]> {
 }
 
 async function loadFermentById(id: string) {
-	const content: string = await useTauriFsReadTextFile(getFermentFile(id), getOptions());
+	const path = await getFermentFile(id);
+	const content: string = await useTauriFsReadTextFile(path);
 	return FermentSchema.parse(JSON.parse(content));
 }
 
@@ -217,65 +219,67 @@ async function writeFermentData(data: Ferment) {
 	await ensureFermentDirExists(data.id);
 	await createBackup(data.id);
 	const content = JSON.stringify(data, null, 2);
-	await useTauriFsWriteTextFile(getFermentFile(data.id), content, getOptions());
+	const path = await getFermentFile(data.id);
+	await useTauriFsWriteTextFile(path, content);
 }
 
 async function deleteFermentById(id: string) {
-	await useTauriFsRemove(getFermentDir(id), { ...getOptions(), recursive: true });
+	const path = await getFermentDir(id);
+	await useTauriFsRemove(path, { recursive: true });
 }
 
 async function ensureFermentDirExists(id: string) {
-	await useTauriFsMkdir(getFermentDir(id), { ...getOptions(), recursive: true });
+	const path = await getFermentDir(id);
+	await useTauriFsMkdir(path, { recursive: true });
 }
 
 async function createBackup(id: string) {
 	try {
-		const dataPath = getFermentFile(id);
+		const dataPath = await getFermentFile(id);
 
-		const exists = await useTauriFsExists(dataPath, getOptions());
+		const exists = await useTauriFsExists(dataPath);
 		if (!exists) return;
 
-		const currentData = await useTauriFsReadTextFile(dataPath, getOptions());
+		const currentData = await useTauriFsReadTextFile(dataPath);
 
 		// Rotate backups (shift all backups up by 1, delete oldest if exceeds max)
 		for (let i = maxBackups.value - 1; i >= 1; i--) {
-			const oldPath = getBackupFilePath(id, i);
-			const newPath = getBackupFilePath(id, i + 1);
+			const oldPath = await getBackupFilePath(id, i);
+			const newPath = await getBackupFilePath(id, i + 1);
 
-			const oldExists = await useTauriFsExists(oldPath, getOptions());
+			const oldExists = await useTauriFsExists(oldPath);
 			if (oldExists) {
 				if (i + 1 > maxBackups.value) {
-					await useTauriFsRemove(oldPath, getOptions());
+					await useTauriFsRemove(oldPath);
 				} else {
-					const backupData = await useTauriFsReadTextFile(oldPath, getOptions());
-					await useTauriFsWriteTextFile(newPath, backupData, getOptions());
+					const backupData = await useTauriFsReadTextFile(oldPath);
+					await useTauriFsWriteTextFile(newPath, backupData);
 				}
 			}
 		}
 
 		// Create new backup at position 1
-		await useTauriFsWriteTextFile(getBackupFilePath(id, 1), currentData, getOptions());
+		await useTauriFsWriteTextFile(await getBackupFilePath(id, 1), currentData);
 	} catch (error) {
 		console.error("Failed to create backup:", error);
 	}
 }
 
-function getFermentDir(id: string) {
-	const dir = `${FERMENT_DIR_PREFIX}${id}`;
+export async function getDataDir() {
 	if (dataDir.value) {
-		return `${dataDir.value}/${dir}`;
+		return dataDir.value;
 	}
-	return dir;
+	return `${await useTauriPathDocumentDir()}/Fermi`;
 }
 
-function getFermentFile(id: string) {
-	return `${getFermentDir(id)}/${DATA_FILENAME}`;
+async function getFermentDir(id: string) {
+	return `${await getDataDir()}/${FERMENT_DIR_PREFIX}${id}`;
 }
 
-function getOptions() {
-	return dataDir.value ? {} : { baseDir: useTauriFsBaseDirectory.AppData };
+async function getFermentFile(id: string) {
+	return `${await getFermentDir(id)}/${DATA_FILENAME}`;
 }
 
-function getBackupFilePath(id: string, backupIndex: number) {
-	return `${getFermentDir(id)}/backup_${backupIndex}.json`;
+async function getBackupFilePath(id: string, backupIndex: number) {
+	return `${await getFermentDir(id)}/backup_${backupIndex}.json`;
 }

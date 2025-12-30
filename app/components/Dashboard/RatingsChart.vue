@@ -46,6 +46,7 @@
 				min: 0,
 				max: MAX_STARS
 			})),
+			center: ["50%", "52.5%"],
 			radius: "75%",
 			axisName: {
 				color

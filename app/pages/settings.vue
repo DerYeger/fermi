@@ -17,14 +17,14 @@
 
 			<div class="space-y-4">
 				<p class="text-sm text-muted">
-					Choose where your fermentation data is stored. The default location is in the app's data directory.
+					Choose where your fermentation data is stored.
 				</p>
 
 				<UFormField label="Save location" name="saveLocation">
-					<div class="flex gap-2">
+					<UFieldGroup class="w-full">
 						<UInput
 							v-model="dataDir"
-							placeholder="Default: App Data Directory"
+							:placeholder="dataDirDisplay?.dir"
 							readonly
 							class="flex-1"
 						/>
@@ -33,18 +33,15 @@
 						</UButton>
 						<UButton
 							v-if="dataDir"
-							variant="ghost"
+							variant="subtle"
 							color="error"
 							icon="hugeicons:cancel-01"
 							@click="clearSaveLocation"
 						/>
-					</div>
+					</UFieldGroup>
 				</UFormField>
 
-				<div class="flex items-center justify-between">
-					<p class="text-xs text-muted">
-						Current location: {{ dataDirDisplay }}
-					</p>
+				<div class="flex items-end">
 					<UButton
 						variant="ghost"
 						size="sm"
@@ -110,9 +107,10 @@
 
 	const { maxBackups, dataDir } = useFermiConfig();
 
-	const dataDirDisplay = computed(() => {
-		return dataDir.value || "App Data Directory (default)";
-	});
+	const { data: dataDirDisplay } = useAsyncData("dataDirDisplay", async () => {
+		const dir = await getDataDir();
+		return { dir, isDefault: dataDir.value === FERMI_CONFIG_DEFAULTS.dataDir };
+	}, { immediate: true });
 
 	async function selectFolder() {
 		try {
@@ -140,11 +138,7 @@
 
 	async function openDataDirectory() {
 		try {
-			let path = dataDir.value;
-			if (!path) {
-				// Get the app data directory path
-				path = await useTauriPathAppDataDir();
-			}
+			let path = await getDataDir();
 			const fileProtocol = "file://";
 			if (!path.startsWith(fileProtocol)) {
 				path = fileProtocol + path;
