@@ -38,6 +38,7 @@
 	}>();
 
 	const state = reactive<ActiveFerment>({
+		version: 1,
 		id: createId(),
 		name: "",
 		container: "",

@@ -44,7 +44,6 @@
 				<div class="flex items-end">
 					<UButton
 						variant="ghost"
-						size="sm"
 						icon="hugeicons:folder-02"
 						@click="openDataDirectory"
 					>

@@ -16,8 +16,8 @@
 					<div>
 						{{ formatValue(min) }}
 					</div>
-					<div class="flex-1 flex-center">
-						<UButton variant="link" color="error" size="sm" @click="reset">
+					<div class="flex-1 flex justify-center">
+						<UButton variant="link" color="error" @click="reset">
 							Reset
 						</UButton>
 					</div>
