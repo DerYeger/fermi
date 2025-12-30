@@ -115,7 +115,7 @@
 			const exifDate = rawExifDate
 				?.split(" ")[0]
 				?.replace(/:/g, "-");
-			return exifDate ?? getISODate();
+			return z.iso.date().parse(exifDate ?? getISODate());
 		} catch {
 			return getISODate();
 		}
