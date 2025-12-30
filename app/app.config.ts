@@ -31,7 +31,9 @@ export default defineAppConfig({
 		},
 		card: {
 			slots: {
-				root: "bg-(--ui-bg-elevated)"
+				root: "bg-(--ui-bg-elevated)",
+				body: "sm:p-4",
+				header: "sm:px-4"
 			}
 		}
 	}

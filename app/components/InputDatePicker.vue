@@ -34,7 +34,7 @@
 			return model.value ? getCalendarDate(date) : null;
 		},
 		set(value: CalendarDate | null) {
-			model.value = value?.toString().split("T")[0] ?? null;
+			model.value = (value ? getISODate(value) : null) ?? null;
 		}
 	});
 </script>

@@ -3,7 +3,7 @@
 		<template #header>
 			<CardHeader title="Calendar" icon="hugeicons:calendar-03" />
 		</template>
-		<UCalendar :week-starts-on="FIRST_WEEK_DAY" :model-value="getCalendarDate()" variant="subtle" color="neutral">
+		<UCalendar :week-starts-on="FIRST_WEEK_DAY" :model-value="todayCalendarDate" variant="subtle" color="neutral">
 			<template #day="{ day }">
 				<div v-if="getDayState(day).type" class="relative">
 					<UDropdownMenu

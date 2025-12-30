@@ -6,6 +6,15 @@ const LOCALE = navigator.language;
 
 const now = useNow({ interval: 60 * 60 * 1000 });
 
+/**
+ * ISO date for today.
+ */
+export const today = computed(() => getISODate(now.value));
+/**
+ * Calendar date for today.
+ */
+export const todayCalendarDate = computed(() => getCalendarDate(now.value));
+
 const timeSinceFormat = Intl.NumberFormat(LOCALE, {
 	style: "unit",
 	unit: "day",
