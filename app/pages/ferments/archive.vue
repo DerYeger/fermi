@@ -54,7 +54,7 @@
 	import StarsCell from "~/components/Table/StarsCell.vue";
 	import TableHeader from "~/components/Table/TableHeader.vue";
 	import { MAX_STARS, RATING_CATEGORIES } from "~/types/ferment";
-	import { createNumberRangeFilter, isMultiSelectFilterApplicable, isNumberRangeFilterApplicable, multiSelectFilter } from "~/types/filter";
+	import { createNumberRangeFilter, dateFilter, dateFilterFn, multiSelectFilter, multiSelectFilterFn, numberRangeFilterFn } from "~/types/filter";
 	import { formatPercentage } from "~/types/utils";
 
 	const { data, isLoading } = useCompletedFerments();
@@ -198,7 +198,7 @@
 		columnHelper.accessor("name", {
 			id: "name",
 			header: createHeader(columnLabels.name, multiSelectFilter),
-			filterFn: isMultiSelectFilterApplicable,
+			filterFn: multiSelectFilterFn,
 			meta: {
 				class: {
 					td: "max-w-[30ch] truncate"
@@ -208,7 +208,7 @@
 		columnHelper.accessor("container", {
 			id: "container",
 			header: createHeader(columnLabels.container, multiSelectFilter),
-			filterFn: isMultiSelectFilterApplicable,
+			filterFn: multiSelectFilterFn,
 			cell: (ctx) => {
 				const container = ctx.getValue();
 				if (!container) {
@@ -221,7 +221,7 @@
 			id: "ingredients",
 			getUniqueValues: (row) => row.ingredients.map((ing) => ing.name),
 			header: createHeader(columnLabels.ingredients, multiSelectFilter),
-			filterFn: isMultiSelectFilterApplicable,
+			filterFn: multiSelectFilterFn,
 			cell: (ctx) =>
 				h(IngredientBadges, { ingredients: ctx.getValue() })
 		}),
@@ -232,7 +232,7 @@
 				step: 0.001,
 				percentage: true
 			}))),
-			filterFn: isNumberRangeFilterApplicable,
+			filterFn: numberRangeFilterFn,
 			cell: (ctx) => formatPercentage(ctx.getValue())
 		}),
 		columnHelper.accessor((row) => getDaysBetween(row.startDate, row.endDate), {
@@ -241,17 +241,19 @@
 				...durationLimits.value,
 				step: 1
 			}))),
-			filterFn: isNumberRangeFilterApplicable,
+			filterFn: numberRangeFilterFn,
 			cell: (ctx) => `${ctx.getValue()} days`
 		}),
 		columnHelper.accessor("startDate", {
 			id: "startDate",
-			header: createHeader(columnLabels.startDate),
+			header: createHeader(columnLabels.startDate, dateFilter),
+			filterFn: dateFilterFn,
 			cell: (ctx) => formatDate(ctx.getValue())
 		}),
 		columnHelper.accessor("endDate", {
 			id: "endDate",
-			header: createHeader(columnLabels.endDate),
+			header: createHeader(columnLabels.endDate, dateFilter),
+			filterFn: dateFilterFn,
 			cell: (ctx) => formatDate(ctx.getValue())
 		}),
 		...RATING_CATEGORIES.map((rating) =>
@@ -262,7 +264,7 @@
 					max: MAX_STARS,
 					step: 1
 				})),
-				filterFn: isNumberRangeFilterApplicable,
+				filterFn: numberRangeFilterFn,
 				cell: createStarsCell()
 			})),
 		columnHelper.display({
@@ -279,12 +281,14 @@
 		}),
 		columnHelper.accessor("createdAt", {
 			id: "createdAt",
-			header: createHeader(columnLabels.createdAt),
+			header: createHeader(columnLabels.createdAt, dateFilter),
+			filterFn: dateFilterFn,
 			cell: (ctx) => formatDateTime(ctx.getValue())
 		}),
 		columnHelper.accessor("updatedAt", {
 			id: "updatedAt",
-			header: createHeader(columnLabels.updatedAt),
+			header: createHeader(columnLabels.updatedAt, dateFilter),
+			filterFn: dateFilterFn,
 			cell: (ctx) => formatDateTime(ctx.getValue())
 		})
 	] as ColumnDef<CompletedFerment>[];
