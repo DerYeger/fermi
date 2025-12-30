@@ -7,11 +7,11 @@
 		/>
 		<template #content>
 			<div v-if="min !== max" class="w-64 px-4 pt-4 pb-2 flex flex-col gap-4">
-				<div v-if="true" class="flex justify-between gap-2">
-					<UInputNumber v-model="model[0]" :min="min" :max="model[1]" :step="step" label="Min" :format-options="formatOptions" />
-					<UInputNumber v-model="model[1]" :min="model[0]" :max="max" :step="step" label="Max" :format-options="formatOptions" />
+				<div class="flex justify-between gap-2">
+					<UInputNumber v-model="model.min" :min="min" :max="model.max" :step="step" label="Min" :format-options="formatOptions" />
+					<UInputNumber v-model="model.max" :min="model.min" :max="max" :step="step" label="Max" :format-options="formatOptions" />
 				</div>
-				<USlider v-model="model" :min="min" :max="max" multiple :step="step" tooltip />
+				<USlider v-model="sliderModel" :min="min" :max="max" multiple :step="step" tooltip />
 				<div class="flex gap-1 items-center text-muted text-sm">
 					<div>
 						{{ formatValue(min) }}
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-	import type { NumberRangeFilter } from "~/types/filter";
+	import type { NumberRangeFilter, NumberRangeFilterState } from "~/types/filter";
 	import { deepEquals } from "@tanstack/vue-db";
 	import { formatPercentage } from "~/types/utils";
 
@@ -56,34 +56,36 @@
 
 	const open = ref(false);
 
-	const model = useLocalStorage<[number, number]>(() => `number-range-filter-${id}`, [min, max]);
+	const model = useLocalStorage<NumberRangeFilterState>(() => `number-range-filter-${id}`, { min, max });
+
+	const sliderModel = computed({
+		get: (): [number, number] => [model.value.min, model.value.max],
+		set: ([min, max]) => {
+			model.value = { min, max };
+		}
+	});
 
 	watch(model, (newValue, oldValue) => {
 		if (deepEquals(newValue, oldValue)) return;
-		onUpdate(
-			{
-				min: newValue[0],
-				max: newValue[1]
-			}
-		);
+		onUpdate(newValue);
 	}, { immediate: true });
 
 	watch([() => min, () => max], () => {
 		// Ensure model values stay within updated min/max props
-		if (model.value[0] < min) {
-			model.value[0] = min;
+		if (model.value.min < min) {
+			model.value.min = min;
 		}
-		if (model.value[1] > max) {
-			model.value[1] = max;
+		if (model.value.max > max) {
+			model.value.max = max;
 		}
-		if (model.value[0] > model.value[1]) {
-			const tmp = model.value[0];
-			model.value[0] = model.value[1];
-			model.value[1] = tmp;
+		if (model.value.min > model.value.max) {
+			const tmp = model.value.min;
+			model.value.min = model.value.max;
+			model.value.max = tmp;
 		}
 	}, { immediate: true });
 
 	function reset() {
-		model.value = [min, max];
+		model.value = { min, max };
 	}
 </script>
