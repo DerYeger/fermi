@@ -27,6 +27,8 @@
 	import { like, useLiveQuery } from "@tanstack/vue-db";
 	import NewFermentButton from "~/components/Forms/NewFermentForm/NewFermentButton.vue";
 
+	useBadgeCount();
+
 	const searchModel = ref("");
 
 	const { data: ferments } = useLiveQuery((q) => {

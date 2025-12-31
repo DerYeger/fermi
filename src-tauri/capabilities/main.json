@@ -9,6 +9,7 @@
 		"core:path:default",
 		"core:event:default",
 		"core:window:default",
+    "core:window:allow-set-badge-count",
 		"core:app:default",
 		"core:resources:default",
 		"core:menu:default",
@@ -34,8 +35,6 @@
 		"fs:allow-read-text-file",
 		"fs:allow-write",
 		"fs:allow-write-text-file",
-		"fs:allow-remove",
-		"store:default",
-		"shell:allow-open"
+		"fs:allow-remove"
 	]
 }

@@ -29,7 +29,7 @@
 	import NameFormField from "~/components/Forms/FormFields/NameFormField.vue";
 	import NotesFormField from "~/components/Forms/FormFields/NotesFormField.vue";
 	import SaltRatioFormField from "~/components/Forms/FormFields/SaltRatioFormField.vue";
-	import { getISODate } from "~/composables/useTime";
+	import { getISODate } from "~/composables/time";
 	import { ActiveFermentSchema } from "~/types/ferment";
 
 	const emit = defineEmits<{

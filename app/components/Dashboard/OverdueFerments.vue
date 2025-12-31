@@ -17,11 +17,7 @@
 </template>
 
 <script setup lang="ts">
-	import { and, eq, lt, useLiveQuery } from "@tanstack/vue-db";
 	import FermentList from "~/components/Dashboard/FermentList.vue";
 
-	const { data, isLoading } = useLiveQuery((q) =>
-		q.from({ ferment: FermentCollection })
-			.where(({ ferment }) => and(eq(ferment.state, "active"), lt(ferment.endDate, today.value)))
-			.orderBy(({ ferment }) => ferment.endDate, "asc"), [today]);
+	const { data, isLoading } = useOverdueFerments();
 </script>
