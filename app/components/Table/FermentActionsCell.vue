@@ -8,6 +8,7 @@
 			@click="navigateTo(`/ferments/${ferment.id}`)"
 		/>
 		<EditFermentButton :ferment="ferment" hide-label />
+		<DuplicateFermentButton :ferment="ferment" />
 		<UnarchiveFermentButton :ferment="ferment" hide-label />
 		<DeleteFermentButton :ferment="ferment" />
 	</div>

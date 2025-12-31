@@ -7,13 +7,13 @@
 		icon="hugeicons:unarchive-03"
 		@click.stop="showConfirmDialog = true"
 	/>
-	<UModal v-model:open="showConfirmDialog" title="Restore ferment" description="Form for restoring a completed ferment">
+	<UModal v-model:open="showConfirmDialog" title="Restore ferment" description="Dialog for restoring a completed ferment">
 		<template #body>
 			<p class="text-muted mb-6 wrap-break-word">
 				Are you sure you want to restore "{{ ferment.name }}"? This action will move it back to active ferments.
 			</p>
 			<div class="flex justify-end gap-2">
-				<UButton variant="ghost" @click="showConfirmDialog = false">
+				<UButton variant="ghost" color="neutral" @click="showConfirmDialog = false">
 					Cancel
 				</UButton>
 				<UButton variant="subtle" color="warning" @click="handleUnarchive">

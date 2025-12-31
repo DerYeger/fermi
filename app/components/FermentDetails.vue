@@ -9,6 +9,7 @@
 			<div class="flex items-center gap-2">
 				<FavoriteFermentButton :ferment="ferment" />
 				<EditFermentButton :ferment="ferment" />
+				<DuplicateFermentButton :ferment="ferment" />
 				<ArchiveFermentButton v-if="ferment.state === 'active'" :ferment="ferment" />
 				<UnarchiveFermentButton v-else :ferment="ferment" />
 				<DeleteFermentButton :ferment="ferment" />

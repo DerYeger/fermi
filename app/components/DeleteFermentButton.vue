@@ -6,13 +6,13 @@
 		color="error"
 		@click.stop="showConfirmDialog = true"
 	/>
-	<UModal v-model:open="showConfirmDialog" title="Delete ferment" description="Form for deleting an existing ferment">
+	<UModal v-model:open="showConfirmDialog" title="Delete ferment" description="Dialog for deleting an existing ferment">
 		<template #body>
 			<p class="text-muted mb-6">
 				Are you sure you want to delete "{{ ferment.name }}"? This action cannot be undone.
 			</p>
 			<div class="flex justify-end gap-2">
-				<UButton variant="ghost" @click="showConfirmDialog = false">
+				<UButton variant="ghost" color="neutral" @click="showConfirmDialog = false">
 					Cancel
 				</UButton>
 				<UButton variant="subtle" color="error" @click="handleDelete">
