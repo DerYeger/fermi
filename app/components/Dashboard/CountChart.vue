@@ -105,7 +105,12 @@
 	const chartOptions = computed<ECBasicOption>(() => ({
 		darkMode: colorMode.value === "dark",
 		tooltip: {
-			trigger: "axis"
+			trigger: "axis",
+			borderColor: borderColor.value,
+			backgroundColor: backgroundColor.value,
+			textStyle: {
+				color: textMutedColor.value
+			}
 		},
 		legend: {
 			type: "scroll",

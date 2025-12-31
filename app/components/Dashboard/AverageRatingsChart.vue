@@ -52,6 +52,8 @@
 
 	const hasData = computed(() => chartData.value.some((category) => category.average > 0));
 
+	const backgroundColor = useCssVar("--ui-bg");
+	const textMutedColor = useCssVar("--ui-text-muted");
 	const warningColor = useCssVar("--color-warning");
 	const colorMode = useColorMode();
 
@@ -60,7 +62,11 @@
 		darkMode: colorMode.value === "dark",
 		tooltip: {
 			trigger: "item",
-			formatter: "{b}: {c}/5"
+			formatter: "{b}: {c}/5",
+			backgroundColor: backgroundColor.value,
+			textStyle: {
+				color: textMutedColor.value
+			}
 		},
 		xAxis: { type: "category", data: chartData.value.map(({ name }) => name) },
 		yAxis: {
