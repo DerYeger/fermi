@@ -88,11 +88,13 @@
 
 			<div class="space-y-2 text-sm text-muted">
 				<div>
-					Fermi is a simple fermentation tracking app to help you manage your fermentation projects.
+					Fermi is a fermentation tracking app to help you manage, track, and analyze your fermentation projects.
 				</div>
 				<div>
-					The source code is available on <UButton icon="hugeicons:github" color="neutral" size="xs" variant="subtle" label="GitHub" @click="openGitHub" />
-					.
+					It is an open source project developed by <UButton icon="hugeicons:passport" label="Jan Müller" class="-mb-2" color="neutral" size="xs" variant="subtle" @click="openWebsite" />.
+				</div>
+				<div>
+					The source code is available on <UButton icon="hugeicons:github" color="neutral" size="xs" variant="subtle" label="GitHub" @click="openGitHub" />.
 				</div>
 			</div>
 		</UCard>
@@ -147,6 +149,10 @@
 		} catch (error) {
 			toast.add({ title: "Error opening directory", description: getErrorMessage(error), color: "error" });
 		}
+	}
+
+	function openWebsite() {
+		useTauriShellOpen("https://janmueller.dev");
 	}
 
 	function openGitHub() {

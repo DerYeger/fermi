@@ -70,6 +70,7 @@ let loadFailuresNotified = false;
 
 async function loadAllFerments(): Promise<Ferment[]> {
 	const dataDir = await getDataDir();
+	await useTauriFsMkdir(dataDir, { recursive: true });
 	const allDirs = await useTauriFsReadDir(dataDir);
 	const fermentIds = allDirs.filter((dir) => dir.isDirectory && dir.name.startsWith(FERMENT_DIR_PREFIX)).map((dir) => dir.name.substring(FERMENT_DIR_PREFIX.length));
 	const parsed = await Promise.allSettled(
@@ -178,7 +179,7 @@ export async function getDataDir() {
 	if (dataDir.value) {
 		return dataDir.value;
 	}
-	return `${await useTauriPathDocumentDir()}/Fermi`;
+	return `${await useTauriPathDocumentDir()}/dev.janmueller.fermi`;
 }
 
 async function getFermentDir(id: string) {
