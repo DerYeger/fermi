@@ -179,17 +179,17 @@ export async function getDataDir() {
 	if (dataDir.value) {
 		return dataDir.value;
 	}
-	return `${await useTauriPathDocumentDir()}/dev.janmueller.fermi`;
+	return `${await useTauriPathDocumentDir()}${useTauriPathSep()}dev.janmueller.fermi`;
 }
 
 async function getFermentDir(id: string) {
-	return `${await getDataDir()}/${FERMENT_DIR_PREFIX}${id}`;
+	return `${await getDataDir()}${useTauriPathSep()}${FERMENT_DIR_PREFIX}${id}`;
 }
 
 async function getFermentFile(id: string) {
-	return `${await getFermentDir(id)}/${DATA_FILENAME}`;
+	return `${await getFermentDir(id)}${useTauriPathSep()}${DATA_FILENAME}`;
 }
 
 async function getBackupFilePath(id: string, backupIndex: number) {
-	return `${await getFermentDir(id)}/backup_${backupIndex}.json`;
+	return `${await getFermentDir(id)}${useTauriPathSep()}backup_${backupIndex}.json`;
 }
