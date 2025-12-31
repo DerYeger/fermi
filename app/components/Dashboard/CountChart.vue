@@ -154,7 +154,7 @@
 		dataZoom: [
 			{
 				type: "slider",
-				start: 90,
+				start: 0,
 				end: 100,
 				borderColor: borderColor.value,
 				backgroundColor: backgroundColor.value,
