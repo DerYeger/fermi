@@ -39,6 +39,7 @@
 
 	const color = "#04C950"; // useCssVar("--color-success");
 	const backgroundColor = useCssVar("--ui-bg");
+	const borderColor = useCssVar("--ui-border");
 	const textMutedColor = useCssVar("--ui-text-muted");
 
 	const shadows = useChartShadows();
@@ -49,6 +50,7 @@
 		tooltip: {
 			trigger: "item",
 			formatter: "{b}: {c} ({d}%)",
+			borderColor: borderColor.value,
 			backgroundColor: backgroundColor.value,
 			textStyle: {
 				color: textMutedColor.value

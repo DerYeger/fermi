@@ -125,6 +125,14 @@
 		xAxis: {
 			type: "category",
 			boundaryGap: false,
+			axisLabel: {
+				color: textMutedColor.value
+			},
+			axisLine: {
+				lineStyle: {
+					color: borderColor.value
+				}
+			},
 			data: chartData.value.map((item) => item.date)
 		},
 		yAxis: {
@@ -135,8 +143,11 @@
 			splitLine: {
 				lineStyle: {
 					width: 1,
-					opacity: 0.75
+					color: borderColor.value
 				}
+			},
+			axisLabel: {
+				color: textMutedColor.value
 			}
 		},
 		visualMap: createVisualMap(chartData.value[0]?.completed ?? 0, (chartData.value?.at(-1)?.active ?? 0) + (chartData.value?.at(-1)?.completed ?? 0)),
@@ -196,7 +207,7 @@
 			emphasis: {
 				focus: "series",
 				areaStyle: {
-					color: color.value
+					color: "inherit"
 				},
 				lineStyle: {
 					color: color.value

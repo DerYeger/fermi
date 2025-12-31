@@ -52,6 +52,7 @@
 
 	const hasData = computed(() => chartData.value.some((category) => category.average > 0));
 
+	const borderColor = useCssVar("--ui-border");
 	const backgroundColor = useCssVar("--ui-bg");
 	const textMutedColor = useCssVar("--ui-text-muted");
 	const warningColor = useCssVar("--color-warning");
@@ -63,12 +64,24 @@
 		tooltip: {
 			trigger: "item",
 			formatter: "{b}: {c}/5",
+			borderColor: borderColor.value,
 			backgroundColor: backgroundColor.value,
 			textStyle: {
 				color: textMutedColor.value
 			}
 		},
-		xAxis: { type: "category", data: chartData.value.map(({ name }) => name) },
+		xAxis: {
+			type: "category",
+			axisLabel: {
+				color: textMutedColor.value
+			},
+			axisLine: {
+				lineStyle: {
+					color: borderColor.value
+				}
+			},
+			data: chartData.value.map(({ name }) => name)
+		},
 		yAxis: {
 			type: "value",
 			min: 1,
@@ -77,8 +90,11 @@
 			splitLine: {
 				lineStyle: {
 					width: 1,
-					opacity: 0.75
+					color: borderColor.value
 				}
+			},
+			axisLabel: {
+				color: textMutedColor.value
 			}
 		},
 		emphasis: {
