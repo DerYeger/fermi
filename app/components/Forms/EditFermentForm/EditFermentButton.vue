@@ -3,6 +3,7 @@
 	<UModal
 		v-model:open="showEditModal"
 		title="Edit ferment"
+		description="Form for editing an existing ferment"
 	>
 		<template #body>
 			<EditActiveFermentForm

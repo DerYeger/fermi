@@ -6,7 +6,7 @@
 		color="error"
 		@click.stop="showConfirmDialog = true"
 	/>
-	<UModal v-model:open="showConfirmDialog" title="Delete ferment">
+	<UModal v-model:open="showConfirmDialog" title="Delete ferment" description="Form for deleting an existing ferment">
 		<template #body>
 			<p class="text-muted mb-6">
 				Are you sure you want to delete "{{ ferment.name }}"? This action cannot be undone.

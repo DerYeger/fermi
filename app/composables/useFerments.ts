@@ -9,7 +9,6 @@ import { getErrorMessage } from "~/types/utils";
 const FERMENT_DIR_PREFIX = "fermi_";
 const DATA_FILENAME = "data.json";
 
-const toast = useToast();
 const { dataDir, maxBackups } = useFermiConfig();
 
 export const FermentCollection = createCollection(
@@ -26,7 +25,7 @@ export const FermentCollection = createCollection(
 					await writeFermentData(ferment);
 				}));
 			} catch (error) {
-				toast.add({
+				useToast().add({
 					color: "error",
 					title: "Failed to save",
 					description: getErrorMessage(error)
@@ -40,7 +39,7 @@ export const FermentCollection = createCollection(
 					await writeFermentData(ferment);
 				}));
 			} catch (error) {
-				toast.add({
+				useToast().add({
 					color: "error",
 					title: "Failed to update",
 					description: getErrorMessage(error)
@@ -54,7 +53,7 @@ export const FermentCollection = createCollection(
 					await deleteFermentById(ferment.id);
 				}));
 			} catch (error) {
-				toast.add({
+				useToast().add({
 					color: "error",
 					title: "Failed to delete",
 					description: getErrorMessage(error)
@@ -178,6 +177,7 @@ async function loadAllFerments(): Promise<Ferment[]> {
 	});
 	if (!loadFailuresNotified && failed.length > 0) {
 		loadFailuresNotified = true;
+		const toast = useToast();
 		toast.add({
 			color: "warning",
 			title: "Some ferments failed to load",

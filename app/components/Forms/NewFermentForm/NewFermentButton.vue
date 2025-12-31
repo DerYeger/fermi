@@ -2,7 +2,7 @@
 	<UTooltip :kbds="withShortcut ? ['meta', 'N'] : undefined" :content="{ side: 'bottom' }">
 		<UButton icon="hugeicons:plus-sign" label="New ferment" variant="subtle" class="max-sm:[&>span.truncate]:hidden" @click="showAddModal = true" />
 	</UTooltip>
-	<UModal v-model:open="showAddModal" title="Add new ferment">
+	<UModal v-model:open="showAddModal" title="Create new ferment" description="Form for creating a new ferment">
 		<template #body>
 			<NewFermentForm
 				@submit="handleSubmit"

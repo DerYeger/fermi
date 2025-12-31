@@ -23,6 +23,11 @@ export default defineAppConfig({
 				root: "w-full"
 			}
 		},
+		modal: {
+			slots: {
+				description: "hidden"
+			}
+		},
 		textarea: {
 			slots: {
 				root: "w-full",
