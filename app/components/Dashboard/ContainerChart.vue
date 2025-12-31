@@ -1,7 +1,7 @@
 <template>
 	<UCard :ui="{ body: hasData ? 'p-0!' : undefined }">
 		<template #header>
-			<CardHeader title="Ingredients" icon="hugeicons:pie-chart" />
+			<CardHeader title="Containers" icon="hugeicons:iconjar" />
 		</template>
 		<Loader v-if="isLoading" />
 		<div v-if="!hasData" class="px-4 py-1.5 flex-center text-sm text-muted">
@@ -15,18 +15,22 @@
 
 <script setup lang="ts">
 	import type { ECBasicOption } from "echarts/types/dist/shared";
+	import { isNull, not, useLiveQuery } from "@tanstack/vue-db";
 	import VChart from "vue-echarts";
 	import { limitLength } from "~/types/utils";
 
-	const { data, isLoading } = useIngredients();
+	const { data, isLoading } = useLiveQuery((q) =>
+		q.from({ ferment: FermentCollection })
+			.where(({ ferment }) => not(isNull(ferment.container)))
+			.select(({ ferment }) => ({ container: ferment.container }))
+	);
 
 	const chartData = computed(() => {
 		const counts: Record<string, number> = {};
 
 		data.value.forEach((ferment) => {
-			ferment.ingredients.forEach((ingredient) => {
-				counts[ingredient.name] = (counts[ingredient.name] ?? 0) + 1;
-			});
+			if (!ferment.container) return;
+			counts[ferment.container] = (counts[ferment.container] ?? 0) + 1;
 		});
 
 		return Object
@@ -37,7 +41,7 @@
 
 	const hasData = computed(() => chartData.value.length > 0);
 
-	const color = "#04C950"; // useCssVar("--color-success");
+	const color = "#FB2C35";// useCssVar("--color-error");
 
 	const shadows = useChartShadows();
 	const colorMode = useColorMode();
@@ -62,15 +66,14 @@
 		series: [
 			{
 				type: "pie",
-				radius: ["60%", "90%"],
+				radius: "90%",
 				center: ["35%", "50%"],
+				roseType: "area",
 				label: {
 					show: false
 				},
-				padAngle: 2,
 				itemStyle: {
-					...shadows.value,
-					borderRadius: 8
+					...shadows.value
 				},
 				emphasis: {
 					itemStyle: {

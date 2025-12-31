@@ -26,7 +26,7 @@
 	import type { InputMenuItem } from "@nuxt/ui";
 	import type { Ingredient } from "~/types/ferment";
 	import IngredientFormField from "~/components/Forms/FormFields/IngredientFormField.vue";
-	import { PREDEFINED_UNITS } from "~/composables/useFerments";
+	import { PREDEFINED_UNITS } from "~/composables/ferments";
 
 	const model = defineModel<Ingredient[]>({
 		required: true

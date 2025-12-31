@@ -1,22 +1,27 @@
-import { BarChart, LineChart, PieChart, RadarChart } from "echarts/charts";
-import { GridComponent, LegendComponent, TooltipComponent } from "echarts/components";
-import { use } from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
+import type { FermiConfig } from "~/types/config";
+import { FERMI_CONFIG_DEFAULTS, FermiConfigSchema } from "~/types/config";
 
-use([BarChart, LineChart, CanvasRenderer, GridComponent, LegendComponent, PieChart, RadarChart, TooltipComponent]);
+export const useFermiConfig = createGlobalState(() => {
+	const storedConfig = useLocalStorage<FermiConfig>("fermiConfig", FERMI_CONFIG_DEFAULTS);
 
-export function useCssVar(varName: string) {
-	return getComputedStyle(document.documentElement)
-		.getPropertyValue(varName)
-		.trim();
-}
+	const parsedConfig = computed(() => FermiConfigSchema.parse(storedConfig.value));
 
-export function useChartPalette() {
-	const colors = [
-		"--color-success",
-		"--color-info",
-		"--color-warning",
-		"--color-error"
-	];
-	return colors.map((varName) => useCssVar(varName));
-}
+	const maxBackups = computed<number>({
+		get: () => parsedConfig.value.maxBackups,
+		set: (value: number) => {
+			storedConfig.value.maxBackups = value;
+		}
+	});
+
+	const dataDir = computed<string | undefined>({
+		get: () => parsedConfig.value.dataDir,
+		set: (value: string | undefined) => {
+			storedConfig.value.dataDir = value;
+		}
+	});
+
+	return {
+		maxBackups,
+		dataDir
+	};
+});
