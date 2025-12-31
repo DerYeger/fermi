@@ -145,8 +145,6 @@ export function booleanFilterFn<T>(row: Row<T>, columnId: string, filterValue: B
 		return true;
 	}
 	const rowValue = row.getValue<boolean>(columnId);
-	console.log(rowValue);
-
 	return rowValue === filterValue;
 }
 

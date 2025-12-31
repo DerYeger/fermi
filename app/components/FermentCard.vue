@@ -59,9 +59,10 @@
 		<template #footer>
 			<div class="flex gap-2 justify-between">
 				<FavoriteFermentButton :ferment="ferment" />
-				<EditFermentButton :ferment="ferment" />
-				<ArchiveFermentButton :ferment="ferment" />
-				<DeleteFermentButton :ferment="ferment" />
+				<EditFermentButton :ferment="ferment" hide-label />
+				<DuplicateFermentButton :ferment="ferment" hide-label />
+				<ArchiveFermentButton :ferment="ferment" hide-label />
+				<DeleteFermentButton :ferment="ferment" hide-label />
 			</div>
 		</template>
 	</UCard>

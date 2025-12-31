@@ -4,10 +4,9 @@
 		color="warning"
 		size="sm"
 		icon="hugeicons:archive-03"
+		:label="hideLabel ? undefined : 'Complete'"
 		@click.stop="showArchiveModal = true"
-	>
-		Complete
-	</UButton>
+	/>
 	<UModal v-model:open="showArchiveModal" title="Complete ferment" description="Form for completing an active ferment">
 		<template #body>
 			<ArchiveForm
@@ -24,8 +23,9 @@
 	import ArchiveForm from "~/components/Forms/ArchiveFermentForm/ArchiveForm.vue";
 	import { getErrorMessage, sortImages } from "~/types/utils";
 
-	const { ferment } = defineProps<{
+	const { ferment, hideLabel = false } = defineProps<{
 		ferment: ActiveFerment
+		hideLabel?: boolean
 	}>();
 
 	const showArchiveModal = ref(false);

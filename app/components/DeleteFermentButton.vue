@@ -4,6 +4,7 @@
 		size="sm"
 		icon="hugeicons:delete-02"
 		color="error"
+		:label="hideLabel ? undefined : 'Delete'"
 		@click.stop="showConfirmDialog = true"
 	/>
 	<UModal v-model:open="showConfirmDialog" title="Delete ferment" description="Dialog for deleting an existing ferment">
@@ -27,8 +28,9 @@
 	import type { Ferment } from "~/types/ferment";
 	import { getErrorMessage } from "~/types/utils";
 
-	const { ferment } = defineProps<{
+	const { ferment, hideLabel = false } = defineProps<{
 		ferment: Ferment
+		hideLabel?: boolean
 	}>();
 
 	const showConfirmDialog = ref(false);

@@ -30,6 +30,7 @@
 - NuxtUI
 - TanStack DB
 - TanStack Table
+- ECharts
 
 ## License
 

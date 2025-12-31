@@ -24,7 +24,7 @@
 			:name="rating.key"
 			:placeholder="rating.placeholder"
 		/>
-		<FermentFormActions submit-label="Update" @cancel="emit('cancel')" />
+		<FermentFormActions :submit-label="submitLabel" @cancel="emit('cancel')" />
 	</UForm>
 </template>
 
@@ -43,8 +43,9 @@
 	import { CompletedFermentSchema, RATING_CATEGORIES } from "~/types/ferment";
 	import { deepClone } from "~/types/utils";
 
-	const { ferment } = defineProps<{
+	const { ferment, submitLabel = "Update" } = defineProps<{
 		ferment: CompletedFerment
+		submitLabel?: string
 	}>();
 
 	const emit = defineEmits<{

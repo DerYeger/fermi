@@ -66,7 +66,11 @@
 				color: textMutedColor.value
 			}
 		},
-		visualMap: createVisualMap(chartData.value[0]?.value, chartData.value[chartData.value.length - 1]?.value),
+		visualMap: createVisualMap(
+			chartData.value[0]?.value,
+			chartData.value[chartData.value.length - 1]?.value,
+			true
+		),
 		series: [
 			{
 				type: "pie",

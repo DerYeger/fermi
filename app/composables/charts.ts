@@ -48,16 +48,17 @@ export function useChartShadows() {
 	});
 }
 
-export function createVisualMap(min: number | undefined, max: number | undefined) {
+export function createVisualMap(min: number | undefined, max: number | undefined, invert = false) {
 	if (min === undefined || max === undefined || min === max) {
 		return undefined;
 	}
+	const lightness = [0.4, 0.75];
 	return {
 		show: false,
 		min,
 		max,
 		inRange: {
-			colorLightness: [0.4, 0.75]
+			colorLightness: invert ? lightness.reverse() : lightness
 		}
 	};
 }

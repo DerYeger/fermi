@@ -14,7 +14,7 @@
 		<NotesFormField
 			v-model="state.notes"
 		/>
-		<FermentFormActions submit-label="Update" @cancel="emit('cancel')" />
+		<FermentFormActions :submit-label="submitLabel" @cancel="emit('cancel')" />
 	</UForm>
 </template>
 
@@ -32,8 +32,9 @@
 	import { ActiveFermentSchema } from "~/types/ferment";
 	import { deepClone } from "~/types/utils";
 
-	const { ferment } = defineProps<{
+	const { ferment, submitLabel = "Update" } = defineProps<{
 		ferment: ActiveFerment
+		submitLabel?: string
 	}>();
 
 	const emit = defineEmits<{

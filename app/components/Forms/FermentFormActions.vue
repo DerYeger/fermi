@@ -13,6 +13,7 @@
 	defineProps<{
 		submitLabel: string
 	}>();
+
 	const emit = defineEmits<{
 		cancel: []
 	}>();

@@ -1,48 +1,68 @@
 <template>
-	<UButton variant="ghost" size="sm" icon="hugeicons:copy-01" @click.stop="showConfirmDialog = true" />
-	<UModal v-model:open="showConfirmDialog" title="Duplicate ferment" description="Dialog for duplicating an existing ferment">
+	<UButton
+		variant="ghost"
+		size="sm"
+		icon="hugeicons:copy-01"
+		:label="hideLabel ? undefined : 'Duplicate'"
+		@click.stop="showDuplicationModal = true"
+	/>
+	<UModal
+		v-model:open="showDuplicationModal"
+		title="Duplicate ferment"
+		description="Form for duplicating an existing ferment"
+	>
 		<template #body>
-			<p class="text-muted mb-6">
-				Are you sure you want to duplicate "{{ ferment.name }}"?
-			</p>
-			<div class="flex justify-end gap-2">
-				<UButton variant="ghost" color="neutral" @click="showConfirmDialog = false">
-					Cancel
-				</UButton>
-				<UButton variant="subtle" @click="handleDuplicate">
-					Duplicate
-				</UButton>
-			</div>
+			<EditActiveFermentForm
+				v-if="duplicationBase.state === 'active'"
+				:ferment="duplicationBase"
+				submit-label="Duplicate"
+				@submit="handleSubmit"
+				@cancel="showDuplicationModal = false"
+			/>
+			<EditCompletedFermentForm
+				v-else
+				:ferment="duplicationBase"
+				submit-label="Duplicate"
+				@submit="handleSubmit"
+				@cancel="showDuplicationModal = false"
+			/>
 		</template>
 	</UModal>
 </template>
 
 <script lang="ts" setup>
 	import type { Ferment } from "~/types/ferment";
-	import { getErrorMessage } from "~/types/utils";
+	import EditActiveFermentForm from "~/components/Forms/EditFermentForm/EditActiveFermentForm.vue";
+	import EditCompletedFermentForm from "~/components/Forms/EditFermentForm/EditCompletedFermentForm.vue";
+	import { getErrorMessage, sortImages } from "~/types/utils";
 
 	const { ferment } = defineProps<{
 		ferment: Ferment
+		hideLabel?: boolean
 	}>();
 
-	const toast = useToast();
-	const showConfirmDialog = ref(false);
+	const duplicationBase = computed<Ferment>(() => {
+		const nowDatetime = getISODatetime();
+		return { ...ferment, id: createId(), createdAt: nowDatetime, updatedAt: nowDatetime };
+	});
 
-	async function handleDuplicate() {
+	const toast = useToast();
+	const showDuplicationModal = ref(false);
+
+	async function handleSubmit(data: Ferment) {
 		try {
-			const newId = createId();
 			FermentCollection.insert({
-				...ferment,
-				id: newId
+				...data,
+				images: sortImages(data.images)
 			});
-			showConfirmDialog.value = false;
+			showDuplicationModal.value = false;
 			toast.add({
 				title: "Ferment duplicated",
 				color: "success",
 				actions: [{
 					label: "View",
 					variant: "subtle",
-					to: `/ferments/${newId}`
+					to: `/ferments/${data.id}`
 				}]
 			});
 		} catch (error) {
