@@ -30,6 +30,9 @@
 					getFacetedRowModel: getFacetedRowModel(),
 					getFacetedUniqueValues: getFacetedUniqueValues()
 				}"
+				:ui="{
+					th: thClass
+				}"
 			>
 				<template #expanded="{ row }">
 					<div
@@ -58,7 +61,7 @@
 	import StarsCell from "~/components/Table/StarsCell.vue";
 	import TableHeader from "~/components/Table/TableHeader.vue";
 	import { MAX_STARS, RATING_CATEGORIES } from "~/types/ferment";
-	import { createNumberRangeFilter, dateFilter, dateFilterFn, multiSelectFilter, multiSelectFilterFn, numberRangeFilterFn } from "~/types/filter";
+	import { booleanFilterFn, createBooleanFilter, createNumberRangeFilter, dateFilter, dateFilterFn, multiSelectFilter, multiSelectFilterFn, numberRangeFilterFn } from "~/types/filter";
 	import { formatPercentage } from "~/types/utils";
 
 	const { data, isLoading } = useCompletedFerments();
@@ -69,6 +72,8 @@
 		updatedAt: false
 	});
 	const expanded = ref<Record<string, boolean>>({});
+
+	const thClass = "[&[data-pinned='right']>div]:justify-end";
 
 	const table = useTemplateRef("table");
 	const tableSize = useElementSize(() => table.value?.$el);
@@ -316,17 +321,19 @@
 					return `${avgFormat.format(avgRating)} ${avgRating === 1 ? "star" : "stars"}`;
 				}
 			})),
-		columnHelper.display({
+		columnHelper.accessor("isFavorite", {
 			id: "actions",
+			enableSorting: false,
 			enableHiding: false,
-			header: "",
+			header: createHeader("", createBooleanFilter("Only favorites")),
 			cell: (ctx) =>
 				h(
 					FermentActionsCell,
 					{
 						ferment: ctx.row.original
 					}
-				)
+				),
+			filterFn: booleanFilterFn
 		}),
 		columnHelper.accessor("createdAt", {
 			id: "createdAt",

@@ -129,4 +129,38 @@ export function dateFilter<TData>(ctx: HeaderContext<TData, string>): DateFilter
 	};
 }
 
-export type Filter = MultiSelectFilter | NumberRangeFilter | DateFilter;
+export type BooleanFilterState = boolean;
+
+export interface BooleanFilter extends FilterBase {
+	type: "boolean"
+	label: string
+	onUpdate: (state: BooleanFilterState) => void
+}
+
+export function booleanFilterFn<T>(row: Row<T>, columnId: string, filterValue: BooleanFilterState) {
+	if (filterValue === null) {
+		return true;
+	}
+	const rowValue = row.getValue<boolean>(columnId);
+	console.log(rowValue);
+
+	return rowValue === filterValue;
+}
+
+export function createBooleanFilter<TData, TValue>(label: string) {
+	return (ctx: HeaderContext<TData, TValue>): BooleanFilter => {
+		const id = ctx.column.id;
+		return {
+			type: "boolean",
+			id,
+			label,
+			isFiltered: ctx.column.getIsFiltered(),
+			onUpdate: (state) => {
+				const column = ctx.table.getColumn(id);
+				column?.setFilterValue(state === true ? true : undefined);
+			}
+		};
+	};
+}
+
+export type Filter = MultiSelectFilter | NumberRangeFilter | DateFilter | BooleanFilter;

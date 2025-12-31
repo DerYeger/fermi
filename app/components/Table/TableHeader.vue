@@ -11,12 +11,14 @@
 		/>
 		<NumberRangeFilter v-else-if="filter?.type === 'number-range'" v-bind="filter" />
 		<DateFilter v-else-if="filter?.type === 'date'" v-bind="filter" />
+		<BooleanFilter v-else-if="filter?.type === 'boolean'" v-bind="filter" />
 	</div>
 </template>
 
 <script lang="ts" setup>
 	import type { SortDirection } from "@tanstack/vue-table";
 	import type { Filter } from "~/types/filter";
+	import BooleanFilter from "~/components/Table/BooleanFilter.vue";
 	import DateFilter from "~/components/Table/DateFilter.vue";
 	import MultiSelectFilter from "~/components/Table/MultiSelectFilter.vue";
 	import NumberRangeFilter from "~/components/Table/NumberRangeFilter.vue";
