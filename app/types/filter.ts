@@ -1,4 +1,7 @@
 import type { HeaderContext, Row } from "@tanstack/table-core";
+import type { EventBusKey } from "@vueuse/core";
+
+export const FILTER_BUS_KEY: EventBusKey<"clear"> = Symbol("FILTER_BUS_KEY");
 
 interface FilterBase {
 	id: string

@@ -33,12 +33,19 @@
 	import type { SelectItem } from "@nuxt/ui";
 	import type { DateFilter, DateFilterState, DateFilterStateOptions } from "~/types/filter";
 	import { deepEquals } from "@tanstack/vue-db";
+	import { FILTER_BUS_KEY } from "~/types/filter";
 
 	const { id, isFiltered, onUpdate } = defineProps<DateFilter>();
 
 	const open = ref(false);
 
 	const model = useLocalStorage<DateFilterState>(() => `date-filter-${id}`, null);
+
+	useEventBus(FILTER_BUS_KEY).on((type) => {
+		if (type === "clear") {
+			reset();
+		}
+	});
 
 	const typeItems: SelectItem[] = [
 		{

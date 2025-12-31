@@ -61,7 +61,7 @@
 	import StarsCell from "~/components/Table/StarsCell.vue";
 	import TableHeader from "~/components/Table/TableHeader.vue";
 	import { MAX_STARS, RATING_CATEGORIES } from "~/types/ferment";
-	import { booleanFilterFn, createBooleanFilter, createNumberRangeFilter, dateFilter, dateFilterFn, multiSelectFilter, multiSelectFilterFn, numberRangeFilterFn } from "~/types/filter";
+	import { booleanFilterFn, createBooleanFilter, createNumberRangeFilter, dateFilter, dateFilterFn, FILTER_BUS_KEY, multiSelectFilter, multiSelectFilterFn, numberRangeFilterFn } from "~/types/filter";
 	import { formatPercentage } from "~/types/utils";
 
 	const { data, isLoading } = useCompletedFerments();
@@ -125,6 +125,7 @@
 
 	const UBadge = resolveComponent("UBadge");
 	const UButton = resolveComponent("UButton");
+	const UFieldGroup = resolveComponent("UFieldGroup");
 
 	function createHeader<T>(label: string, createFilter?: (ctx: HeaderContext<CompletedFerment, T>) => Filter) {
 		return (ctx: HeaderContext<CompletedFerment, T>) => {
@@ -189,6 +190,8 @@
 		maximumFractionDigits: 1
 	});
 
+	const bus = useEventBus(FILTER_BUS_KEY);
+
 	const columnHelper = createColumnHelper<CompletedFerment>();
 	const columns = [
 		columnHelper.display({
@@ -200,10 +203,25 @@
 					return null;
 				}
 				const label = filteredColumns.length === 1 ? "1 filter" : `${filteredColumns.length} filters`;
-				return h(UBadge, {
+				const badge = h(UBadge, {
 					variant: "subtle",
-					size: "sm",
 					label
+				});
+				const clearButton = h(UButton, {
+					color: "error",
+					variant: "subtle",
+					icon: "hugeicons:cancel-01",
+					size: "sm",
+					"aria-label": "Clear filters",
+					onClick: () => {
+						bus.emit("clear");
+					}
+				});
+				return h(UFieldGroup, {
+					inline: true,
+					gap: "xs"
+				}, {
+					default: () => [badge, clearButton]
 				});
 			},
 			cell: (ctx) =>

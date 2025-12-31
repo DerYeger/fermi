@@ -23,6 +23,7 @@
 	import type { MultiSelectFilter } from "~/types/filter";
 	import { deepEquals } from "@tanstack/vue-db";
 	import { Stream } from "@yeger/streams/sync";
+	import { FILTER_BUS_KEY } from "~/types/filter";
 
 	const { id, items, isFiltered, onUpdate } = defineProps<MultiSelectFilter>();
 
@@ -31,6 +32,12 @@
 	const totalItems = computed(() => Stream.from(items).concat(model.value).distinct().toArray().sort((a, b) => a.localeCompare(b)));
 
 	const open = ref(false);
+
+	useEventBus(FILTER_BUS_KEY).on((type) => {
+		if (type === "clear") {
+			model.value = [];
+		}
+	});
 
 	watch(model, (newValue, oldValue) => {
 		if (deepEquals(newValue, oldValue)) return;

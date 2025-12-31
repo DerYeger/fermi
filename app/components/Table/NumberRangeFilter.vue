@@ -33,6 +33,7 @@
 <script lang="ts" setup>
 	import type { NumberRangeFilter, NumberRangeFilterState } from "~/types/filter";
 	import { deepEquals } from "@tanstack/vue-db";
+	import { FILTER_BUS_KEY } from "~/types/filter";
 	import { formatPercentage } from "~/types/utils";
 
 	const { id, min, max, step, isFiltered, onUpdate, percentage } = defineProps<NumberRangeFilter>();
@@ -56,6 +57,12 @@
 	const isDisabled = computed(() => min === max);
 
 	const model = useLocalStorage<NumberRangeFilterState>(() => `number-range-filter-${id}`, { min, max });
+
+	useEventBus(FILTER_BUS_KEY).on((type) => {
+		if (type === "clear") {
+			reset();
+		}
+	});
 
 	const sliderModel = computed({
 		get: (): [number, number] => [model.value.min, model.value.max],
