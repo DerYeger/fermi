@@ -12,7 +12,7 @@
 				v-model:search-term="nameSearchTerm"
 				:autofocus="wasIngredientAdded"
 				create-item
-				placeholder="Name"
+				placeholder="Name..."
 				:items="ingredientNames"
 				@create="onCreateName"
 				@blur="onBlurName"
@@ -23,7 +23,7 @@
 			:name="`ingredients.${index}.quantity`"
 			required
 		>
-			<UInputNumber v-model="ingredient.quantity" :min="0" placeholder="Quantity" />
+			<UInputNumber v-model="ingredient.quantity" :min="0" placeholder="Quantity..." />
 		</UFormField>
 
 		<UFormField
@@ -36,7 +36,7 @@
 				v-model:search-term="unitSearchTerm"
 				value-key="value"
 				create-item
-				placeholder="Unit"
+				placeholder="Unit..."
 				:items="unitItems"
 				@create="onCreateUnit"
 				@blur="onBlurUnit"
