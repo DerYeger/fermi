@@ -87,12 +87,13 @@
 			</template>
 
 			<div class="space-y-2 text-sm text-muted">
-				<p>
+				<div>
 					Fermi is a simple fermentation tracking app to help you manage your fermentation projects.
-				</p>
-				<p>
-					Track your ferments, record ingredients, and rate your results.
-				</p>
+				</div>
+				<div>
+					The source code is available on <UButton icon="hugeicons:github" color="neutral" size="xs" variant="subtle" label="GitHub" @click="openGitHub" />
+					.
+				</div>
 			</div>
 		</UCard>
 	</div>
@@ -146,5 +147,9 @@
 		} catch (error) {
 			toast.add({ title: "Error opening directory", description: getErrorMessage(error), color: "error" });
 		}
+	}
+
+	function openGitHub() {
+		useTauriShellOpen("https://github.com/DerYeger/fermi");
 	}
 </script>
