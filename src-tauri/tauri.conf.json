@@ -33,7 +33,7 @@
 	},
 	"productName": "Fermi",
 	"version": "1.0.0",
-	"identifier": "com.fermi.app",
+	"identifier": "dev.janmueller.fermi",
 	"plugins": {
 		"shell": {
 			"open": "^((https?|mailto|tel|file):).+"

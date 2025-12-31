@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1080">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-2 {
+        fill: #076820;
+      }
+
+      .cls-3 {
+        fill: #04c950;
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient-3);
+      }
+
+      .cls-5 {
+        fill: none;
+        stroke: #e5e5e5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 41.83px;
+      }
+
+      .cls-6 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="880.11" y1="1129.08" x2="199.89" y2="-49.08" gradientUnits="userSpaceOnUse">
+      <stop offset=".04" stop-color="#04c950"/>
+      <stop offset=".56" stop-color="#04ce50" stop-opacity=".94"/>
+      <stop offset=".57" stop-color="#03d950" stop-opacity=".86"/>
+      <stop offset=".6" stop-color="#01ed50" stop-opacity=".71"/>
+      <stop offset=".63" stop-color="#00f950" stop-opacity=".63"/>
+      <stop offset=".67" stop-color="#00fd50" stop-opacity=".6"/>
+      <stop offset=".71" stop-color="#00fd50" stop-opacity=".72"/>
+      <stop offset=".75" stop-color="#00fe50" stop-opacity=".82"/>
+      <stop offset=".79" stop-color="#00fe50" stop-opacity=".9"/>
+      <stop offset=".84" stop-color="#00fe50" stop-opacity=".96"/>
+      <stop offset=".9" stop-color="#00fe50" stop-opacity=".99"/>
+      <stop offset="1" stop-color="#00ff50"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="540" y1="86" x2="540" y2="997" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#076820"/>
+      <stop offset=".35" stop-color="#076820"/>
+      <stop offset=".36" stop-color="#076b20" stop-opacity=".93"/>
+      <stop offset=".43" stop-color="#077920" stop-opacity=".66"/>
+      <stop offset=".5" stop-color="#078320" stop-opacity=".46"/>
+      <stop offset=".57" stop-color="#078920" stop-opacity=".34"/>
+      <stop offset=".65" stop-color="#078b20" stop-opacity=".3"/>
+      <stop offset=".66" stop-color="#078b20" stop-opacity=".47"/>
+      <stop offset=".68" stop-color="#078b20" stop-opacity=".66"/>
+      <stop offset=".7" stop-color="#078b20" stop-opacity=".81"/>
+      <stop offset=".72" stop-color="#078b20" stop-opacity=".92"/>
+      <stop offset=".74" stop-color="#078b20" stop-opacity=".98"/>
+      <stop offset=".78" stop-color="#078b20"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="929.06" y1="925.56" x2="157.94" y2="154.44" gradientUnits="userSpaceOnUse">
+      <stop offset=".47" stop-color="#171717"/>
+      <stop offset="1" stop-color="#333"/>
+    </linearGradient>
+  </defs>
+  <g id="Green">
+    <rect class="cls-3" width="1080" height="1080" rx="157" ry="157"/>
+  </g>
+  <g id="Gradient-Green">
+    <path class="cls-6" d="M923,8c39.8,0,77.22,15.5,105.36,43.64,28.14,28.14,43.64,65.56,43.64,105.36v766c0,39.8-15.5,77.22-43.64,105.36-28.14,28.14-65.56,43.64-105.36,43.64H157c-39.8,0-77.22-15.5-105.36-43.64-28.14-28.14-43.64-65.56-43.64-105.36V157c0-39.8,15.5-77.22,43.64-105.36C79.78,23.5,117.2,8,157,8h766M923,0H157C70.29,0,0,70.29,0,157v766c0,86.71,70.29,157,157,157h766c86.71,0,157-70.29,157-157V157c0-86.71-70.29-157-157-157h0Z"/>
+  </g>
+  <g id="dark-Green">
+    <rect class="cls-2" x="90" y="86" width="900" height="911" rx="117.21" ry="117.21"/>
+  </g>
+  <g id="dark-Green_copy" data-name="dark-Green copy">
+    <path class="cls-1" d="M872.79,94c29.17,0,56.6,11.36,77.22,31.99,20.63,20.63,31.99,48.05,31.99,77.22v676.58c0,29.17-11.36,56.6-31.99,77.22-20.63,20.63-48.05,31.99-77.22,31.99H207.21c-29.17,0-56.6-11.36-77.22-31.99-20.63-20.63-31.99-48.05-31.99-77.22V203.21c0-29.17,11.36-56.6,31.99-77.22,20.63-20.63,48.05-31.99,77.22-31.99h665.58M872.79,86H207.21c-64.73,0-117.21,52.48-117.21,117.21v676.58c0,64.73,52.48,117.21,117.21,117.21h665.58c64.73,0,117.21-52.48,117.21-117.21V203.21c0-64.73-52.48-117.21-117.21-117.21h0Z"/>
+  </g>
+  <g id="Grey_copy" data-name="Grey copy">
+    <rect class="cls-4" x="138" y="126.5" width="811" height="827" rx="81.75" ry="81.75"/>
+  </g>
+  <g id="Icon">
+    <g>
+      <path class="cls-5" d="M689.2,574.32s-25.35-12.87-50.7-12.87c-38.02,0-88.72,51.48-88.72,128.7s69.42,128.7,139.42,128.7,139.42-51.48,139.42-128.7-50.7-128.7-88.72-128.7c-25.35,0-50.7,12.87-50.7,12.87ZM689.2,574.32c0-38.61,25.35-90.09,76.05-90.09"/>
+      <path class="cls-5" d="M512.27,344.81c24.99,0,45.25-18.73,45.25-41.83s-20.26-41.83-45.25-41.83h-150.84c-24.99,0-45.25,18.73-45.25,41.83s20.26,41.83,45.25,41.83M526.61,342.66c26.64,49.25,48.52,93.7,61.89,141.57,1.09,3.91,2.12,7.84,3.1,11.79M505.94,818.84h-114.34c-99.83,0-120.67-19.26-120.67-111.54v-117.75c0-94.8,30.61-164.28,75.42-247.12"/>
+    </g>
+  </g>
+</svg>
