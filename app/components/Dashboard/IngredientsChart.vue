@@ -38,6 +38,7 @@
 	const hasData = computed(() => chartData.value.length > 0);
 
 	const color = "#04C950"; // useCssVar("--color-success");
+	const textMutedColor = useCssVar("--ui-text-muted");
 
 	const shadows = useChartShadows();
 	const colorMode = useColorMode();
@@ -55,7 +56,7 @@
 			top: 16,
 			bottom: 16,
 			textStyle: {
-				color: "var(--ui-text-muted)"
+				color: textMutedColor.value
 			}
 		},
 		visualMap: createVisualMap(chartData.value[0]?.value, chartData.value[chartData.value.length - 1]?.value),

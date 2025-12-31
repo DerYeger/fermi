@@ -32,10 +32,10 @@
 
 	const colorMode = useColorMode();
 	const textMuted = useCssVar("--ui-text-muted");
-	const color = useCssVar("--color-warning");
+	const warningColor = useCssVar("--color-warning");
 
 	const chartOptions = computed<ECBasicOption>(() => ({
-		color,
+		color: warningColor.value,
 		darkMode: colorMode.value === "dark",
 		tooltip: {
 			show: false
@@ -48,18 +48,18 @@
 			})),
 			radius: "75%",
 			axisName: {
-				color
+				color: warningColor.value
 			},
 			axisLine: {
 				lineStyle: {
-					color
+					color: warningColor.value
 				}
 			},
 			shape: "circle",
 			splitNumber: MAX_STARS,
 			splitLine: {
 				lineStyle: {
-					color: Array.from({ length: MAX_STARS }, (_, i) => `rgba(from ${textMuted} r g b / ${0.15 * (i / 2 + 1)})`)
+					color: Array.from({ length: MAX_STARS }, (_, i) => `rgba(from ${textMuted.value} r g b / ${0.15 * (i / 2 + 1)})`)
 				}
 			},
 			splitArea: {

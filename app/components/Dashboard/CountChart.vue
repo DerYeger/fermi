@@ -58,21 +58,21 @@
 				startDateCount.active += 1;
 			}
 			{
-				// Fill till own endDate or lastEndDate
 				const date = new Date(ferment.startDate);
 				date.setDate(date.getDate() + 1);
 				const endDate = ferment.state === "completed" ? new Date(ferment.endDate) : new Date(lastEndDate);
 				fillUntil(date, endDate, "active");
 			}
-			if (ferment.state === "completed") {
-				const endDateCount = getCount(ferment.endDate);
-				endDateCount.active -= 1;
-				endDateCount.completed += 1;
-				if (ferment.endDate < lastEndDate) {
-					const date = new Date(ferment.endDate);
-					date.setDate(date.getDate() + 1);
-					fillUntil(date, new Date(lastEndDate), "completed");
-				}
+			if (ferment.state !== "completed") {
+				return;
+			}
+			const endDateCount = getCount(ferment.endDate);
+			endDateCount.active -= 1;
+			endDateCount.completed += 1;
+			if (ferment.endDate < lastEndDate) {
+				const date = new Date(ferment.endDate);
+				date.setDate(date.getDate() + 1);
+				fillUntil(date, new Date(lastEndDate), "completed");
 			}
 		});
 		return Object.entries(counts)
@@ -82,26 +82,30 @@
 
 	const hasData = computed(() => chartData.value.length > 1);
 
-	const color = useChartPalette();
-
 	const series = [
 		{
 			label: "Active",
-			key: "active"
+			key: "active",
+			color: ref("#04C950") // useCssVar("--color-success");
 		},
 		{
 			label: "Completed",
-			key: "completed"
+			key: "completed",
+			color: ref("#EFB200") // useCssVar("--color-warning");
 		}
-	] as const satisfies { label: string, key: Exclude<keyof typeof chartData["value"][number], "date"> }[];
+	] as const satisfies { color: Ref<string>, label: string, key: Exclude<keyof typeof chartData["value"][number], "date"> }[];
+
+	const backgroundColor = useCssVar("--ui-bg");
+	const borderColor = useCssVar("--ui-border");
+	const textMutedColor = useCssVar("--ui-text-muted");
+	const primaryColor = useCssVar("--color-primary");
+	const warningColor = useCssVar("--color-warning");
 
 	const colorMode = useColorMode();
 	const chartOptions = computed<ECBasicOption>(() => ({
-		color,
 		darkMode: colorMode.value === "dark",
 		tooltip: {
 			trigger: "axis"
-			// formatter: "{b}: {c} ({d}%)"
 		},
 		legend: {
 			type: "scroll",
@@ -110,7 +114,7 @@
 			right: 16,
 			top: 8,
 			textStyle: {
-				color: "var(--ui-text-muted)"
+				color: textMutedColor.value
 			}
 		},
 		xAxis: {
@@ -119,25 +123,78 @@
 			data: chartData.value.map((item) => item.date)
 		},
 		yAxis: {
-			type: "value"
+			type: "value",
+			min: 0,
+			step: 1,
+			position: "right",
+			splitLine: {
+				lineStyle: {
+					width: 1,
+					opacity: 0.75
+				}
+			}
 		},
+		visualMap: createVisualMap(chartData.value[0]?.completed ?? 0, (chartData.value?.at(-1)?.active ?? 0) + (chartData.value?.at(-1)?.completed ?? 0)),
 		dataZoom: [
 			{
 				type: "slider",
-				start: 0,
-				end: 100
+				start: 90,
+				end: 100,
+				borderColor: borderColor.value,
+				backgroundColor: backgroundColor.value,
+				fillerColor: `rgba(from ${primaryColor.value} r g b / 0.05)`, // selected range
+				dataBackground: {
+					lineStyle: {
+						color: warningColor.value
+					},
+					areaStyle: {
+						color: warningColor.value
+					}
+				},
+				moveHandleStyle: {
+					color: backgroundColor.value,
+					borderColor: textMutedColor.value
+				},
+				handleStyle: {
+					color: backgroundColor.value,
+					borderColor: textMutedColor.value
+				},
+				textStyle: {
+					color: textMutedColor.value
+				},
+				emphasis: {
+					handleStyle: {
+						color: backgroundColor.value,
+						borderColor: textMutedColor.value
+					}
+				}
 			}
 		],
-		series: series.map(({ label, key }, index) => ({
+		grid: {
+			top: 64,
+			bottom: 96,
+			left: 48,
+			right: 64
+		},
+		series: series.map(({ label, key, color }) => ({
 			name: label,
 			type: "line",
+			color: color.value,
 			symbol: "none",
 			stack: "Total",
 			sampling: "lltb",
-			areaOptions: {},
+			areaStyle: {},
+			smooth: false,
+			lineStyle: {
+				width: 1
+			},
 			emphasis: {
+				focus: "series",
+				areaStyle: {
+					color: color.value
+				},
 				lineStyle: {
-					color: color[index]
+					color: color.value
 				}
 			},
 			data: chartData.value.map((item) => item[key])

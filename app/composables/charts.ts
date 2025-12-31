@@ -17,9 +17,13 @@ use([
 ]);
 
 export function useCssVar(varName: string) {
-	return getComputedStyle(document.documentElement)
-		.getPropertyValue(varName)
-		.trim();
+	const colorMode = useColorMode();
+	return computed(() => {
+		const _ = colorMode.value;
+		return getComputedStyle(document.documentElement)
+			.getPropertyValue(varName)
+			.trim();
+	});
 }
 
 export function useChartPalette() {
@@ -29,7 +33,7 @@ export function useChartPalette() {
 		"--color-warning",
 		"--color-error"
 	];
-	return colors.map((varName) => useCssVar(varName));
+	return computed(() => colors.map((varName) => useCssVar(varName).value));
 }
 
 export function useChartShadows() {

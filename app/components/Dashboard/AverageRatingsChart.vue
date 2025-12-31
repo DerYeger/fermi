@@ -52,11 +52,11 @@
 
 	const hasData = computed(() => chartData.value.some((category) => category.average > 0));
 
-	const color = useCssVar("--color-warning");
+	const warningColor = useCssVar("--color-warning");
 	const colorMode = useColorMode();
 
 	const chartOptions = computed<ECBasicOption>(() => ({
-		color,
+		color: warningColor.value,
 		darkMode: colorMode.value === "dark",
 		tooltip: {
 			trigger: "item",
@@ -77,6 +77,12 @@
 		},
 		emphasis: {
 			disabled: true
+		},
+		grid: {
+			top: 48,
+			bottom: 48,
+			left: 48,
+			right: 48
 		},
 		series: [{
 			type: "bar",

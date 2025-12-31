@@ -30,17 +30,17 @@
 	const { data: ferments, isLoading } = useFerments();
 
 	const items = [
-		CountChart,
+
 		KPICard,
 		DueFerments,
 		OverdueFerments,
 		FavoritesList,
 		IngredientsChart,
 		FermentCalendar,
+		CountChart,
 		RatingsChart,
 		AverageRatingsChart,
 		ContainerChart
-
 	];
 
 	const scrollAreaWrapper = useTemplateRef("scrollAreaWrapper");
