@@ -5,7 +5,7 @@
 		trailing-icon="hugeicons:filter"
 		variant="none"
 		multiple
-		:items="items"
+		:items="totalItems"
 		:ui="{
 			base: 'p-0 cursor-pointer',
 			value: 'hidden',
@@ -22,10 +22,13 @@
 <script lang="ts" setup>
 	import type { MultiSelectFilter } from "~/types/filter";
 	import { deepEquals } from "@tanstack/vue-db";
+	import { Stream } from "@yeger/streams/sync";
 
 	const { id, items, isFiltered, onUpdate } = defineProps<MultiSelectFilter>();
 
 	const model = useLocalStorage<string[]>(() => `multi-select-filter-${id}`, []);
+
+	const totalItems = computed(() => Stream.from(items).concat(model.value).distinct().toArray().sort((a, b) => a.localeCompare(b)));
 
 	const open = ref(false);
 
@@ -33,4 +36,8 @@
 		if (deepEquals(newValue, oldValue)) return;
 		onUpdate(new Set(newValue));
 	}, { immediate: true });
+
+	onBeforeUnmount(() => {
+		onUpdate(new Set());
+	});
 </script>

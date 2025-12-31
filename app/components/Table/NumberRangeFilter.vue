@@ -6,12 +6,12 @@
 			:color="open || isFiltered ? 'primary' : 'neutral'"
 		/>
 		<template #content>
-			<div v-if="min !== max" class="w-64 px-4 pt-4 pb-2 flex flex-col gap-4">
+			<div class="w-64 px-4 pt-4 pb-2 flex flex-col gap-4">
 				<div class="flex justify-between gap-2">
-					<UInputNumber v-model="model.min" :min="min" :max="model.max" :step="step" label="Min" :format-options="formatOptions" />
-					<UInputNumber v-model="model.max" :min="model.min" :max="max" :step="step" label="Max" :format-options="formatOptions" />
+					<UInputNumber v-model="model.min" :disabled="isDisabled" :min="min" :max="model.max" :step="step" label="Min" :format-options="formatOptions" />
+					<UInputNumber v-model="model.max" :disabled="isDisabled" :min="model.min" :max="max" :step="step" label="Max" :format-options="formatOptions" />
 				</div>
-				<USlider v-model="sliderModel" :min="min" :max="max" multiple :step="step" tooltip />
+				<USlider v-model="sliderModel" :disabled="isDisabled" :min="min" :max="max" multiple :step="step" tooltip />
 				<div class="flex gap-1 items-center text-muted text-sm">
 					<div>
 						{{ formatValue(min) }}
@@ -25,9 +25,6 @@
 						{{ formatValue(max) }}
 					</div>
 				</div>
-			</div>
-			<div v-else class="text-muted text-sm p-4">
-				No range available
 			</div>
 		</template>
 	</UPopover>
@@ -55,6 +52,8 @@
 	}
 
 	const open = ref(false);
+
+	const isDisabled = computed(() => min === max);
 
 	const model = useLocalStorage<NumberRangeFilterState>(() => `number-range-filter-${id}`, { min, max });
 
@@ -88,4 +87,8 @@
 	function reset() {
 		model.value = { min, max };
 	}
+
+	onBeforeUnmount(() => {
+		onUpdate({ min, max });
+	});
 </script>

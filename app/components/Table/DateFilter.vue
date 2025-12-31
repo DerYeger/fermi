@@ -126,4 +126,8 @@
 		firstDateInput.value = undefined;
 		secondDateInput.value = undefined;
 	}
+
+	onBeforeUnmount(() => {
+		onUpdate(null);
+	});
 </script>
