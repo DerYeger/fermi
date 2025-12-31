@@ -19,9 +19,13 @@ export function limitLength(str: string, maxLength: number): string {
 	return `${str.slice(0, maxLength - 3)}...`;
 }
 
+const percentageFormat = new Intl.NumberFormat(undefined, {
+	style: "percent",
+	minimumFractionDigits: 1,
+	maximumFractionDigits: 1
+});
 export function formatPercentage(value: number): string {
-	const rounded = Math.round(value * 1000) / 10;
-	return `${rounded}%`;
+	return percentageFormat.format(value);
 }
 
 export function sortImages(images: FermentImage[]): FermentImage[] {

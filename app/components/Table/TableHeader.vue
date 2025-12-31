@@ -1,5 +1,5 @@
 <template>
-	<div class="flex items-center">
+	<div class="flex items-center whitespace-pre">
 		<SortButton
 			v-if="isSorted !== null"
 			:is-sorted="isSorted"

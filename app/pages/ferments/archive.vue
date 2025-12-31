@@ -14,6 +14,10 @@
 				class="h-full overscroll-none overflow-auto"
 				sticky
 				:data="ferments"
+				:column-pinning="{
+					left: ['expand'],
+					right: ['actions']
+				}"
 				:columns="columns"
 				:get-row-id="(row) => row.id"
 				:initial-state="{
@@ -26,7 +30,6 @@
 					getFacetedRowModel: getFacetedRowModel(),
 					getFacetedUniqueValues: getFacetedUniqueValues()
 				}"
-				:ui="{ tr: 'border-b border-default' }"
 			>
 				<template #expanded="{ row }">
 					<div
@@ -49,6 +52,7 @@
 	import type { CompletedFerment } from "~/types/ferment";
 	import type { Filter } from "~/types/filter";
 	import { createColumnHelper, getFacetedRowModel, getFacetedUniqueValues } from "@tanstack/vue-table";
+	import { Stream } from "@yeger/streams/sync";
 	import IngredientBadges from "~/components/IngredientBadges.vue";
 	import FermentActionsCell from "~/components/Table/FermentActionsCell.vue";
 	import StarsCell from "~/components/Table/StarsCell.vue";
@@ -135,6 +139,9 @@
 	function createStarsCell() {
 		return (context: CellContext<CompletedFerment, number | null>) => {
 			const stars = context.getValue();
+			if (stars === null) {
+				return null;
+			}
 			return h(StarsCell, { stars });
 		};
 	}
@@ -173,12 +180,28 @@
 		return { min, max };
 	});
 
+	const avgFormat = new Intl.NumberFormat(undefined, {
+		maximumFractionDigits: 1
+	});
+
 	const columnHelper = createColumnHelper<CompletedFerment>();
 	const columns = [
 		columnHelper.display({
 			id: "expand",
 			enableHiding: false,
-			cell: ({ row }) =>
+			header: (ctx) => {
+				const filteredColumns = ctx.table.getAllColumns().filter((column) => column.getIsFiltered());
+				if (filteredColumns.length === 0) {
+					return null;
+				}
+				const label = filteredColumns.length === 1 ? "1 filter" : `${filteredColumns.length} filters`;
+				return h(UBadge, {
+					variant: "subtle",
+					size: "sm",
+					label
+				});
+			},
+			cell: (ctx) =>
 				h(UButton, {
 					color: "neutral",
 					variant: "ghost",
@@ -188,13 +211,14 @@
 					ui: {
 						leadingIcon: [
 							"transition-transform",
-							row.getIsExpanded() ? "duration-200 rotate-180" : ""
+							ctx.row.getIsExpanded() ? "duration-200 rotate-180" : ""
 						]
 					},
 					onClick: () => {
-						expanded.value = { [row.id]: !row.getIsExpanded() };
+						expanded.value = { [ctx.row.id]: !ctx.row.getIsExpanded() };
 					}
-				})
+				}),
+			footer: "Avg"
 		}),
 		columnHelper.accessor("name", {
 			id: "name",
@@ -234,7 +258,15 @@
 				percentage: true
 			}))),
 			filterFn: numberRangeFilterFn,
-			cell: (ctx) => formatPercentage(ctx.getValue())
+			cell: (ctx) => formatPercentage(ctx.getValue()),
+			footer: (ctx) => {
+				const saltRatios = ctx.table.getGlobalFacetedRowModel().rows.map((row) => row.getValue<number>("saltRatio"));
+				if (saltRatios.length === 0) {
+					return null;
+				}
+				const avgSaltRatio = (Stream.from(saltRatios).sum() / saltRatios.length);
+				return `${formatPercentage(avgSaltRatio)}`;
+			}
 		}),
 		columnHelper.accessor((row) => getDaysBetween(row.startDate, row.endDate), {
 			id: "duration",
@@ -243,7 +275,15 @@
 				step: 1
 			}))),
 			filterFn: numberRangeFilterFn,
-			cell: (ctx) => `${ctx.getValue()} days`
+			cell: (ctx) => `${ctx.getValue()} days`,
+			footer: (ctx) => {
+				const durations = ctx.table.getGlobalFacetedRowModel().rows.map((row) => row.getValue<number>("duration"));
+				if (durations.length === 0) {
+					return null;
+				}
+				const avgDuration = (Stream.from(durations).sum() / durations.length);
+				return `${avgFormat.format(avgDuration)} ${avgDuration === 1 ? "day" : "days"}`;
+			}
 		}),
 		columnHelper.accessor("startDate", {
 			id: "startDate",
@@ -266,7 +306,15 @@
 					step: 1
 				})),
 				filterFn: numberRangeFilterFn,
-				cell: createStarsCell()
+				cell: createStarsCell(),
+				footer: (ctx) => {
+					const ratings = Stream.from(ctx.table.getGlobalFacetedRowModel().rows).map((row) => row.getValue<number | null>(rating.key)).filterNonNull().toArray();
+					if (ratings.length === 0) {
+						return null;
+					}
+					const avgRating = (Stream.from(ratings).sum() / ratings.length);
+					return `${avgFormat.format(avgRating)} ${avgRating === 1 ? "star" : "stars"}`;
+				}
 			})),
 		columnHelper.display({
 			id: "actions",

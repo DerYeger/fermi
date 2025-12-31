@@ -2,8 +2,6 @@ import type { DateValue } from "@internationalized/date";
 import type { ActiveFerment } from "~/types/ferment";
 import { CalendarDate } from "@internationalized/date";
 
-const LOCALE = navigator.language;
-
 const now = useNow({ interval: 60 * 60 * 1000 });
 
 /**
@@ -15,7 +13,7 @@ export const today = computed(() => getISODate(now.value));
  */
 export const todayCalendarDate = computed(() => getCalendarDate(now.value));
 
-const timeSinceFormat = Intl.NumberFormat(LOCALE, {
+const timeSinceFormat = Intl.NumberFormat(undefined, {
 	style: "unit",
 	unit: "day",
 	unitDisplay: "long"
@@ -26,7 +24,7 @@ export function formatTimeSince(dateString: MaybeRefOrGetter<string>, startDate 
 	return timeSinceFormat.format(diffDays);
 }
 
-const dateFormat = Intl.DateTimeFormat(LOCALE, {
+const dateFormat = Intl.DateTimeFormat(undefined, {
 	month: "short",
 	day: "numeric",
 	year: "numeric"
@@ -35,7 +33,7 @@ export function formatDate(date: string) {
 	return dateFormat.format(new Date(date));
 }
 
-const timeFormat = Intl.DateTimeFormat(LOCALE, {
+const timeFormat = Intl.DateTimeFormat(undefined, {
 	month: "short",
 	day: "numeric",
 	year: "numeric",
