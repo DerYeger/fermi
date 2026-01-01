@@ -2,6 +2,7 @@
 	<UFormField label="Container" name="container">
 		<UFieldGroup>
 			<UInputMenu
+				ref="inputMenu"
 				v-model="internalModel"
 				v-model:open="open"
 				v-model:search-term="searchTerm"
@@ -36,6 +37,7 @@
 
 	const open = ref(false);
 	const searchTerm = ref("");
+	const inputMenu = useTemplateRef("inputMenu");
 
 	function onCreate(item: string) {
 		internalModel.value = item.trim();
@@ -52,6 +54,9 @@
 	function onClear() {
 		internalModel.value = undefined;
 		searchTerm.value = "";
+		if (inputMenu.value?.inputRef.value) {
+			inputMenu.value.inputRef.value = "";
+		}
 	}
 
 	const containers = useFermentContainers(() => [model.value?.trim() ?? ""].filter(Boolean));
