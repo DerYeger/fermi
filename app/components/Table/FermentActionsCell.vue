@@ -9,16 +9,17 @@
 		/>
 		<EditFermentButton :ferment="ferment" hide-label />
 		<DuplicateFermentButton :ferment="ferment" hide-label />
-		<UnarchiveFermentButton :ferment="ferment" hide-label />
+		<UnarchiveFermentButton v-if="ferment.state === 'completed'" :ferment="ferment" hide-label />
+		<UnfailFermentButton v-else-if="ferment.state === 'failed'" :ferment="ferment" hide-label />
 		<DeleteFermentButton :ferment="ferment" hide-label />
 	</div>
 </template>
 
 <script lang="ts" setup>
-	import type { CompletedFerment } from "~/types/ferment";
+	import type { ArchivedFerment } from "~/types/ferment";
 	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
 
 	const { ferment } = defineProps<{
-		ferment: CompletedFerment
+		ferment: ArchivedFerment
 	}>();
 </script>

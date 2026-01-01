@@ -62,6 +62,7 @@
 				<EditFermentButton :ferment="ferment" hide-label />
 				<DuplicateFermentButton :ferment="ferment" hide-label />
 				<ArchiveFermentButton :ferment="ferment" hide-label />
+				<FailFermentButton :ferment="ferment" hide-label />
 				<DeleteFermentButton :ferment="ferment" hide-label />
 			</div>
 		</template>
@@ -72,6 +73,7 @@
 	import type { ActiveFerment } from "~/types/ferment";
 	import ArchiveFermentButton from "~/components/Forms/ArchiveFermentForm/ArchiveFermentButton.vue";
 	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
+	import FailFermentButton from "~/components/Forms/FailFermentForm/FailFermentButton.vue";
 	import { formatPercentage } from "~/types/utils";
 
 	const { ferment } = defineProps<{

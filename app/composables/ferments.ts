@@ -1,4 +1,4 @@
-import { and, eq, lt, useLiveQuery } from "@tanstack/vue-db";
+import { and, eq, lt, not, useLiveQuery } from "@tanstack/vue-db";
 import { Stream } from "@yeger/streams/sync";
 
 export function useFerments() {
@@ -17,6 +17,22 @@ export function useCompletedFerments() {
 	return useLiveQuery((q) =>
 		q.from({ ferment: FermentCollection })
 			.where(({ ferment }) => eq(ferment.state, "completed"))
+			.orderBy(({ ferment }) => ferment.endDate, "desc")
+	);
+}
+
+export function useFailedFerments() {
+	return useLiveQuery((q) =>
+		q.from({ ferment: FermentCollection })
+			.where(({ ferment }) => eq(ferment.state, "failed"))
+			.orderBy(({ ferment }) => ferment.endDate, "desc")
+	);
+}
+
+export function useArchivedFerments() {
+	return useLiveQuery((q) =>
+		q.from({ ferment: FermentCollection })
+			.where(({ ferment }) => not(eq(ferment.state, "active")))
 			.orderBy(({ ferment }) => ferment.endDate, "desc")
 	);
 }

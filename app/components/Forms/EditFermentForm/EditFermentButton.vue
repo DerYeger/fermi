@@ -13,6 +13,12 @@
 				@cancel="showEditModal = false"
 			/>
 			<EditCompletedFermentForm
+				v-else-if="ferment.state === 'completed'"
+				:ferment="ferment"
+				@submit="handleSubmit"
+				@cancel="showEditModal = false"
+			/>
+			<EditFailedFermentForm
 				v-else
 				:ferment="ferment"
 				@submit="handleSubmit"
@@ -26,6 +32,7 @@
 	import type { Ferment } from "~/types/ferment";
 	import EditActiveFermentForm from "~/components/Forms/EditFermentForm/EditActiveFermentForm.vue";
 	import EditCompletedFermentForm from "~/components/Forms/EditFermentForm/EditCompletedFermentForm.vue";
+	import EditFailedFermentForm from "~/components/Forms/EditFermentForm/EditFailedFermentForm.vue";
 	import { getErrorMessage, sortImages } from "~/types/utils";
 
 	const { ferment } = defineProps<{

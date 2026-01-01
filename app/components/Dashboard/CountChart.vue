@@ -22,11 +22,11 @@
 	const chartData = computed(() => {
 		const lastDate = today.value;
 
-		const counts: Record<string, { active: number, completed: number }> = {};
+		const counts: Record<string, { active: number, completed: number, failed: number }> = {};
 
 		function getCount(dateStr: string) {
 			if (!counts[dateStr]) {
-				counts[dateStr] = { active: 0, completed: 0 };
+				counts[dateStr] = { active: 0, completed: 0, failed: 0 };
 			}
 			return counts[dateStr]!;
 		}
@@ -50,23 +50,23 @@
 			{
 				const date = new Date(ferment.startDate);
 				date.setDate(date.getDate() + 1);
-				const endDate = ferment.state === "completed" ? new Date(ferment.endDate) : new Date(lastDate);
+				const endDate = ferment.state === "active" ? new Date(lastDate) : new Date(ferment.endDate);
 				fillUntil(date, endDate, "active");
 			}
-			if (ferment.state !== "completed") {
+			if (ferment.state === "active") {
 				return;
 			}
 			const endDateCount = getCount(ferment.endDate);
 			endDateCount.active -= 1;
-			endDateCount.completed += 1;
+			endDateCount[ferment.state] += 1;
 			if (ferment.endDate < lastDate) {
 				const date = new Date(ferment.endDate);
 				date.setDate(date.getDate() + 1);
-				fillUntil(date, new Date(lastDate), "completed");
+				fillUntil(date, new Date(lastDate), ferment.state);
 			}
 		});
 		return Object.entries(counts)
-			.map(([date, { active, completed }]) => ({ date, active, completed }))
+			.map(([date, { active, completed, failed }]) => ({ date, active, completed, failed }))
 			.sort((a, b) => a.date.localeCompare(b.date));
 	});
 
@@ -76,14 +76,19 @@
 		{
 			label: "Active",
 			key: "active",
-			color: ref("#04C950") // useCssVar("--color-success");
+			color: "#04C950" // useCssVar("--color-success");
 		},
 		{
 			label: "Completed",
 			key: "completed",
-			color: ref("#EFB200") // useCssVar("--color-warning");
+			color: "#EFB200" // useCssVar("--color-warning");
+		},
+		{
+			label: "Failed",
+			key: "failed",
+			color: "#FB2C35" // useCssVar("--color-error");
 		}
-	] as const satisfies { color: Ref<string>, label: string, key: Exclude<keyof typeof chartData["value"][number], "date"> }[];
+	] as const satisfies { color: string, label: string, key: Exclude<keyof typeof chartData["value"][number], "date"> }[];
 
 	const backgroundColor = useCssVar("--ui-bg");
 	const borderColor = useCssVar("--ui-border");
@@ -185,7 +190,7 @@
 		series: series.map(({ label, key, color }) => ({
 			name: label,
 			type: "line",
-			color: color.value,
+			color,
 			symbol: "none",
 			stack: "Total",
 			sampling: "lltb",
@@ -200,7 +205,7 @@
 					color: "inherit"
 				},
 				lineStyle: {
-					color: color.value
+					color
 				}
 			},
 			data: chartData.value.map((item) => item[key])

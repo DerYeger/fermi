@@ -1,7 +1,7 @@
 <template>
 	<Loader v-if="isLoading" />
 
-	<Empty v-else-if="data.length === 0" type="completed" />
+	<Empty v-else-if="data.length === 0" type="archived" />
 
 	<div v-else class="-m-4 h-[calc(100%+2rem)]">
 		<UContextMenu
@@ -22,7 +22,7 @@
 				:get-row-id="(row) => row.id"
 				:initial-state="{
 					sorting: [{
-						id: 'endDate',
+						id: 'startDate',
 						desc: true
 					}]
 				}"
@@ -52,7 +52,7 @@
 <script setup lang="ts">
 	import type { ContextMenuItem } from "@nuxt/ui";
 	import type { CellContext, ColumnDef, HeaderContext } from "@tanstack/vue-table";
-	import type { CompletedFerment } from "~/types/ferment";
+	import type { ArchivedFerment, FermentState } from "~/types/ferment";
 	import type { Filter } from "~/types/filter";
 	import { createColumnHelper, getFacetedRowModel, getFacetedUniqueValues } from "@tanstack/vue-table";
 	import { Stream } from "@yeger/streams/sync";
@@ -64,8 +64,8 @@
 	import { booleanFilterFn, createBooleanFilter, createNumberRangeFilter, dateFilter, dateFilterFn, FILTER_BUS_KEY, multiSelectFilter, multiSelectFilterFn, numberRangeFilterFn } from "~/types/filter";
 	import { formatPercentage } from "~/types/utils";
 
-	const { data, isLoading } = useCompletedFerments();
-	const ferments = data as Ref<CompletedFerment[]>;
+	const { data, isLoading } = useArchivedFerments();
+	const ferments = data as Ref<ArchivedFerment[]>;
 
 	const columnVisibility = useLocalStorage<Record<string, boolean>>("archive-column-visibility", {
 		createdAt: false,
@@ -83,6 +83,7 @@
 			acc[rating.key] = rating.name;
 			return acc;
 		}, {} as Record<typeof RATING_CATEGORIES[number]["key"], string>),
+		state: "State",
 		name: "Name",
 		container: "Container",
 		ingredients: "Ingredients",
@@ -92,7 +93,7 @@
 		endDate: "End",
 		createdAt: "Created at",
 		updatedAt: "Updated at"
-	} as const satisfies Partial<Record<keyof CompletedFerment | "duration", string>>;
+	} as const satisfies Partial<Record<keyof ArchivedFerment | "duration", string>>;
 
 	const contextMenuItems = computed(() => {
 		const items: ContextMenuItem[] = [];
@@ -127,8 +128,8 @@
 	const UButton = resolveComponent("UButton");
 	const UFieldGroup = resolveComponent("UFieldGroup");
 
-	function createHeader<T>(label: string, createFilter?: (ctx: HeaderContext<CompletedFerment, T>) => Filter) {
-		return (ctx: HeaderContext<CompletedFerment, T>) => {
+	function createHeader<T>(label: string, createFilter?: (ctx: HeaderContext<ArchivedFerment, T>) => Filter) {
+		return (ctx: HeaderContext<ArchivedFerment, T>) => {
 			const isSorted = ctx.column.getCanSort() ? ctx.column.getIsSorted() : null;
 			return h(TableHeader, {
 				label,
@@ -143,7 +144,7 @@
 	}
 
 	function createStarsCell() {
-		return (context: CellContext<CompletedFerment, number | null>) => {
+		return (context: CellContext<ArchivedFerment, number | null>) => {
 			const stars = context.getValue();
 			if (stars === null) {
 				return null;
@@ -192,7 +193,13 @@
 
 	const bus = useEventBus(FILTER_BUS_KEY);
 
-	const columnHelper = createColumnHelper<CompletedFerment>();
+	const formattedStates = {
+		active: "Active",
+		completed: "Completed",
+		failed: "Failed"
+	} as const satisfies Record<FermentState, string>;
+
+	const columnHelper = createColumnHelper<ArchivedFerment>();
 	const columns = [
 		columnHelper.display({
 			id: "expand",
@@ -253,25 +260,14 @@
 				}
 			}
 		}),
-		columnHelper.accessor("container", {
-			id: "container",
-			header: createHeader(columnLabels.container, multiSelectFilter),
+		columnHelper.accessor((row) => formattedStates[row.state], {
+			id: "state",
+			header: createHeader(columnLabels.state, multiSelectFilter),
 			filterFn: multiSelectFilterFn,
 			cell: (ctx) => {
-				const container = ctx.getValue();
-				if (!container) {
-					return null;
-				}
-				return h(UBadge, { color: "secondary", variant: "subtle", label: ctx.getValue() });
+				const state = ctx.getValue();
+				return h(UBadge, { color: state === "Completed" ? "success" : state === "Failed" ? "error" : "neutral", variant: "subtle", label: state });
 			}
-		}),
-		columnHelper.accessor("ingredients", {
-			id: "ingredients",
-			getUniqueValues: (row) => row.ingredients.map((ing) => ing.name),
-			header: createHeader(columnLabels.ingredients, multiSelectFilter),
-			filterFn: multiSelectFilterFn,
-			cell: (ctx) =>
-				h(IngredientBadges, { ingredients: ctx.getValue() })
 		}),
 		columnHelper.accessor("saltRatio", {
 			id: "saltRatio",
@@ -290,6 +286,19 @@
 				const avgSaltRatio = (Stream.from(saltRatios).sum() / saltRatios.length);
 				return `${formatPercentage(avgSaltRatio)}`;
 			}
+		}),
+		columnHelper.accessor("container", {
+			id: "container",
+			header: createHeader(columnLabels.container, multiSelectFilter),
+			filterFn: multiSelectFilterFn
+		}),
+		columnHelper.accessor("ingredients", {
+			id: "ingredients",
+			getUniqueValues: (row) => row.ingredients.map((ing) => ing.name),
+			header: createHeader(columnLabels.ingredients, multiSelectFilter),
+			filterFn: multiSelectFilterFn,
+			cell: (ctx) =>
+				h(IngredientBadges, { ingredients: ctx.getValue() })
 		}),
 		columnHelper.accessor((row) => getDaysBetween(row.startDate, row.endDate), {
 			id: "duration",
@@ -321,7 +330,7 @@
 			cell: (ctx) => formatDate(ctx.getValue())
 		}),
 		...RATING_CATEGORIES.map((rating) =>
-			columnHelper.accessor((row) => row[rating.key].stars, {
+			columnHelper.accessor((row) => row.state === "completed" ? row[rating.key].stars : null, {
 				id: rating.key,
 				header: createHeader(columnLabels[rating.key], createNumberRangeFilter({
 					min: 0,
@@ -365,5 +374,5 @@
 			filterFn: dateFilterFn,
 			cell: (ctx) => formatDateTime(ctx.getValue())
 		})
-	] as ColumnDef<CompletedFerment>[];
+	] as ColumnDef<ArchivedFerment>[];
 </script>

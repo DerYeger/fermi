@@ -20,6 +20,13 @@
 				@cancel="showDuplicationModal = false"
 			/>
 			<EditCompletedFermentForm
+				v-else-if="duplicationBase.state === 'completed'"
+				:ferment="duplicationBase"
+				submit-label="Duplicate"
+				@submit="handleSubmit"
+				@cancel="showDuplicationModal = false"
+			/>
+			<EditFailedFermentForm
 				v-else
 				:ferment="duplicationBase"
 				submit-label="Duplicate"
@@ -34,6 +41,7 @@
 	import type { Ferment } from "~/types/ferment";
 	import EditActiveFermentForm from "~/components/Forms/EditFermentForm/EditActiveFermentForm.vue";
 	import EditCompletedFermentForm from "~/components/Forms/EditFermentForm/EditCompletedFermentForm.vue";
+	import EditFailedFermentForm from "~/components/Forms/EditFermentForm/EditFailedFermentForm.vue";
 	import { getErrorMessage, sortImages } from "~/types/utils";
 
 	const { ferment } = defineProps<{

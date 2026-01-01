@@ -10,8 +10,12 @@
 				<FavoriteFermentButton :ferment="ferment" />
 				<EditFermentButton :ferment="ferment" />
 				<DuplicateFermentButton :ferment="ferment" />
-				<ArchiveFermentButton v-if="ferment.state === 'active'" :ferment="ferment" />
-				<UnarchiveFermentButton v-else :ferment="ferment" />
+				<template v-if="ferment.state === 'active'">
+					<ArchiveFermentButton :ferment="ferment" />
+					<FailFermentButton :ferment="ferment" />
+				</template>
+				<UnarchiveFermentButton v-else-if="ferment.state === 'completed'" :ferment="ferment" />
+				<UnfailFermentButton v-else-if="ferment.state === 'failed'" :ferment="ferment" />
 				<DeleteFermentButton :ferment="ferment" />
 			</div>
 		</div>
@@ -23,8 +27,11 @@
 				<UCard class="min-h-full">
 					<template #header>
 						<CardHeader title="Details" icon="hugeicons:information-square">
-							<UBadge v-if="ferment.state === 'completed'" variant="subtle" color="neutral">
+							<UBadge v-if="ferment.state === 'completed'" color="success" variant="subtle">
 								Completed
+							</UBadge>
+							<UBadge v-if="ferment.state === 'failed'" color="error" variant="subtle">
+								Failed
 							</UBadge>
 						</CardHeader>
 					</template>
@@ -183,6 +190,24 @@
 					/>
 				</div>
 			</template>
+
+			<template v-if="ferment.state === 'failed'">
+				<div
+					class="lg:row-span-2 lg:col-span-2"
+				>
+					<UCard class="min-h-full flex flex-col" :ui="{ body: 'flex-1 flex flex-col' }">
+						<template #header>
+							<CardHeader title="Reason" icon="hugeicons:waste" />
+						</template>
+						<div v-if="ferment.reason" class="whitespace-pre-wrap text-sm">
+							{{ ferment.reason }}
+						</div>
+						<div v-else class="flex-1 flex-center text-sm text-muted">
+							No reason
+						</div>
+					</UCard>
+				</div>
+			</template>
 		</div>
 	</div>
 </template>
@@ -191,6 +216,7 @@
 	import type { Ferment } from "~/types/ferment";
 	import ArchiveFermentButton from "~/components/Forms/ArchiveFermentForm/ArchiveFermentButton.vue";
 	import EditFermentButton from "~/components/Forms/EditFermentForm/EditFermentButton.vue";
+	import FailFermentButton from "~/components/Forms/FailFermentForm/FailFermentButton.vue";
 	import { RATING_CATEGORIES } from "~/types/ferment";
 	import { formatPercentage } from "~/types/utils";
 

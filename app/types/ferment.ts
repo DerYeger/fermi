@@ -104,19 +104,28 @@ export const CompletedFermentSchema = FermentBaseSchema.extend({
 });
 export type CompletedFerment = zInfer<typeof CompletedFermentSchema>;
 
+export const FailedFermentSchema = FermentBaseSchema.extend({
+	state: z.literal("failed"),
+	endDate: z.iso.date("End date is required"),
+	reason: NotesSchema
+});
+export type FailedFerment = zInfer<typeof FailedFermentSchema>;
+
 export const FermentSchema = z.discriminatedUnion("state", [
 	ActiveFermentSchema,
-	CompletedFermentSchema
+	CompletedFermentSchema,
+	FailedFermentSchema
 ]);
 export type Ferment = zInfer<typeof FermentSchema>;
 
+export type ArchivedFerment = CompletedFerment | FailedFerment;
+
 export type FermentState = Ferment["state"];
 
-export function transitionToActive(ferment: CompletedFerment): ActiveFerment {
+export function transitionToActive(ferment: ArchivedFerment): ActiveFerment {
 	return ActiveFermentSchema.parse({
 		...ferment,
 		state: "active",
-		endDate: null,
 		updatedAt: getISODatetime()
 	} satisfies ActiveFerment);
 };

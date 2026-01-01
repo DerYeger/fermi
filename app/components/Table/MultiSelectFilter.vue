@@ -10,8 +10,8 @@
 			base: 'p-0 cursor-pointer',
 			value: 'hidden',
 			placeholder: 'hidden',
-			content: 'min-w-fit',
-			item: 'min-w-25 max-w-50 truncate',
+			content: 'min-w-fit max-w-50',
+			item: 'min-w-25 truncate',
 			empty: 'min-w-25',
 			trailing: 'static p-1.5',
 			trailingIcon: open || isFiltered ? 'text-primary' : 'text-muted hover:text-default'

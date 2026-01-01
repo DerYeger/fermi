@@ -32,7 +32,7 @@
 		"devUrl": "http://localhost:3000"
 	},
 	"productName": "Fermi",
-	"version": "1.0.3",
+	"version": "1.1.0",
 	"identifier": "dev.janmueller.fermi",
 	"plugins": {
 		"shell": {

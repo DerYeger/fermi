@@ -43,7 +43,7 @@
 <script lang="ts" setup>
 	import type { DateValue } from "@internationalized/date";
 	import type { DropdownMenuItem } from "@nuxt/ui";
-	import type { Ferment, FermentState } from "~/types/ferment";
+	import type { Ferment } from "~/types/ferment";
 	import { FIRST_WEEK_DAY } from "#imports";
 
 	const ferments = useFerments();
@@ -76,7 +76,7 @@
 
 	interface DayState {
 		menuItems: DropdownMenuItem[]
-		type: FermentState | "both" | false
+		type: "start" | "end" | "both" | false
 		color: "success" | "warning" | "error" | undefined
 	}
 
@@ -105,9 +105,9 @@
 		if (hasStart && hasEnd) {
 			return "both";
 		} else if (hasStart) {
-			return "active";
+			return "start";
 		} else if (hasEnd) {
-			return "completed";
+			return "end";
 		}
 		return false;
 	}
@@ -152,9 +152,9 @@
 	function getDayColor(type: DayState["type"]): DayState["color"] {
 		if (type === "both") {
 			return "error";
-		} else if (type === "active") {
+		} else if (type === "start") {
 			return "success";
-		} else if (type === "completed") {
+		} else if (type === "end") {
 			return "warning";
 		}
 		return undefined;

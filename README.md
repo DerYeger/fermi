@@ -9,7 +9,7 @@
 - Track ferments with ingredients, containers, images, start and end dates, salt ratios, as well as notes and ratings.
 - Visualize your fermentation journey with charts and statistics.
 - Get reminders for due and overdue ferments.
-- Browse data of completed ferments with sorting and filtering.
+- Browse data of completed and failed ferments with sorting and filtering.
 - Data is stored in JSON files, enabling automated backups.
 
 ![Fermi List](./resources/list.png)

@@ -4,7 +4,7 @@
 		variant="ghost"
 		color="warning"
 		size="sm"
-		icon="hugeicons:unarchive-03"
+		icon="hugeicons:waste-restore"
 		@click.stop="showConfirmDialog = true"
 	/>
 	<UModal v-model:open="showConfirmDialog" title="Restore ferment" description="Dialog for restoring a completed ferment">
@@ -25,12 +25,12 @@
 </template>
 
 <script lang="ts" setup>
-	import type { CompletedFerment } from "~/types/ferment";
+	import type { FailedFerment } from "~/types/ferment";
 	import { transitionToActive } from "~/types/ferment";
 	import { getErrorMessage } from "~/types/utils";
 
 	const { ferment } = defineProps<{
-		ferment: CompletedFerment
+		ferment: FailedFerment
 		hideLabel?: boolean
 	}>();
 
