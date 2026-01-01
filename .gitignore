@@ -8,5 +8,7 @@ node_modules
 .output
 .env
 .cargo
+coverage
 dist
 src-tauri/target
+__screenshots__

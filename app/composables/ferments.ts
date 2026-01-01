@@ -116,8 +116,6 @@ export function formatQuantity(quantity: number, unit: string) {
 			unit: PREDEFINED_UNITS_TO_FORMATTER_UNIT[unit] ?? unit
 		}).format(quantity);
 	} catch {
-		console.log("fallback", unit);
-
 		return `${Intl.NumberFormat(undefined, {
 			maximumFractionDigits: 2
 		}).format(quantity)} ${unit}`;
