@@ -72,10 +72,41 @@ export function useIngredientNames(otherNames: MaybeRefOrGetter<string[]>): Comp
 
 export const PREDEFINED_UNITS = {
 	Metric: ["g", "kg", "ml", "l"],
-	Imperial: ["cups", "tbsp", "tsp", "oz", "lb", "pieces"],
-	Other: ["pieces"]
-};
-const PREDEFINED_UNITS_SET = new Set(Object.values(PREDEFINED_UNITS).flat());
+	Imperial: ["fl oz", "lb", "oz"],
+	Other: ["cups", "pieces", "slices", "tbsp", "tsp"]
+} as const;
+const PREDEFINED_UNITS_SET = new Set<string>(Object.values(PREDEFINED_UNITS).flat());
+
+const PREDEFINED_UNITS_TO_FORMATTER_UNIT: Record<string, string | undefined> = {
+	g: "gram",
+	kg: "kilogram",
+	ml: "milliliter",
+	l: "liter",
+	oz: "ounce",
+	"fl oz": "fluid-ounce",
+	lb: "pound",
+	cups: undefined,
+	pieces: undefined,
+	slices: undefined,
+	tbsp: undefined,
+	tsp: undefined
+} satisfies Record<typeof PREDEFINED_UNITS[keyof typeof PREDEFINED_UNITS][number], string | undefined>;
+
+export function formatQuantity(quantity: number, unit: string) {
+	try {
+		return Intl.NumberFormat(undefined, {
+			maximumFractionDigits: 2,
+			style: "unit",
+			unit: PREDEFINED_UNITS_TO_FORMATTER_UNIT[unit] ?? unit
+		}).format(quantity);
+	} catch {
+		console.log("fallback", unit);
+
+		return `${Intl.NumberFormat(undefined, {
+			maximumFractionDigits: 2
+		}).format(quantity)} ${unit}`;
+	}
+}
 
 export function useIngredientUnits(otherUnits: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
 	const query = useIngredients();

@@ -142,7 +142,7 @@
 							<div class="flex items-center justify-between gap-1">
 								<span class="flex-1 truncate">{{ ingredient.name }}</span>
 								<span class="text-sm text-muted">
-									{{ ingredient.quantity }} {{ ingredient.unit }}
+									{{ formatQuantity(ingredient.quantity, ingredient.unit) }}
 								</span>
 							</div>
 							<USeparator v-if="index < ferment.ingredients.length - 1" />

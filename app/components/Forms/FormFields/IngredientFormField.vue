@@ -23,7 +23,14 @@
 			:name="`ingredients.${index}.quantity`"
 			required
 		>
-			<UInputNumber v-model="ingredient.quantity" :min="0" placeholder="Quantity..." />
+			<UInputNumber
+				v-model="ingredient.quantity"
+				:min="0"
+				:step="0.01"
+				:increment="false"
+				:decrement="false"
+				placeholder="Quantity..."
+			/>
 		</UFormField>
 
 		<UFormField

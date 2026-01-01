@@ -15,22 +15,12 @@
 
 <script setup lang="ts">
 	import type { ECBasicOption } from "echarts/types/dist/shared";
-	import { Stream } from "@yeger/streams/sync";
 	import VChart from "vue-echarts";
 
 	const { data, isLoading } = useFerments();
 
 	const chartData = computed(() => {
-		const lastEndDate = Stream
-			.from(data.value)
-			.map((ferment) => ferment.state === "completed" ? ferment.endDate : null)
-			.filterNonNull()
-			.reduce<string | null>((acc, date) => {
-				if (!acc || date > acc) {
-					return date;
-				}
-				return acc;
-			}, null) ?? today.value;
+		const lastDate = today.value;
 
 		const counts: Record<string, { active: number, completed: number }> = {};
 
@@ -60,7 +50,7 @@
 			{
 				const date = new Date(ferment.startDate);
 				date.setDate(date.getDate() + 1);
-				const endDate = ferment.state === "completed" ? new Date(ferment.endDate) : new Date(lastEndDate);
+				const endDate = ferment.state === "completed" ? new Date(ferment.endDate) : new Date(lastDate);
 				fillUntil(date, endDate, "active");
 			}
 			if (ferment.state !== "completed") {
@@ -69,10 +59,10 @@
 			const endDateCount = getCount(ferment.endDate);
 			endDateCount.active -= 1;
 			endDateCount.completed += 1;
-			if (ferment.endDate < lastEndDate) {
+			if (ferment.endDate < lastDate) {
 				const date = new Date(ferment.endDate);
 				date.setDate(date.getDate() + 1);
-				fillUntil(date, new Date(lastEndDate), "completed");
+				fillUntil(date, new Date(lastDate), "completed");
 			}
 		});
 		return Object.entries(counts)
