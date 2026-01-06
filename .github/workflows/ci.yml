@@ -1,47 +1,70 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - main
+on: [push, workflow_dispatch]
+
 jobs:
   ci:
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: ubuntu-22.04
+          - platform: macos-latest # Arm based macs
+            args: --target aarch64-apple-darwin
+            release_only: true
+          - platform: macos-latest # Intel based macs
+            args: --target x86_64-apple-darwin
+            release_only: true
+          - platform: ubuntu-latest
             args: ""
+            release_only: false
+          - platform: windows-latest
+            args: ""
+            release_only: true
 
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
+        if: matrix.release_only == false || github.ref == 'refs/heads/release'
 
       - name: setup node
         uses: actions/setup-node@v4
+        if: matrix.release_only == false || github.ref == 'refs/heads/release'
         with:
           node-version-file: .node-version
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
+        if: matrix.release_only == false || github.ref == 'refs/heads/release'
         with:
           # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04'
+        if: matrix.platform == 'ubuntu-latest' && (matrix.release_only == false || github.ref == 'refs/heads/release')
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-        # webkitgtk 4.0 is for Tauri v1 - webkitgtk 4.1 is for Tauri v2.
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.2.22
+        if: matrix.release_only == false || github.ref == 'refs/heads/release'
 
       - name: install frontend dependencies
+        if: matrix.release_only == false || github.ref == 'refs/heads/release'
         run: bun install
 
       - name: run build, lint, test and typecheck
+        if: matrix.release_only == false && github.ref != 'refs/heads/release'
         run: bun run ci
+
+      - uses: tauri-apps/tauri-action@v0
+        if: github.ref == 'refs/heads/release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: fermi-v__VERSION__
+          releaseName: Fermi v__VERSION__
+          releaseBody: After installing the Apple app you have to run "xattr -c /Applications/Fermi.app" once before launching
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}
