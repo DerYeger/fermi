@@ -1,156 +1,207 @@
+import type { CompletedFerment } from "~/types/ferment";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import { nextTick } from "vue";
 import EditCompletedFermentForm from "~/components/Forms/EditFermentForm/EditCompletedFermentForm.vue";
-
-// Mock form field components
-vi.mock("~/components/Forms/FormFields/NameFormField.vue", () => ({
-	default: { name: "NameFormField", props: ["modelValue"], template: "<div></div>" }
-}));
-vi.mock("~/components/Forms/FormFields/ContainerFormField.vue", () => ({
-	default: { name: "ContainerFormField", props: ["modelValue"], template: "<div></div>" }
-}));
-vi.mock("~/components/Forms/FormFields/ImagesFormField.vue", () => ({
-	default: { name: "ImagesFormField", props: ["modelValue"], template: "<div></div>" }
-}));
-vi.mock("~/components/Forms/FormFields/SaltRatioFormField.vue", () => ({
-	default: { name: "SaltRatioFormField", props: ["modelValue"], template: "<div></div>" }
-}));
-vi.mock("~/components/Forms/FormFields/IngredientsFormField.vue", () => ({
-	default: { name: "IngredientsFormField", props: ["modelValue"], template: "<div></div>" }
-}));
-vi.mock("~/components/Forms/FormFields/DateFormFields.vue", () => ({
-	default: { name: "DateFormFields", props: ["startDate", "endDate", "isEndDateRequired"], template: "<div></div>" }
-}));
-vi.mock("~/components/Forms/FormFields/NotesFormField.vue", () => ({
-	default: { name: "NotesFormField", props: ["modelValue"], template: "<div></div>" }
-}));
-vi.mock("~/components/Forms/FormFields/RatingFormFields.vue", () => ({
-	default: { name: "RatingFormFields", props: ["category", "modelValue"], template: "<div></div>" }
-}));
-vi.mock("~/components/Forms/FermentFormActions.vue", () => ({
-	default: { name: "FermentFormActions", props: ["submitLabel"], emits: ["cancel"], template: "<div></div>" }
-}));
-
-// Mock composables and schema
-vi.mock("#imports", async (importOriginal) => {
-	const actual = await importOriginal<object>();
-	return {
-		...actual,
-		useFermentContainers: () => [],
-		useToast: () => ({
-			add: vi.fn()
-		}),
-		isStartDateUnavailable: () => false,
-		isEndDateUnavailable: () => false,
-		useFermentIngredients: () => [],
-		useIngredientNames: () => ({ value: [] }),
-		useIngredientUnits: () => ({ value: [] }),
-		createId: () => "test-id"
-	};
-});
-
-vi.mock("~/types/ferment", async (importOriginal) => {
-	const actual = await importOriginal<object>();
-	return {
-		...actual
-	};
-});
-
-vi.mock("~/types/utils", async (importOriginal) => {
-	const actual = await importOriginal<object>();
-	return {
-		...actual
-	};
-});
+import { BASE_COMPLETED_FERMENT, COMPLETED_FERMENT_WITH_DATA } from "../../../../data";
+import { FermentFormActionsStub } from "../../../stubs";
 
 describe("components/Forms/EditFermentForm/EditCompletedFermentForm", () => {
-	const completedFerment = {
-		version: 1 as const,
-		id: "test-1",
-		name: "Completed Ferment",
-		state: "completed" as const,
-		startDate: "2024-01-01",
-		endDate: "2024-01-15",
-		saltRatio: 0.02,
-		container: "Jar",
-		ingredients: [{ id: "ing-1", name: "Cabbage", quantity: 1000, unit: "g" }],
-		images: [],
-		isFavorite: false,
-		notes: "Test notes",
-		createdAt: "2024-01-01T00:00:00Z",
-		updatedAt: "2024-01-01T00:00:00Z",
-		overall: { stars: 4, notes: "" },
-		flavor: { stars: 4, notes: "" },
-		texture: { stars: 4, notes: "" },
-		smell: { stars: 4, notes: "" },
-		process: { stars: 4, notes: "" }
+	const mountOptions = {
+		global: {
+			stubs: {
+				NameFormField: true,
+				ContainerFormField: true,
+				ImagesFormField: true,
+				SaltRatioFormField: true,
+				IngredientsFormField: true,
+				DateFormFields: true,
+				NotesFormField: true,
+				RatingFormFields: true,
+				FermentFormActions: FermentFormActionsStub
+			}
+		}
 	};
 
-	it("renders UForm component", async () => {
-		const wrapper = await mountSuspended(EditCompletedFermentForm, {
-			props: { ferment: completedFerment }
+	describe("rendering", () => {
+		it("renders UForm with all form field components including RatingFormFields for all categories", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA },
+				...mountOptions
+			});
+
+			expect(wrapper.findComponent({ name: "UForm" }).exists()).toBe(true);
+			expect(wrapper.findComponent({ name: "NameFormField" }).exists()).toBe(true);
+			expect(wrapper.findComponent({ name: "ContainerFormField" }).exists()).toBe(true);
+			expect(wrapper.findComponent({ name: "ImagesFormField" }).exists()).toBe(true);
+			expect(wrapper.findComponent({ name: "SaltRatioFormField" }).exists()).toBe(true);
+			expect(wrapper.findComponent({ name: "IngredientsFormField" }).exists()).toBe(true);
+			expect(wrapper.findComponent({ name: "DateFormFields" }).exists()).toBe(true);
+			expect(wrapper.findComponent({ name: "NotesFormField" }).exists()).toBe(true);
+			expect(wrapper.findComponent({ name: "FermentFormActions" }).exists()).toBe(true);
+
+			// Should render 5 RatingFormFields (one for each category)
+			const ratingFields = wrapper.findAllComponents({ name: "RatingFormFields" });
+			expect(ratingFields.length).toBe(5);
 		});
-		const form = wrapper.findComponent({ name: "UForm" });
-		expect(form.exists()).toBe(true);
+
+		it("renders FermentFormActions with default Update submit label", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA },
+				...mountOptions
+			});
+			const actions = wrapper.findComponent({ name: "FermentFormActions" });
+			expect(actions.props("submitLabel")).toBe("Update");
+		});
+
+		it("renders FermentFormActions with custom submit label", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA, submitLabel: "Save" },
+				...mountOptions
+			});
+			const actions = wrapper.findComponent({ name: "FermentFormActions" });
+			expect(actions.props("submitLabel")).toBe("Save");
+		});
 	});
 
-	it("renders NameFormField component", async () => {
-		const wrapper = await mountSuspended(EditCompletedFermentForm, {
-			props: { ferment: completedFerment }
+	describe("initial state from ferment prop", () => {
+		it("initializes form fields with ferment data", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA },
+				...mountOptions
+			});
+
+			expect(wrapper.findComponent({ name: "NameFormField" }).props("modelValue")).toBe(COMPLETED_FERMENT_WITH_DATA.name);
+			expect(wrapper.findComponent({ name: "ContainerFormField" }).props("modelValue")).toBe(COMPLETED_FERMENT_WITH_DATA.container);
+			expect(wrapper.findComponent({ name: "SaltRatioFormField" }).props("modelValue")).toBe(COMPLETED_FERMENT_WITH_DATA.saltRatio);
+			expect(wrapper.findComponent({ name: "NotesFormField" }).props("modelValue")).toBe(COMPLETED_FERMENT_WITH_DATA.notes);
 		});
-		const field = wrapper.findComponent({ name: "NameFormField" });
-		expect(field.exists()).toBe(true);
+
+		it("initializes DateFormFields with isEndDateRequired prop", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA },
+				...mountOptions
+			});
+			const dateFields = wrapper.findComponent({ name: "DateFormFields" });
+
+			expect(dateFields.props("startDate")).toBe(COMPLETED_FERMENT_WITH_DATA.startDate);
+			expect(dateFields.props("endDate")).toBe(COMPLETED_FERMENT_WITH_DATA.endDate);
+			// Boolean prop passed without value results in empty string or true
+			expect(dateFields.props("isEndDateRequired")).toBeDefined();
+		});
+
+		it("initializes RatingFormFields with ferment ratings", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA },
+				...mountOptions
+			});
+			const ratingFields = wrapper.findAllComponents({ name: "RatingFormFields" });
+
+			// Find overall rating field and verify props
+			const overallField = ratingFields.find((f) => f.props("name") === "overall");
+			expect(overallField?.props("stars")).toBe(COMPLETED_FERMENT_WITH_DATA.overall.stars);
+			expect(overallField?.props("label")).toBe("Overall");
+
+			// Find flavor rating field
+			const flavorField = ratingFields.find((f) => f.props("name") === "flavor");
+			expect(flavorField?.props("stars")).toBe(COMPLETED_FERMENT_WITH_DATA.flavor.stars);
+			expect(flavorField?.props("notes")).toBe(COMPLETED_FERMENT_WITH_DATA.flavor.notes);
+		});
+
+		it("handles ferment with minimal ratings", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: BASE_COMPLETED_FERMENT },
+				...mountOptions
+			});
+			const ratingFields = wrapper.findAllComponents({ name: "RatingFormFields" });
+
+			const overallField = ratingFields.find((f) => f.props("name") === "overall");
+			expect(overallField?.props("stars")).toBeNull();
+			expect(overallField?.props("notes")).toBe("");
+		});
+
+		it("creates a deep clone of ferment data (does not mutate original)", async () => {
+			const fermentCopy = { ...COMPLETED_FERMENT_WITH_DATA };
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: fermentCopy },
+				...mountOptions
+			});
+			const nameField = wrapper.findComponent({ name: "NameFormField" });
+
+			await nameField.vm.$emit("update:modelValue", "Modified Name");
+			await nextTick();
+
+			// Original ferment should not be modified
+			expect(fermentCopy.name).toBe(COMPLETED_FERMENT_WITH_DATA.name);
+			// Form state should be updated
+			expect(nameField.props("modelValue")).toBe("Modified Name");
+		});
 	});
 
-	it("renders ContainerFormField component", async () => {
-		const wrapper = await mountSuspended(EditCompletedFermentForm, {
-			props: { ferment: completedFerment }
+	describe("form field updates", () => {
+		it("updates state when form fields emit updates", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA },
+				...mountOptions
+			});
+
+			const nameField = wrapper.findComponent({ name: "NameFormField" });
+			await nameField.vm.$emit("update:modelValue", "Updated Ferment");
+			await nextTick();
+			expect(nameField.props("modelValue")).toBe("Updated Ferment");
 		});
-		const field = wrapper.findComponent({ name: "ContainerFormField" });
-		expect(field.exists()).toBe(true);
+
+		it("updates rating fields when RatingFormFields emits updates", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA },
+				...mountOptions
+			});
+			const ratingFields = wrapper.findAllComponents({ name: "RatingFormFields" });
+			const overallField = ratingFields.find((f) => f.props("name") === "overall");
+
+			await overallField?.vm.$emit("update:stars", 5);
+			await nextTick();
+			expect(overallField?.props("stars")).toBe(5);
+
+			await overallField?.vm.$emit("update:notes", "Amazing!");
+			await nextTick();
+			expect(overallField?.props("notes")).toBe("Amazing!");
+		});
 	});
 
-	it("renders RatingFormFields for all rating categories", async () => {
-		const wrapper = await mountSuspended(EditCompletedFermentForm, {
-			props: { ferment: completedFerment }
+	describe("cancel event", () => {
+		it("emits cancel event when FermentFormActions emits cancel", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA },
+				...mountOptions
+			});
+			const actions = wrapper.findComponent({ name: "FermentFormActions" });
+
+			await actions.vm.$emit("cancel");
+
+			expect(wrapper.emitted("cancel")).toBeTruthy();
+			expect(wrapper.emitted("cancel")).toHaveLength(1);
 		});
-		const ratingFields = wrapper.findAllComponents({ name: "RatingFormFields" });
-		expect(ratingFields.length).toBe(5);
 	});
 
-	it("renders DateFormFields with isEndDateRequired prop", async () => {
-		const wrapper = await mountSuspended(EditCompletedFermentForm, {
-			props: { ferment: completedFerment }
-		});
-		const dateFields = wrapper.findComponent({ name: "DateFormFields" });
-		expect(dateFields.exists()).toBe(true);
-		// Boolean prop passed without value results in empty string
-		expect(dateFields.props("isEndDateRequired")).toBeDefined();
-	});
+	describe("form submission", () => {
+		it("emits submit event with updated ferment data when form is submitted", async () => {
+			const wrapper = await mountSuspended(EditCompletedFermentForm, {
+				props: { ferment: COMPLETED_FERMENT_WITH_DATA },
+				...mountOptions
+			});
+			const form = wrapper.findComponent({ name: "UForm" });
 
-	it("renders FermentFormActions with default Update submit label", async () => {
-		const wrapper = await mountSuspended(EditCompletedFermentForm, {
-			props: { ferment: completedFerment }
-		});
-		const actions = wrapper.findComponent({ name: "FermentFormActions" });
-		expect(actions.exists()).toBe(true);
-		expect(actions.props("submitLabel")).toBe("Update");
-	});
+			const updatedFerment: CompletedFerment = {
+				...COMPLETED_FERMENT_WITH_DATA,
+				name: "Updated Ferment Name",
+				overall: { stars: 5, notes: "Perfect!" }
+			};
 
-	it("renders FermentFormActions with custom submit label", async () => {
-		const wrapper = await mountSuspended(EditCompletedFermentForm, {
-			props: { ferment: completedFerment, submitLabel: "Save" }
-		});
-		const actions = wrapper.findComponent({ name: "FermentFormActions" });
-		expect(actions.props("submitLabel")).toBe("Save");
-	});
+			await form.vm.$emit("submit", { data: updatedFerment });
 
-	it("emits cancel event when FermentFormActions emits cancel", async () => {
-		const wrapper = await mountSuspended(EditCompletedFermentForm, {
-			props: { ferment: completedFerment }
+			expect(wrapper.emitted("submit")).toBeTruthy();
+			expect(wrapper.emitted("submit")?.[0]).toEqual([updatedFerment]);
 		});
-		const actions = wrapper.findComponent({ name: "FermentFormActions" });
-		await actions.vm.$emit("cancel");
-		expect(wrapper.emitted("cancel")).toBeTruthy();
 	});
 });

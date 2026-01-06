@@ -1,24 +1,7 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import TableHeader from "~/components/Table/TableHeader.vue";
-
-// Mock child components
-vi.mock("~/components/Table/SortButton.vue", () => ({
-	default: { name: "SortButton", props: ["isSorted"], emits: ["toggleSorting"], template: "<button></button>" }
-}));
-vi.mock("~/components/Table/MultiSelectFilter.vue", () => ({
-	default: { name: "MultiSelectFilter", props: ["type"], template: "<div></div>" }
-}));
-vi.mock("~/components/Table/NumberRangeFilter.vue", () => ({
-	default: { name: "NumberRangeFilter", props: ["type"], template: "<div></div>" }
-}));
-vi.mock("~/components/Table/DateFilter.vue", () => ({
-	default: { name: "DateFilter", props: ["type"], template: "<div></div>" }
-}));
-vi.mock("~/components/Table/BooleanFilter.vue", () => ({
-	default: { name: "BooleanFilter", props: ["type"], template: "<div></div>" }
-}));
 
 describe("components/Table/TableHeader", () => {
 	afterEach(async () => {
@@ -27,6 +10,7 @@ describe("components/Table/TableHeader", () => {
 
 	it("renders with label prop", async () => {
 		const wrapper = await mountSuspended(TableHeader, {
+			shallow: true,
 			props: {
 				label: "Column Name",
 				isSorted: null
@@ -37,6 +21,7 @@ describe("components/Table/TableHeader", () => {
 
 	it("does not render SortButton when isSorted is null", async () => {
 		const wrapper = await mountSuspended(TableHeader, {
+			shallow: true,
 			props: {
 				label: "Column",
 				isSorted: null
@@ -47,6 +32,7 @@ describe("components/Table/TableHeader", () => {
 
 	it("renders SortButton with isSorted false", async () => {
 		const wrapper = await mountSuspended(TableHeader, {
+			shallow: true,
 			props: {
 				label: "Column",
 				isSorted: false
@@ -59,6 +45,7 @@ describe("components/Table/TableHeader", () => {
 
 	it("renders SortButton with ascending state", async () => {
 		const wrapper = await mountSuspended(TableHeader, {
+			shallow: true,
 			props: {
 				label: "Column",
 				isSorted: "asc"
@@ -70,6 +57,7 @@ describe("components/Table/TableHeader", () => {
 
 	it("renders SortButton with descending state", async () => {
 		const wrapper = await mountSuspended(TableHeader, {
+			shallow: true,
 			props: {
 				label: "Column",
 				isSorted: "desc"
@@ -81,6 +69,7 @@ describe("components/Table/TableHeader", () => {
 
 	it("emits toggleSorting when SortButton emits toggleSorting", async () => {
 		const wrapper = await mountSuspended(TableHeader, {
+			shallow: true,
 			props: {
 				label: "Column",
 				isSorted: false

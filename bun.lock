@@ -38,6 +38,7 @@
         "@vue/test-utils": "2.4.6",
         "@vueuse/core": "13.9.0",
         "@vueuse/nuxt": "13.9.0",
+        "@yeger/vitest-utils": "1.1.0",
         "bumpp": "10.3.2",
         "eslint": "9.39.2",
         "happy-dom": "20.0.11",
@@ -906,6 +907,8 @@
     "@xmldom/xmldom": ["@xmldom/xmldom@0.9.8", "", {}, "sha512-p96FSY54r+WJ50FIOsCOjyj/wavs8921hG5+kVMmZgKcvIKxMXHTrjNJvRgWa/zuX3B6t2lijLNFaOyuxUH+2A=="],
 
     "@yeger/streams": ["@yeger/streams@2.0.1", "", {}, "sha512-ha7ju+uJW2SGus5S1jrxOCw+cuD8cPOuv1jQpHe7fALVSC5me+WPig+cvXMVymdx/YomHZS0w/+OfBGGCUEUhA=="],
+
+    "@yeger/vitest-utils": ["@yeger/vitest-utils@1.1.0", "", { "peerDependencies": { "vitest": "^4.0.0" } }, "sha512-Xz4lfW4IRVfcR4oDc6RWAPcKLR0yUrLCiD4Tu9x25wlR1qez4V/DwR9g8InDXvzvAjqIljTWmu+ht8vFaMt9ZQ=="],
 
     "abbrev": ["abbrev@2.0.0", "", {}, "sha512-6/mh1E2u2YgEsCHdY0Yx5oW+61gZU+1vXaoiHHrpKeuRNNgFvS+/jrwHiQhB5apAf5oB7UB7E19ol2R2LKH8hQ=="],
 

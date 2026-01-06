@@ -92,7 +92,6 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
 
 describe("composables/collections", () => {
 	beforeEach(() => {
-		vi.clearAllMocks();
 		mockDataDir.value = undefined;
 		mockMaxBackups.value = 3;
 		mockPathSep.value = "/";

@@ -1,15 +1,7 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import FermentList from "~/components/Dashboard/FermentList.vue";
-
-// Mock DashboardList
-vi.mock("~/components/Dashboard/DashboardList.vue", () => ({
-	default: {
-		name: "DashboardList",
-		props: ["title", "icon", "noItemsText", "isLoading", "items"],
-		template: "<div data-testid=\"dashboard-list\"></div>"
-	}
-}));
+import { ACTIVE_FERMENT_WITH_DATA, BASE_ACTIVE_FERMENT } from "../../../data";
 
 describe("components/Dashboard/FermentList", () => {
 	const defaultProps = {
@@ -17,88 +9,126 @@ describe("components/Dashboard/FermentList", () => {
 		icon: "hugeicons:jar",
 		noItemsText: "No ferments",
 		isLoading: false,
-		items: []
+		items: [] as typeof BASE_ACTIVE_FERMENT[]
 	};
 
-	it("renders DashboardList component", async () => {
-		const wrapper = await mountSuspended(FermentList, {
-			props: defaultProps
+	describe("rendering", () => {
+		it("renders DashboardList component", async () => {
+			const wrapper = await mountSuspended(FermentList, {
+				shallow: true,
+				props: defaultProps
+			});
+			const dashboardList = wrapper.findComponent({ name: "DashboardList" });
+			expect(dashboardList.exists()).toBe(true);
 		});
-		const dashboardList = wrapper.findComponent({ name: "DashboardList" });
-		expect(dashboardList.exists()).toBe(true);
 	});
 
-	it("passes title prop to DashboardList", async () => {
-		const wrapper = await mountSuspended(FermentList, {
-			props: defaultProps
+	describe("props passthrough to DashboardList", () => {
+		it("passes title prop to DashboardList", async () => {
+			const wrapper = await mountSuspended(FermentList, {
+				shallow: true,
+				props: { ...defaultProps, title: "Custom Title" }
+			});
+			const dashboardList = wrapper.findComponent({ name: "DashboardList" });
+			expect(dashboardList.props("title")).toBe("Custom Title");
 		});
-		const dashboardList = wrapper.findComponent({ name: "DashboardList" });
-		expect(dashboardList.props("title")).toBe("Ferments");
+
+		it("passes icon prop to DashboardList", async () => {
+			const wrapper = await mountSuspended(FermentList, {
+				shallow: true,
+				props: { ...defaultProps, icon: "hugeicons:custom-icon" }
+			});
+			const dashboardList = wrapper.findComponent({ name: "DashboardList" });
+			expect(dashboardList.props("icon")).toBe("hugeicons:custom-icon");
+		});
+
+		it("passes noItemsText prop to DashboardList", async () => {
+			const wrapper = await mountSuspended(FermentList, {
+				shallow: true,
+				props: { ...defaultProps, noItemsText: "Nothing here" }
+			});
+			const dashboardList = wrapper.findComponent({ name: "DashboardList" });
+			expect(dashboardList.props("noItemsText")).toBe("Nothing here");
+		});
+
+		it("passes isLoading prop to DashboardList when false", async () => {
+			const wrapper = await mountSuspended(FermentList, {
+				shallow: true,
+				props: { ...defaultProps, isLoading: false }
+			});
+			const dashboardList = wrapper.findComponent({ name: "DashboardList" });
+			expect(dashboardList.props("isLoading")).toBe(false);
+		});
+
+		it("passes isLoading prop to DashboardList when true", async () => {
+			const wrapper = await mountSuspended(FermentList, {
+				shallow: true,
+				props: { ...defaultProps, isLoading: true }
+			});
+			const dashboardList = wrapper.findComponent({ name: "DashboardList" });
+			expect(dashboardList.props("isLoading")).toBe(true);
+		});
 	});
 
-	it("passes icon prop to DashboardList", async () => {
-		const wrapper = await mountSuspended(FermentList, {
-			props: defaultProps
+	describe("items handling", () => {
+		it("passes empty items array to DashboardList", async () => {
+			const wrapper = await mountSuspended(FermentList, {
+				shallow: true,
+				props: { ...defaultProps, items: [] }
+			});
+			const dashboardList = wrapper.findComponent({ name: "DashboardList" });
+			expect(dashboardList.props("items")).toEqual([]);
 		});
-		const dashboardList = wrapper.findComponent({ name: "DashboardList" });
-		expect(dashboardList.props("icon")).toBe("hugeicons:jar");
+
+		it("passes single item to DashboardList", async () => {
+			const items = [BASE_ACTIVE_FERMENT];
+			const wrapper = await mountSuspended(FermentList, {
+				shallow: true,
+				props: { ...defaultProps, items }
+			});
+			const dashboardList = wrapper.findComponent({ name: "DashboardList" });
+			expect(dashboardList.props("items")).toEqual(items);
+		});
+
+		it("passes multiple items to DashboardList", async () => {
+			const items = [BASE_ACTIVE_FERMENT, ACTIVE_FERMENT_WITH_DATA];
+			const wrapper = await mountSuspended(FermentList, {
+				shallow: true,
+				props: { ...defaultProps, items }
+			});
+			const dashboardList = wrapper.findComponent({ name: "DashboardList" });
+			expect(dashboardList.props("items")).toHaveLength(2);
+		});
 	});
 
-	it("passes noItemsText prop to DashboardList", async () => {
-		const wrapper = await mountSuspended(FermentList, {
-			props: defaultProps
+	describe("item rendering", () => {
+		it("renders UButton for each ferment item", async () => {
+			const items = [BASE_ACTIVE_FERMENT, ACTIVE_FERMENT_WITH_DATA];
+			const wrapper = await mountSuspended(FermentList, {
+				props: { ...defaultProps, items }
+			});
+			const buttons = wrapper.findAllComponents({ name: "UButton" });
+			expect(buttons).toHaveLength(2);
 		});
-		const dashboardList = wrapper.findComponent({ name: "DashboardList" });
-		expect(dashboardList.props("noItemsText")).toBe("No ferments");
-	});
 
-	it("passes isLoading prop to DashboardList", async () => {
-		const wrapper = await mountSuspended(FermentList, {
-			props: { ...defaultProps, isLoading: true }
+		it("uButton has correct link props", async () => {
+			const items = [BASE_ACTIVE_FERMENT];
+			const wrapper = await mountSuspended(FermentList, {
+				props: { ...defaultProps, items }
+			});
+			const button = wrapper.findComponent({ name: "UButton" });
+			expect(button.props("color")).toBe("neutral");
+			expect(button.props("icon")).toBe("hugeicons:arrow-right-02");
+			expect(button.props("variant")).toBe("link");
+			expect(button.props("to")).toBe(`/ferments/${BASE_ACTIVE_FERMENT.id}`);
 		});
-		const dashboardList = wrapper.findComponent({ name: "DashboardList" });
-		expect(dashboardList.props("isLoading")).toBe(true);
-	});
 
-	it("passes items prop to DashboardList", async () => {
-		const items = [
-			{
-				version: 1 as const,
-				id: "1",
-				name: "Kimchi",
-				state: "active" as const,
-				startDate: "2024-01-01",
-				endDate: null,
-				saltRatio: 0.02,
-				container: null,
-				ingredients: [],
-				images: [],
-				isFavorite: false,
-				notes: "",
-				createdAt: "2024-01-01T00:00:00Z",
-				updatedAt: "2024-01-01T00:00:00Z"
-			},
-			{
-				version: 1 as const,
-				id: "2",
-				name: "Sauerkraut",
-				state: "active" as const,
-				startDate: "2024-01-01",
-				endDate: null,
-				saltRatio: 0.02,
-				container: null,
-				ingredients: [],
-				images: [],
-				isFavorite: false,
-				notes: "",
-				createdAt: "2024-01-01T00:00:00Z",
-				updatedAt: "2024-01-01T00:00:00Z"
-			}
-		];
-		const wrapper = await mountSuspended(FermentList, {
-			props: { ...defaultProps, items }
+		it("displays ferment name in button", async () => {
+			const items = [ACTIVE_FERMENT_WITH_DATA];
+			const wrapper = await mountSuspended(FermentList, {
+				props: { ...defaultProps, items }
+			});
+			expect(wrapper.text()).toContain(ACTIVE_FERMENT_WITH_DATA.name);
 		});
-		const dashboardList = wrapper.findComponent({ name: "DashboardList" });
-		expect(dashboardList.props("items")).toEqual(items);
 	});
 });

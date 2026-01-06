@@ -1,6 +1,9 @@
 import { fileURLToPath } from "node:url";
 import { defineVitestProject } from "@nuxt/test-utils/config";
+import { defineTestConfig } from "@yeger/vitest-utils";
 import { defineConfig } from "vitest/config";
+
+const baseConfig = defineTestConfig({ coverage: false, idempotent: true });
 
 export default defineConfig({
 	test: {
@@ -17,22 +20,18 @@ export default defineConfig({
 					}
 				},
 				test: {
+					...baseConfig,
 					name: "unit",
 					include: ["test/unit/**/*.{test,spec}.ts"],
-					environment: "node",
-					mockReset: true,
-					clearMocks: true,
-					restoreMocks: true
+					environment: "node"
 				}
 			},
 			await defineVitestProject({
 				test: {
+					...baseConfig,
 					name: "nuxt",
 					include: ["test/nuxt/**/*.{test,spec}.ts"],
 					environment: "nuxt",
-					mockReset: true,
-					clearMocks: true,
-					restoreMocks: true,
 					globalSetup: [fileURLToPath(new URL("./test/nuxt/globalSetup.ts", import.meta.url))],
 					setupFiles: [fileURLToPath(new URL("./test/nuxt/setup.ts", import.meta.url))]
 				}

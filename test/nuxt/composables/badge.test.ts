@@ -32,7 +32,6 @@ mockNuxtImport("useOverdueFerments", () => {
 
 describe("composables/badge", () => {
 	beforeEach(() => {
-		vi.clearAllMocks();
 		mockDueFermentsData.value = [];
 		mockOverdueFermentsData.value = [];
 	});

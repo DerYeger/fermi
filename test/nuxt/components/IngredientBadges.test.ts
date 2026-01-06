@@ -1,11 +1,7 @@
-import type { Ingredient } from "~/types/ferment";
 import { IngredientBadges } from "#components";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, expect, it } from "vitest";
-
-function createIngredient(id: string, name: string): Ingredient {
-	return { id, name, quantity: 100, unit: "g" };
-}
+import { ACTIVE_FERMENT_MANY_INGREDIENTS, createIngredient, INGREDIENTS } from "../../data";
 
 describe("components/IngredientBadges", () => {
 	it("renders nothing when ingredients array is empty", async () => {
@@ -18,7 +14,7 @@ describe("components/IngredientBadges", () => {
 	it("renders single ingredient as UBadge", async () => {
 		const wrapper = await mountSuspended(IngredientBadges, {
 			props: {
-				ingredients: [createIngredient("1", "Cabbage")]
+				ingredients: [INGREDIENTS.cabbage]
 			}
 		});
 		const badges = wrapper.findAllComponents({ name: "UBadge" });
@@ -30,9 +26,9 @@ describe("components/IngredientBadges", () => {
 		const wrapper = await mountSuspended(IngredientBadges, {
 			props: {
 				ingredients: [
-					createIngredient("1", "Cabbage"),
-					createIngredient("2", "Carrots"),
-					createIngredient("3", "Garlic")
+					INGREDIENTS.cabbage,
+					INGREDIENTS.carrots,
+					INGREDIENTS.garlic
 				]
 			}
 		});
@@ -43,13 +39,7 @@ describe("components/IngredientBadges", () => {
 	it("shows overflow badge when exceeding limit of 3", async () => {
 		const wrapper = await mountSuspended(IngredientBadges, {
 			props: {
-				ingredients: [
-					createIngredient("1", "Cabbage"),
-					createIngredient("2", "Carrots"),
-					createIngredient("3", "Garlic"),
-					createIngredient("4", "Onion"),
-					createIngredient("5", "Peppers")
-				]
+				ingredients: ACTIVE_FERMENT_MANY_INGREDIENTS.ingredients
 			}
 		});
 		const badges = wrapper.findAllComponents({ name: "UBadge" });
@@ -60,14 +50,15 @@ describe("components/IngredientBadges", () => {
 	});
 
 	it("shows correct overflow count", async () => {
+		const fourIngredients = [
+			createIngredient("1", "A"),
+			createIngredient("2", "B"),
+			createIngredient("3", "C"),
+			createIngredient("4", "D")
+		];
 		const wrapper = await mountSuspended(IngredientBadges, {
 			props: {
-				ingredients: [
-					createIngredient("1", "A"),
-					createIngredient("2", "B"),
-					createIngredient("3", "C"),
-					createIngredient("4", "D")
-				]
+				ingredients: fourIngredients
 			}
 		});
 		const badges = wrapper.findAllComponents({ name: "UBadge" });

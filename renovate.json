@@ -1,0 +1,30 @@
+{
+	"automerge": true,
+	"automergeType": "branch",
+	"extends": [
+		":semanticPrefixFixDepsChoreOthers",
+		":assignee(DerYeger)",
+		":dependencyDashboard",
+		":disableRateLimiting",
+		":enableVulnerabilityAlertsWithLabel(vulnerability)",
+		":labels(dependencies,renovate)",
+		":semanticCommits",
+		"group:allNonMajor",
+		"workarounds:all"
+	],
+	"major": {
+		"automerge": false
+	},
+	"packageRules": [
+		{
+			"matchDatasources": [
+				"npm"
+			],
+			"minimumReleaseAge": "2 days"
+		}
+	],
+	"schedule": [
+		"after 12am and before 7am on Saturday"
+	],
+	"timezone": "Europe/Vienna"
+}

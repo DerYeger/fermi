@@ -1,6 +1,7 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, expect, it, vi } from "vitest";
 import FailForm from "~/components/Forms/FailFermentForm/FailForm.vue";
+import { BASE_ACTIVE_FERMENT } from "../../../../data";
 
 // Mock form field components
 vi.mock("~/components/Forms/FormFields/ImagesFormField.vue", () => ({
@@ -35,26 +36,9 @@ vi.mock("~/types/ferment", () => ({
 }));
 
 describe("components/Forms/FailFermentForm/FailForm", () => {
-	const activeFerment = {
-		version: 1 as const,
-		id: "test-1",
-		name: "Test Ferment",
-		state: "active" as const,
-		startDate: "2024-01-01",
-		endDate: null,
-		saltRatio: 0.02,
-		container: null,
-		ingredients: [],
-		images: [],
-		isFavorite: false,
-		notes: "",
-		createdAt: "2024-01-01T00:00:00Z",
-		updatedAt: "2024-01-01T00:00:00Z"
-	};
-
 	it("renders UForm component", async () => {
 		const wrapper = await mountSuspended(FailForm, {
-			props: { ferment: activeFerment }
+			props: { ferment: BASE_ACTIVE_FERMENT }
 		});
 		const form = wrapper.findComponent({ name: "UForm" });
 		expect(form.exists()).toBe(true);
@@ -62,7 +46,7 @@ describe("components/Forms/FailFermentForm/FailForm", () => {
 
 	it("renders UFormField for End date", async () => {
 		const wrapper = await mountSuspended(FailForm, {
-			props: { ferment: activeFerment }
+			props: { ferment: BASE_ACTIVE_FERMENT }
 		});
 		const formFields = wrapper.findAllComponents({ name: "UFormField" });
 		const endDateField = formFields.find((f) => f.props("label") === "End date");
@@ -71,7 +55,7 @@ describe("components/Forms/FailFermentForm/FailForm", () => {
 
 	it("renders ImagesFormField component", async () => {
 		const wrapper = await mountSuspended(FailForm, {
-			props: { ferment: activeFerment }
+			props: { ferment: BASE_ACTIVE_FERMENT }
 		});
 		const imagesField = wrapper.findComponent({ name: "ImagesFormField" });
 		expect(imagesField.exists()).toBe(true);
@@ -79,7 +63,7 @@ describe("components/Forms/FailFermentForm/FailForm", () => {
 
 	it("renders FailureReasonFormField component", async () => {
 		const wrapper = await mountSuspended(FailForm, {
-			props: { ferment: activeFerment }
+			props: { ferment: BASE_ACTIVE_FERMENT }
 		});
 		const reasonField = wrapper.findComponent({ name: "FailureReasonFormField" });
 		expect(reasonField.exists()).toBe(true);
@@ -87,7 +71,7 @@ describe("components/Forms/FailFermentForm/FailForm", () => {
 
 	it("renders FermentFormActions with Complete submit label", async () => {
 		const wrapper = await mountSuspended(FailForm, {
-			props: { ferment: activeFerment }
+			props: { ferment: BASE_ACTIVE_FERMENT }
 		});
 		const actions = wrapper.findComponent({ name: "FermentFormActions" });
 		expect(actions.exists()).toBe(true);
@@ -96,7 +80,7 @@ describe("components/Forms/FailFermentForm/FailForm", () => {
 
 	it("emits cancel event when FermentFormActions emits cancel", async () => {
 		const wrapper = await mountSuspended(FailForm, {
-			props: { ferment: activeFerment }
+			props: { ferment: BASE_ACTIVE_FERMENT }
 		});
 		const actions = wrapper.findComponent({ name: "FermentFormActions" });
 		await actions.vm.$emit("cancel");

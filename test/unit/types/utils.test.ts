@@ -1,6 +1,6 @@
-import type { FermentImage } from "~/types/ferment";
 import { describe, expect, it } from "vitest";
 import { deepClone, formatPercentage, limitLength, sortImages } from "~/types/utils";
+import { createImage } from "../../data";
 
 describe("types/utils", () => {
 	describe("deepClone", () => {
@@ -47,17 +47,11 @@ describe("types/utils", () => {
 	});
 
 	describe("sortImages", () => {
-		const createImage = (id: string, date: string): FermentImage => ({
-			id,
-			base64: "data:image/png;base64,test",
-			date
-		});
-
 		it("should sort images by date ascending and return empty array for empty input", () => {
 			const images = [
-				createImage("3", "2026-01-03"),
-				createImage("1", "2026-01-01"),
-				createImage("2", "2026-01-02")
+				createImage("3", "data:image/png;base64,test", "2026-01-03"),
+				createImage("1", "data:image/png;base64,test", "2026-01-01"),
+				createImage("2", "data:image/png;base64,test", "2026-01-02")
 			];
 			const sorted = sortImages(images);
 			expect(sorted.map((i) => i.id)).toEqual(["1", "2", "3"]);
@@ -66,8 +60,8 @@ describe("types/utils", () => {
 
 		it("should not mutate original array", () => {
 			const images = [
-				createImage("2", "2026-01-02"),
-				createImage("1", "2026-01-01")
+				createImage("2", "data:image/png;base64,test", "2026-01-02"),
+				createImage("1", "data:image/png;base64,test", "2026-01-01")
 			];
 			const original = [...images];
 			sortImages(images);

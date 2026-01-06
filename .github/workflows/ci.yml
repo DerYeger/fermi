@@ -4,6 +4,8 @@ on: [push, workflow_dispatch]
 
 jobs:
   ci:
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
