@@ -26,9 +26,9 @@
 		}
 	},
 	"build": {
-		"beforeBuildCommand": "bun run generate",
+		"beforeBuildCommand": "bun run turbo build:nuxt",
 		"frontendDist": "../dist",
-		"beforeDevCommand": "bun run dev",
+		"beforeDevCommand": "bun run turbo dev:nuxt",
 		"devUrl": "http://localhost:3000"
 	},
 	"productName": "Fermi",

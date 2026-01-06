@@ -1,0 +1,63 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"tasks": {
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"dev:nuxt": {
+			"cache": false,
+			"persistent": true
+		},
+		"build": {
+			"dependsOn": ["build:nuxt"],
+			"inputs": [
+				"src-tauri/**",
+				"!src-tauri/target/**"
+			],
+			"outputs": [
+				"src-tauri/target/**"
+			]
+		},
+		"build:nuxt": {
+			"inputs": [
+				"app/**",
+				"public/**",
+				"nuxt.config.ts",
+				"tsconfig.json"
+			],
+			"outputs": [
+				".output/**",
+				".nuxt/**"
+			]
+		},
+		"lint": {
+			"inputs": [
+				"app/**",
+				"test/**",
+				"*.config.{ts,mjs}",
+				"eslint.config.mjs",
+				"tsconfig.json"
+			],
+			"outputs": []
+		},
+		"test": {
+			"inputs": [
+				"app/**",
+				"test/**",
+				"*.config.ts",
+				"tsconfig.json"
+			],
+			"outputs": []
+		},
+		"typecheck": {
+			"inputs": [
+				"app/**",
+				"test/**",
+				"*.config.ts",
+				"tsconfig.json"
+			],
+			"outputs": []
+		}
+	}
+}

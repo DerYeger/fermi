@@ -43,11 +43,5 @@ jobs:
       - name: install frontend dependencies
         run: bun install
 
-      - name: run typecheck
-        run: bun run typecheck
-
-      - name: run lint
-        run: bun run lint
-
-      - name: run generate
-        run: bun run tauri:build
+      - name: run build, lint, test and typecheck
+        run: bun run ci

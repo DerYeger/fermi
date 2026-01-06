@@ -7,22 +7,23 @@
 	"description": "Fermentation Tracking App",
 	"license": "MIT",
 	"engines": {
-		"node": ">=23"
+		"node": ">=24"
 	},
 	"scripts": {
-		"dev": "nuxt dev",
-		"generate": "nuxt generate",
-		"preinstall": "npx only-allow bun",
-		"postinstall": "nuxt prepare",
+		"bump": "bumpp",
+		"ci": "bun run turbo build lint test typecheck",
+		"dev": "tauri dev",
+		"dev:nuxt": "nuxt dev",
+		"build": "tauri build",
+		"build:nuxt": "nuxt generate",
 		"icon": "tauri icon ./resources/icon.svg && cp ./src-tauri/icons/icon.png ./public/icon.png && echo 'WARNING: Make sure to manually re-export the MacOS icon'",
 		"lint": "eslint . --fix",
-		"typecheck": "nuxt typecheck",
-		"test": "vitest",
-		"bump": "bumpp",
+		"postinstall": "nuxt prepare",
+		"preinstall": "npx only-allow bun",
 		"tauri": "tauri",
-		"tauri:dev": "tauri dev",
-		"tauri:build": "tauri build",
-		"tauri:build:debug": "tauri build --debug"
+		"test": "vitest --coverage",
+		"turbo": "CI=true FORCE_COLOR=1 turbo",
+		"typecheck": "nuxt typecheck"
 	},
 	"dependencies": {
 		"@iconify-json/hugeicons": "1.2.21",
@@ -65,6 +66,7 @@
 		"nuxt-svgo": "4.2.6",
 		"playwright": "1.57.0",
 		"playwright-core": "1.57.0",
+		"turbo": "2.7.3",
 		"typescript": "5.9.3",
 		"vitest": "4.0.16",
 		"vue-tsc": "3.2.1"

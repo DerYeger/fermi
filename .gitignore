@@ -12,3 +12,4 @@ coverage
 dist
 src-tauri/target
 __screenshots__
+.turbo

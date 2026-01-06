@@ -1,5 +1,6 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, expect, it } from "vitest";
+import { h } from "vue";
 import DashboardList from "~/components/Dashboard/DashboardList.vue";
 
 describe("components/Dashboard/DashboardList", () => {
@@ -40,10 +41,10 @@ describe("components/Dashboard/DashboardList", () => {
 		const wrapper = await mountSuspended(DashboardList, {
 			props: {
 				...defaultProps,
-				items: [{ id: "1", name: "Item 1" }, { id: "2", name: "Item 2" }]
+				items: [{ id: "1", name: "Item 1" }, { id: "2", name: "Item 2" }] as const
 			},
 			slots: {
-				default: ({ item }: { item: { name: string } }) => item.name
+				default: ({ item }) => h((item as { name: string }).name)
 			}
 		});
 		expect(wrapper.text()).not.toContain("No items found");
