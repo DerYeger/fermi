@@ -59,7 +59,7 @@
 		"@vitest/coverage-v8": "4.0.16",
 		"@vue/test-utils": "2.4.6",
 		"@vueuse/core": "13.9.0",
-		"@vueuse/nuxt": "13.9.0",
+		"@vueuse/nuxt": "14.1.0",
 		"@yeger/vitest-utils": "1.1.0",
 		"bumpp": "10.3.2",
 		"eslint": "9.39.2",
