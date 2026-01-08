@@ -29,7 +29,7 @@ jobs:
         if: matrix.release_only == false || github.ref == 'refs/heads/release'
 
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         if: matrix.release_only == false || github.ref == 'refs/heads/release'
         with:
           node-version-file: .node-version
