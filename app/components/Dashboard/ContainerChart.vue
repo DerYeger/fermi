@@ -62,12 +62,18 @@
 			}
 		},
 		legend: {
+			data: chartData.value.toReversed().map((item) => item.name),
 			type: "scroll",
 			orient: "vertical",
 			right: 8,
 			top: 16,
 			bottom: 16,
 			textStyle: {
+				color: textMutedColor.value
+			},
+			pageIconColor: color,
+			pageIconInactiveColor: textMutedColor.value,
+			pageTextStyle: {
 				color: textMutedColor.value
 			}
 		},

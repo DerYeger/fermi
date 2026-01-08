@@ -74,9 +74,9 @@
 
 	const series = [
 		{
-			label: "Active",
-			key: "active",
-			color: "#04C950" // useCssVar("--color-success");
+			label: "Failed",
+			key: "failed",
+			color: "#FB2C35" // useCssVar("--color-error");
 		},
 		{
 			label: "Completed",
@@ -84,9 +84,9 @@
 			color: "#EFB200" // useCssVar("--color-warning");
 		},
 		{
-			label: "Failed",
-			key: "failed",
-			color: "#FB2C35" // useCssVar("--color-error");
+			label: "Active",
+			key: "active",
+			color: "#04C950" // useCssVar("--color-success");
 		}
 	] as const satisfies { color: string, label: string, key: Exclude<keyof typeof chartData["value"][number], "date"> }[];
 
@@ -108,7 +108,7 @@
 			}
 		},
 		legend: {
-			type: "scroll",
+			data: series.toReversed().map(({ label }) => label),
 			orient: "horizontal",
 			left: 16,
 			right: 16,
@@ -156,6 +156,14 @@
 				fillerColor: `rgba(from ${primaryColor.value} r g b / 0.05)`, // selected range
 				dataBackground: {
 					lineStyle: {
+						color: textMutedColor.value
+					},
+					areaStyle: {
+						color: textMutedColor.value
+					}
+				},
+				selectedDataBackground: {
+					lineStyle: {
 						color: warningColor.value
 					},
 					areaStyle: {
@@ -187,28 +195,37 @@
 			left: 48,
 			right: 64
 		},
-		series: series.map(({ label, key, color }) => ({
-			name: label,
-			type: "line",
-			color,
-			symbol: "none",
-			stack: "Total",
-			sampling: "lltb",
-			areaStyle: {},
-			smooth: false,
-			lineStyle: {
-				width: 1
+		series: [
+			{
+				type: "line",
+				data: chartData.value.map((value) => value.active + value.completed + value.failed),
+				lineStyle: { color: "transparent" },
+				showSymbol: false,
+				tooltip: { show: false }
 			},
-			emphasis: {
-				focus: "series",
-				areaStyle: {
-					color: "inherit"
-				},
+			...series.map(({ label, key, color }) => ({
+				name: label,
+				type: "line",
+				color,
+				symbol: "none",
+				stack: "Total",
+				sampling: "lltb",
+				areaStyle: {},
+				smooth: false,
 				lineStyle: {
-					color
-				}
-			},
-			data: chartData.value.map((item) => item[key])
-		}))
+					width: 1
+				},
+				emphasis: {
+					focus: "series",
+					areaStyle: {
+						color: "inherit"
+					},
+					lineStyle: {
+						color
+					}
+				},
+				data: chartData.value.map((item) => item[key])
+			}))
+		]
 	}));
 </script>

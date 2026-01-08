@@ -71,7 +71,7 @@
 				type: "radar",
 				data: chartData.value,
 				areaStyle: {
-					opacity: 0.1
+					opacity: 1 / chartData.value.length
 				},
 				emphasis: {
 					disabled: true
