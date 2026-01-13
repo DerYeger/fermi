@@ -10,6 +10,7 @@
 						</template>
 						<template #right>
 							<UDashboardSearchButton class="max-sm:hidden" />
+							<ChatSidebar />
 							<NewFermentButton with-shortcut />
 						</template>
 					</UDashboardToolbar>

@@ -22,3 +22,4 @@ This project uses Bun as the runtime environment and Turborepo for running tasks
 - Shallow mount components if possible. Otherwise, auto-stub child components. Assert the interactions with stubbed components through their props and emitted events. If auto-stubbing is also not possible, create a reusable stub in `test/nuxt/stubs.ts`.
 - Introduce constants for repeated values in tests. Collect them in `test/data.ts` if they are shared across multiple test files.
 - Always update related tests when modifying code.
+- Always add tests for new features or bug fixes.

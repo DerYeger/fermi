@@ -74,8 +74,73 @@
 					/>
 				</UFormField>
 
-				<p class="text-xs text-muted">
+				<p class="text-sm text-muted">
 					Up to {{ maxBackups }} backup files will be kept. Older backups are automatically deleted.
+				</p>
+			</div>
+		</UCard>
+
+		<!-- OpenRouter AI Chat -->
+		<UCard>
+			<template #header>
+				<CardHeader title="AI Chat (OpenRouter)" icon="hugeicons:ai-chat-02" />
+			</template>
+
+			<div class="space-y-4">
+				<p class="text-sm text-muted">
+					Enable AI-powered fermentation assistance by providing your OpenRouter API key.
+					Get a free key at <UButton variant="link" size="xs" class="-mx-2" @click="openOpenRouter">
+						openrouter.ai
+					</UButton>.
+				</p>
+
+				<UFormField v-if="!hasApiKey" label="API Key" name="openRouterApiKey">
+					<UFieldGroup class="w-full">
+						<UInput
+							v-model="apiKeyInput"
+							type="password"
+							placeholder="sk-or-v1-..."
+							class="flex-1 font-mono"
+						/>
+						<UButton variant="subtle" :disabled="!apiKeyInput.trim()" @click="saveApiKey">
+							Save
+						</UButton>
+					</UFieldGroup>
+				</UFormField>
+
+				<UFormField v-else label="API Key" name="openRouterApiKey">
+					<UFieldGroup class="w-full">
+						<UInput
+							:model-value="maskedApiKey"
+							readonly
+							class="flex-1 font-mono"
+						/>
+						<UButton
+							variant="subtle"
+							color="error"
+							icon="hugeicons:delete-02"
+							@click="deleteApiKey"
+						/>
+					</UFieldGroup>
+				</UFormField>
+
+				<p class="text-sm text-muted">
+					Your API key is stored locally.
+				</p>
+
+				<UFormField label="Model" name="openRouterModel">
+					<UInput
+						v-model="modelId"
+						placeholder="xiaomi/mimo-v2-flash:free"
+						class="font-mono"
+					/>
+				</UFormField>
+
+				<p class="text-sm text-muted">
+					Choose the AI model to use for chat responses.
+					You can select any model from <UButton variant="link" size="xs" class="-mx-2" @click="openOpenRouter">
+						openrouter.ai
+					</UButton>. Keep in mind that some models may have usage limits or require payment.
 				</p>
 			</div>
 		</UCard>
@@ -108,6 +173,24 @@
 	const toast = useToast();
 
 	const { maxBackups, dataDir } = useFermiConfig();
+	const { modelId, apiKey, maskedApiKey, hasApiKey } = useChatConfig();
+
+	const apiKeyInput = ref("");
+
+	function saveApiKey() {
+		apiKey.value = apiKeyInput.value.trim();
+		apiKeyInput.value = "";
+		toast.add({ title: "API key saved", color: "success" });
+	}
+
+	function deleteApiKey() {
+		apiKey.value = undefined;
+		toast.add({ title: "API key deleted", color: "success" });
+	}
+
+	function openOpenRouter() {
+		useTauriShellOpen("https://openrouter.ai/keys");
+	}
 
 	const { data: dataDirDisplay } = useAsyncData("dataDirDisplay", async () => {
 		const dir = await getDataDir();

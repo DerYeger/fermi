@@ -9,7 +9,10 @@ export function getErrorMessage(error: unknown): string {
 	if (error instanceof SchemaValidationError) {
 		return z.prettifyError(error);
 	}
-	return String(error);
+	if (!(error instanceof Error) || !error.message) {
+		return String(error);
+	}
+	return error.message;
 }
 
 export function limitLength(str: string, maxLength: number): string {

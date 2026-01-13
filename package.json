@@ -26,8 +26,11 @@
 		"typecheck": "nuxt typecheck"
 	},
 	"dependencies": {
+		"@ai-sdk/vue": "3.0.27",
 		"@iconify-json/hugeicons": "1.2.22",
 		"@nuxt/ui": "4.3.0",
+		"@nuxtjs/mdc": "0.19.2",
+		"@openrouter/ai-sdk-provider": "1.5.4",
 		"@tanstack/query-db-collection": "1.0.14",
 		"@tanstack/vue-db": "0.0.94",
 		"@tanstack/vue-query": "5.92.5",
@@ -38,6 +41,7 @@
 		"@tauri-apps/plugin-shell": "2.3.4",
 		"@tauri-apps/plugin-store": "2.4.2",
 		"@yeger/streams": "2.0.1",
+		"ai": "6.0.27",
 		"compressorjs": "1.2.1",
 		"echarts": "6.0.0",
 		"exifreader": "4.36.0",

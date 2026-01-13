@@ -19,8 +19,19 @@
 <script lang="ts" setup>
 	const route = useRoute("ferments-id");
 	const { data, isLoading } = useFermentById(() => route.params.id);
+	const { selectFerment, clearSelection } = useChatFermentContext();
 
 	const ferment = computed(() => {
 		return data.value[0];
+	});
+
+	watch(ferment, (newFerment) => {
+		if (newFerment) {
+			selectFerment(newFerment);
+		}
+	}, { immediate: true });
+
+	onBeforeUnmount(() => {
+		clearSelection();
 	});
 </script>
