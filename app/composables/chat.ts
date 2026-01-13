@@ -3,9 +3,11 @@ import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { DirectChatTransport, ToolLoopAgent } from "ai";
 import { getErrorMessage } from "~/types/utils";
 
-export function useChat(id: MaybeRefOrGetter<string>) {
+export function useChat(chatId: MaybeRefOrGetter<string>) {
 	const { apiKey, modelId } = useChatConfig();
+	const { getChat, saveChat } = useChatHistory();
 	const toast = useToast();
+
 	const chat = computed(() => {
 		const openrouter = createOpenRouter({
 			apiKey: apiKey.value
@@ -18,13 +20,20 @@ export function useChat(id: MaybeRefOrGetter<string>) {
 
 		const transport = new DirectChatTransport({ agent, generateMessageId: createId });
 
+		const initialMessages = getChat(toValue(chatId))?.messages;
+
 		return new Chat({
-			id: toValue(id),
+			id: toValue(chatId),
 			transport,
+			messages: initialMessages,
 			onError(error) {
 				toast.add({
 					description: getErrorMessage(error)
 				});
+			},
+			onFinish() {
+				// Persist after completion
+				saveChat(toValue(chatId), chat.value.messages);
 			}
 		});
 	});

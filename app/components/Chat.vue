@@ -84,6 +84,10 @@
 </template>
 
 <script setup lang="ts">
+	const { chatId } = defineProps<{
+		chatId: string
+	}>();
+
 	const { data: ferments } = useFerments();
 	const {
 		selectFerment,
@@ -92,7 +96,13 @@
 		selectedFerment
 	} = useChatFermentContext();
 
-	const { chat, input, onSubmit } = useChat(createId());
+	const { chat, input, onSubmit } = useChat(() => chatId);
+
+	const isChatTouched = defineModel<boolean>("isChatTouched", { required: true, default: false });
+
+	watch(() => chat.value.lastMessage !== undefined, (hasMessage) => {
+		isChatTouched.value = hasMessage;
+	}, { immediate: true });
 
 	const fermentSelectItems = computed(() => {
 		return ferments.value.map((f) => ({ id: f.id, label: f.name }));
