@@ -1,16 +1,13 @@
 import type { Ferment } from "~/types/ferment";
 
 export const useChatFermentContext = createGlobalState(() => {
-	const selectedFermentId = ref<string | null>(null);
 	const selectedFerment = ref<Ferment | null>(null);
 
 	function selectFerment(ferment: Ferment) {
-		selectedFermentId.value = ferment.id;
 		selectedFerment.value = ferment;
 	}
 
 	function clearSelection() {
-		selectedFermentId.value = null;
 		selectedFerment.value = null;
 	}
 
@@ -30,7 +27,6 @@ export const useChatFermentContext = createGlobalState(() => {
 	const hasSelection = computed(() => selectedFerment.value !== null);
 
 	return {
-		selectedFermentId: readonly(selectedFermentId),
 		selectedFerment: readonly(selectedFerment),
 		selectFerment,
 		clearSelection,

@@ -45,40 +45,40 @@
 		</UChatMessages>
 	</div>
 
-	<!-- Ferment Selector -->
-	<div v-if="ferments.length > 0" class="border-t border-default px-4 py-2 relative">
-		<UFieldGroup class="w-full">
-			<USelectMenu
-				:model-value="selectedFermentIdForSelector"
-				:items="fermentSelectItems"
-				placeholder="Select ferment for context..."
-				class="w-full"
-				:ui="{ base: 'w-full' }"
-				value-key="id"
-				clear
-				@update:model-value="onFermentSelect"
-			>
-				<template #leading>
-					<UIcon name="hugeicons:vegetarian-food" class="size-4" />
-				</template>
-			</USelectMenu>
-			<UButton
-				v-if="hasSelection"
-				icon="hugeicons:cancel-01"
-				variant="subtle"
-				color="error"
-				@click="clearSelection"
-			/>
-		</UFieldGroup>
-		<p v-if="hasSelection" class="mt-1 text-xs text-muted">
-			Context will be included in your next message.
-		</p>
-	</div>
-
 	<!-- Input -->
 	<div class="border-t border-default p-4">
 		<UChatPrompt v-model="input" :error="chat.error" @submit="onSubmit">
-			<UChatPromptSubmit :status="chat.status" @stop="chat.stop()" @reload="chat.regenerate()" />
+			<UChatPromptSubmit
+				variant="subtle"
+				:status="chat.status"
+				@stop="chat.stop()"
+				@reload="chat.regenerate()"
+			/>
+			<template v-if="fermentSelectItems.length > 0" #footer>
+				<UFieldGroup class="w-full">
+					<USelectMenu
+						:model-value="selectedFerment?.id"
+						:items="fermentSelectItems"
+						placeholder="Select ferment for context..."
+						class="w-full"
+						:ui="{ base: 'w-full' }"
+						value-key="id"
+						clear
+						@update:model-value="onFermentSelect"
+					>
+						<template #leading>
+							<UIcon name="hugeicons:vegetarian-food" class="size-4" />
+						</template>
+					</USelectMenu>
+					<UButton
+						v-if="hasSelection"
+						icon="hugeicons:cancel-01"
+						variant="subtle"
+						color="error"
+						@click="clearSelection"
+					/>
+				</UFieldGroup>
+			</template>
 		</UChatPrompt>
 	</div>
 </template>
@@ -105,11 +105,11 @@
 	}, { immediate: true });
 
 	const fermentSelectItems = computed(() => {
-		return ferments.value.map((f) => ({ id: f.id, label: f.name }));
-	});
-
-	const selectedFermentIdForSelector = computed(() => {
-		return selectedFerment.value?.id ?? "";
+		return ferments.value.map((ferment) =>
+			({
+				id: ferment.id,
+				label: `${ferment.name} (${formatDate(ferment.startDate)})`
+			})).sort((a, b) => a.label.localeCompare(b.label));
 	});
 
 	function onFermentSelect(id: string | undefined) {

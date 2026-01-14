@@ -18,7 +18,7 @@
 					<div class="flex items-center justify-between border-b border-default px-4 py-3 h-12.25">
 						<div class="flex items-center gap-2">
 							<UIcon name="hugeicons:ai-chat-02" class="size-5" />
-							<span class="font-semibold">Fermentation Assistant</span>
+							<span class="font-semibold">Fermi Assistant</span>
 						</div>
 						<div class="flex items-center gap-1 relative">
 							<UButton
@@ -32,7 +32,7 @@
 							/>
 							<UPopover>
 								<UButton
-									v-if="chats && Object.keys(chats).length > 0"
+									v-if="sortedChats.length > 0"
 									icon="hugeicons:ai-book"
 									variant="ghost"
 									color="neutral"
@@ -40,31 +40,36 @@
 									title="Chat History"
 								/>
 								<template #content>
-									<div class="flex flex-col gap-2 p-2 max-h-64 overflow-y-auto">
-										<div
+									<div class="flex flex-col gap-2 p-2 max-h-96 overflow-y-auto">
+										<UFieldGroup
 											v-for="chatItem in sortedChats"
 											:key="chatItem.id"
-											class="flex items-center justify-between gap-2 p-2 rounded hover:bg-muted cursor-pointer"
-											:class="{ 'bg-muted': chatItem.id === activeChatId }"
-											@click="selectChat(chatItem.id)"
+											class="w-full"
 										>
-											<div class="flex-1 min-w-0">
-												<p class="text-sm font-medium truncate">
-													{{ chatItem.title }}
-												</p>
-												<p class="text-xs text-muted">
-													{{ formatDate(chatItem.updatedAt) }}
-												</p>
-											</div>
+											<UButton
+												:disabled="chatItem.id === activeChatId"
+												variant="subtle"
+												color="neutral"
+												class="flex-1"
+												@click="selectChat(chatItem.id)"
+											>
+												<div class="flex flex-col items-start">
+													<div class="text-sm max-w-[20ch] font-medium truncate">
+														{{ chatItem.title }}
+													</div>
+													<div class="text-xs text-muted">
+														{{ formatDate(chatItem.updatedAt) }}
+													</div>
+												</div>
+											</UButton>
 											<UButton
 												icon="hugeicons:delete-02"
-												variant="ghost"
+												variant="subtle"
 												color="error"
-												size="xs"
 												title="Delete Chat"
 												@click.stop="deleteChat(chatItem.id)"
 											/>
-										</div>
+										</UFieldGroup>
 									</div>
 								</template>
 							</UPopover>
@@ -98,12 +103,8 @@
 	});
 
 	const sortedChats = computed(() => {
-		return Object.values(chats.value).sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+		return Object.values(chats.value).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 	});
-
-	function formatDate(dateStr: string) {
-		return new Date(dateStr).toLocaleDateString();
-	}
 
 	function selectChat(chatId: string) {
 		activeChatId.value = chatId;
