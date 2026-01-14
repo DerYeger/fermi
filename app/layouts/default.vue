@@ -1,14 +1,15 @@
 <template>
 	<UMain class="select-none">
-		<UDashboardGroup>
+		<UDashboardGroup unit="rem">
 			<UDashboardSearch v-model="searchModel" :groups="searchGroups" />
 			<UDashboardPanel :ui="{ body: 'sm:p-4' }">
 				<template #header>
 					<UDashboardToolbar>
 						<template #left>
-							<UNavigationMenu highlight :items="navigationItems" :ui="{ item: 'max-md:[&_span.truncate]:hidden' }" />
+							<UNavigationMenu highlight :items="navigationItems" :ui="{ item: isChatOpen ? 'max-xl:[&_span.truncate]:hidden' : 'max-md:[&_span.truncate]:hidden' }" />
 						</template>
 						<template #right>
+							<ChatButton v-model="isChatOpen" />
 							<UDashboardSearchButton class="max-sm:hidden" />
 							<NewFermentButton with-shortcut />
 						</template>
@@ -18,6 +19,24 @@
 					<slot />
 				</template>
 			</UDashboardPanel>
+			<template v-if="isLargeScreen">
+				<UDashboardSidebar
+					v-if="isChatOpen"
+					:open="false"
+					side="right"
+					:default-size="25"
+					:ui="{ body: 'p-0 sm:px-0', header: 'hidden' }"
+				>
+					<ChatSidebar @close="isChatOpen = false" />
+				</UDashboardSidebar>
+			</template>
+			<UDashboardSidebar
+				v-else
+				v-model:open="isChatOpen"
+				:ui="{ body: 'p-0 sm:px-0', header: 'hidden' }"
+			>
+				<ChatSidebar @close="isChatOpen = false" />
+			</UDashboardSidebar>
 		</UDashboardGroup>
 	</UMain>
 </template>
@@ -30,6 +49,10 @@
 	useBadgeCount();
 
 	const searchModel = ref("");
+
+	const isChatOpen = ref(false);
+
+	const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
 	const { data: ferments } = useLiveQuery((q) => {
 		return q.from({ ferment: FermentCollection })

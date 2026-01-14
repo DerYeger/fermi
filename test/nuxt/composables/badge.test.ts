@@ -1,5 +1,5 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
 // Mock setBadgeCount function
@@ -31,7 +31,7 @@ mockNuxtImport("useOverdueFerments", () => {
 });
 
 describe("composables/badge", () => {
-	beforeEach(() => {
+	afterEach(() => {
 		mockDueFermentsData.value = [];
 		mockOverdueFermentsData.value = [];
 	});

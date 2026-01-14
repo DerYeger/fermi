@@ -1,6 +1,6 @@
 import type { Ferment } from "~/types/ferment";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import FermentCalendar from "~/components/Dashboard/FermentCalendar.vue";
 
 const mockFerments = ref<Ferment[]>([]);
@@ -60,7 +60,7 @@ function createFerment(overrides: Partial<Ferment> = {}): Ferment {
 }
 
 describe("components/Dashboard/FermentCalendar", () => {
-	beforeEach(() => {
+	afterEach(() => {
 		mockFerments.value = [];
 	});
 

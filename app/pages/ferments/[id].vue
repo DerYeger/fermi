@@ -19,8 +19,25 @@
 <script lang="ts" setup>
 	const route = useRoute("ferments-id");
 	const { data, isLoading } = useFermentById(() => route.params.id);
+	const { selectedFerment, selectFerment, clearSelection } = useChatFermentContext();
 
 	const ferment = computed(() => {
 		return data.value[0];
+	});
+
+	const wasAutoSelected = ref(false);
+
+	watch(ferment, (newFerment) => {
+		wasAutoSelected.value = false;
+		if (newFerment && !selectedFerment.value) {
+			selectFerment(newFerment);
+			wasAutoSelected.value = true;
+		}
+	}, { immediate: true });
+
+	onBeforeUnmount(() => {
+		if (wasAutoSelected.value && selectedFerment.value?.id === ferment.value?.id) {
+			clearSelection();
+		}
 	});
 </script>

@@ -5,7 +5,8 @@ export default defineNuxtConfig({
 		"nuxt-svgo",
 		"reka-ui/nuxt",
 		"@nuxt/eslint",
-		"@nuxt/test-utils/module"
+		"@nuxt/test-utils/module",
+		"@nuxtjs/mdc"
 	],
 	app: {
 		head: {
