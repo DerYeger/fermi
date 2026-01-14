@@ -1,5 +1,5 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
 // Mock config values
@@ -91,7 +91,7 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
 }));
 
 describe("composables/collections", () => {
-	beforeEach(() => {
+	afterEach(() => {
 		mockDataDir.value = undefined;
 		mockMaxBackups.value = 3;
 		mockPathSep.value = "/";

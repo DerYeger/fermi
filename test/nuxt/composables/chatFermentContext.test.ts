@@ -10,7 +10,6 @@ describe("composables/chatFermentContext", () => {
 			// Clear any previous state
 			context.clearSelection();
 
-			expect(context.selectedFermentId.value).toBeNull();
 			expect(context.selectedFerment.value).toBeNull();
 			expect(context.hasSelection.value).toBe(false);
 		});
@@ -22,7 +21,6 @@ describe("composables/chatFermentContext", () => {
 
 			context.selectFerment(BASE_ACTIVE_FERMENT);
 
-			expect(context.selectedFermentId.value).toBe(BASE_ACTIVE_FERMENT.id);
 			expect(context.selectedFerment.value).toEqual(BASE_ACTIVE_FERMENT);
 			expect(context.hasSelection.value).toBe(true);
 		});
@@ -34,7 +32,6 @@ describe("composables/chatFermentContext", () => {
 			context.selectFerment(BASE_ACTIVE_FERMENT);
 			context.clearSelection();
 
-			expect(context.selectedFermentId.value).toBeNull();
 			expect(context.selectedFerment.value).toBeNull();
 			expect(context.hasSelection.value).toBe(false);
 		});
@@ -63,35 +60,19 @@ describe("composables/chatFermentContext", () => {
 			expect(consumed).toBeNull();
 		});
 
-		it("should prepare ferment context with trimmed data", async () => {
+		it("should prepare ferment context with omitted data", async () => {
 			const { useChatFermentContext } = await import("~/composables/chatFermentContext");
 			const context = useChatFermentContext();
 
 			const fermentWithLongNotes: Ferment = {
 				...BASE_ACTIVE_FERMENT,
-				notes: "A".repeat(600)
+				notes: "test-notes"
 			};
 
 			context.selectFerment(fermentWithLongNotes);
 			const consumed = context.getSelectionContext();
-
-			expect(consumed?.notes.length).toBeLessThanOrEqual(503); // 500 + "..."
-			expect(consumed?.notes.endsWith("...")).toBe(true);
-		});
-
-		it("should not trim short notes", async () => {
-			const { useChatFermentContext } = await import("~/composables/chatFermentContext");
-			const context = useChatFermentContext();
-
-			const fermentWithShortNotes: Ferment = {
-				...BASE_ACTIVE_FERMENT,
-				notes: "Short notes"
-			};
-
-			context.selectFerment(fermentWithShortNotes);
-			const consumed = context.getSelectionContext();
-
-			expect(consumed?.notes).toBe("Short notes");
+			expect(consumed).not.toBeNull();
+			expect("notes" in consumed!).toBeFalsy();
 		});
 
 		it("should include only necessary ingredient fields", async () => {
@@ -133,7 +114,6 @@ describe("composables/chatFermentContext", () => {
 			context.selectFerment(BASE_ACTIVE_FERMENT);
 			context.selectFerment(BASE_COMPLETED_FERMENT);
 
-			expect(context.selectedFermentId.value).toBe(BASE_COMPLETED_FERMENT.id);
 			expect(context.selectedFerment.value?.name).toBe(BASE_COMPLETED_FERMENT.name);
 		});
 	});

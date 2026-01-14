@@ -9,7 +9,6 @@ export const ChatDataSchema = z.object({
 	title: z.string(),
 	createdAt: z.string(),
 	updatedAt: z.string(),
-
 	messages: z.array(z.custom<ChatDataMessage>())
 });
 
@@ -31,7 +30,7 @@ const CHAT_HISTORY_DEFAULTS: ChatHistory = {
 };
 
 export const useChatHistory = createGlobalState(() => {
-	const storedHistory = useLocalStorage<ChatHistory>("fermiChatHistory:v1", CHAT_HISTORY_DEFAULTS);
+	const storedHistory = useLocalStorageSchema("fermiChatHistory:v1", ChatHistorySchema, CHAT_HISTORY_DEFAULTS);
 
 	const parsedHistory = computed(() => {
 		try {
@@ -43,6 +42,12 @@ export const useChatHistory = createGlobalState(() => {
 		}
 	});
 
+	const chats = computed(() => parsedHistory.value.chats);
+
+	const sortedChats = computed(() => {
+		return Object.values(chats.value).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+	});
+
 	const activeChatId = computed<string | null>({
 		get: () => parsedHistory.value.activeChatId,
 		set: (value: string | null) => {
@@ -51,12 +56,16 @@ export const useChatHistory = createGlobalState(() => {
 	});
 
 	watch(activeChatId, (newId) => {
-		if (!newId) {
+		if (newId) {
+			return;
+		}
+		const mostRecentChat = sortedChats.value[0];
+		if (mostRecentChat) {
+			activeChatId.value = mostRecentChat.id;
+		} else {
 			createNewChat();
 		}
 	}, { immediate: true });
-
-	const chats = computed(() => parsedHistory.value.chats);
 
 	function getChat(chatId: string): ChatData | undefined {
 		return chats.value[chatId];
@@ -81,6 +90,16 @@ export const useChatHistory = createGlobalState(() => {
 				updatedAt: now,
 				messages: [...messages]
 			};
+		}
+
+		// Keep only the 10 most recent chats
+		const MAX_CHATS = 10;
+		const allChats = Object.values(storedHistory.value.chats).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+		if (allChats.length > MAX_CHATS) {
+			const chatsToDelete = allChats.slice(MAX_CHATS);
+			for (const chat of chatsToDelete) {
+				delete storedHistory.value.chats[chat.id];
+			}
 		}
 	}
 
@@ -108,6 +127,7 @@ export const useChatHistory = createGlobalState(() => {
 	return {
 		activeChatId,
 		chats,
+		sortedChats,
 		getChat,
 		saveChat,
 		deleteChat,

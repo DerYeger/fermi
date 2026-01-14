@@ -1,6 +1,6 @@
 import type { DateFilterState } from "~/types/filter";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { nextTick, ref } from "vue";
 import DateFilter from "~/components/Table/DateFilter.vue";
 
@@ -45,7 +45,7 @@ describe("components/Table/DateFilter", () => {
 	};
 
 	// Reset initial localStorage value before each test
-	beforeEach(() => {
+	afterEach(() => {
 		initialLocalStorageValue = null;
 	});
 

@@ -1,4 +1,22 @@
 import type { Ferment } from "~/types/ferment";
+import { ActiveFermentSchema, CompletedFermentSchema, FailedFermentSchema, IngredientSchema } from "~/types/ferment";
+
+const MinimalIngredientSchema = IngredientSchema.omit({ id: true });
+
+const sharedOmits = { images: true, notes: true, ingredients: true } as const;
+
+const FermentContextSchema = z.discriminatedUnion("state", [
+	ActiveFermentSchema.omit(sharedOmits).extend({
+		ingredients: z.array(MinimalIngredientSchema)
+	}),
+	CompletedFermentSchema.omit({ ...sharedOmits, overall: true, flavor: true, texture: true, smell: true, process: true }).extend({
+		ingredients: z.array(MinimalIngredientSchema)
+	}),
+	FailedFermentSchema.omit({ ...sharedOmits, reason: true }).extend({
+		ingredients: z.array(MinimalIngredientSchema)
+	})
+]);
+type FermentContext = zInfer<typeof FermentContextSchema>;
 
 export const useChatFermentContext = createGlobalState(() => {
 	const selectedFerment = ref<Ferment | null>(null);
@@ -11,17 +29,9 @@ export const useChatFermentContext = createGlobalState(() => {
 		selectedFerment.value = null;
 	}
 
-	function getSelectionContext(): Omit<Ferment, "images" | "notes" | "reason" | "overall" | "flavor" | "texture" | "smell" | "process"> | null {
+	function getSelectionContext(): FermentContext | null {
 		if (!selectedFerment.value) return null;
-		const { images, notes, ...rest } = selectedFerment.value;
-		if (rest.state === "active") {
-			return rest;
-		} else if (rest.state === "failed") {
-			const { reason, ...failedRest } = rest;
-			return failedRest;
-		}
-		const { overall, flavor, texture, smell, process, ...completedRest } = rest;
-		return completedRest;
+		return FermentContextSchema.safeParse(selectedFerment.value).data ?? null;
 	}
 
 	const hasSelection = computed(() => selectedFerment.value !== null);

@@ -23,24 +23,16 @@
 				<template v-if="message.role === 'assistant'">
 					<template v-for="(part, index) in message.parts" :key="`${message.id}-${part.type}-${index}${'state' in part ? `-${part.state}` : ''}`">
 						<MDCCached
-							v-if="part.type === 'text'"
+							v-if="part.type === 'text' && part.text.length > 0"
 							:value="part.text"
 							:cache-key="`${message.id}-${index}`"
 							:parser-options="{ highlight: false }"
 							class="*:first:mt-0 *:last:mb-0"
 						/>
+						<FermentSearchResults v-else-if="part.type === 'tool-fermentSearch'" :part="part as FermentSearchToolInvocation" />
 					</template>
 				</template>
 				<UChatMessage v-else v-bind="message" :parts="message.parts.slice(0, 1)" :ui="{ container: 'pb-0' }" />
-			</template>
-			<template #indicator>
-				<UButton
-					class="px-0"
-					color="neutral"
-					variant="link"
-					loading
-					label="Thinking..."
-				/>
 			</template>
 		</UChatMessages>
 	</div>
@@ -55,35 +47,24 @@
 				@reload="chat.regenerate()"
 			/>
 			<template v-if="fermentSelectItems.length > 0" #footer>
-				<UFieldGroup class="w-full">
-					<USelectMenu
-						:model-value="selectedFerment?.id"
-						:items="fermentSelectItems"
-						placeholder="Select ferment for context..."
-						class="w-full"
-						:ui="{ base: 'w-full' }"
-						value-key="id"
-						clear
-						@update:model-value="onFermentSelect"
-					>
-						<template #leading>
-							<UIcon name="hugeicons:vegetarian-food" class="size-4" />
-						</template>
-					</USelectMenu>
-					<UButton
-						v-if="hasSelection"
-						icon="hugeicons:cancel-01"
-						variant="subtle"
-						color="error"
-						@click="clearSelection"
-					/>
-				</UFieldGroup>
+				<USelectMenu
+					:model-value="selectedFerment?.id"
+					:items="fermentSelectItems"
+					placeholder="Select ferment for context..."
+					variant="outline"
+					class="w-full"
+					value-key="id"
+					leading-icon="hugeicons:vegetarian-food"
+					@update:model-value="onFermentSelect"
+				/>
 			</template>
 		</UChatPrompt>
 	</div>
 </template>
 
 <script setup lang="ts">
+	import FermentSearchResults from "~/components/Tools/FermentSearchResults.vue";
+
 	const { chatId } = defineProps<{
 		chatId: string
 	}>();
@@ -92,7 +73,6 @@
 	const {
 		selectFerment,
 		clearSelection,
-		hasSelection,
 		selectedFerment
 	} = useChatFermentContext();
 
@@ -105,11 +85,14 @@
 	}, { immediate: true });
 
 	const fermentSelectItems = computed(() => {
-		return ferments.value.map((ferment) =>
-			({
-				id: ferment.id,
-				label: `${ferment.name} (${formatDate(ferment.startDate)})`
-			})).sort((a, b) => a.label.localeCompare(b.label));
+		return [
+			{ id: undefined, label: "None" },
+			...ferments.value.map((ferment) =>
+				({
+					id: ferment.id,
+					label: `${ferment.name} (${formatDate(ferment.startDate)})`
+				})).sort((a, b) => a.label.localeCompare(b.label))
+		];
 	});
 
 	function onFermentSelect(id: string | undefined) {

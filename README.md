@@ -8,6 +8,7 @@
 
 - Track ferments with ingredients, containers, images, start and end dates, salt ratios, as well as notes and ratings.
 - Visualize your fermentation journey with charts and statistics.
+- Chat with your personal fermentation AI assistant, using your own [OpenRouter](https://openrouter.ai/) API keys.
 - Get reminders for due and overdue ferments.
 - Browse data of completed and failed ferments with sorting and filtering.
 - Data is stored in JSON files, enabling automated backups.

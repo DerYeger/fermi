@@ -15,7 +15,8 @@ export function useChat(chatId: MaybeRefOrGetter<string>) {
 
 		const agent = new ToolLoopAgent({
 			model: openrouter.chat(modelId.value),
-			instructions: "You are a helpful assistant that provides advice on fermentation based on user questions and the provided ferment context. Politely decline to answer questions that are not related to fermentation. Always be very concise and clear in your responses."
+			instructions: "You are a helpful assistant that provides advice on fermentation based on user questions and the provided ferment context. Politely decline to answer questions that are not related to fermentation. Always be very concise and clear in your responses.",
+			tools: chatTools
 		});
 
 		const transport = new DirectChatTransport({ agent, generateMessageId: createId });
@@ -31,9 +32,12 @@ export function useChat(chatId: MaybeRefOrGetter<string>) {
 					description: getErrorMessage(error)
 				});
 			},
-			onFinish() {
+			onFinish({ messages }) {
+				// Extract ferments from tool results and attach to assistant message data
+				console.log(messages);
+
 				// Persist after completion
-				saveChat(toValue(chatId), chat.value.messages);
+				saveChat(toValue(chatId), messages);
 			}
 		});
 	});
