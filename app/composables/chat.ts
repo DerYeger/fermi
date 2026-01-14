@@ -33,10 +33,6 @@ export function useChat(chatId: MaybeRefOrGetter<string>) {
 				});
 			},
 			onFinish({ messages }) {
-				// Extract ferments from tool results and attach to assistant message data
-				console.log(messages);
-
-				// Persist after completion
 				saveChat(toValue(chatId), messages);
 			}
 		});
