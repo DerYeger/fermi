@@ -22,7 +22,7 @@
 	const { selectedFerment, selectFerment, clearSelection } = useChatFermentContext();
 
 	const ferment = computed(() => {
-		return data.value[0];
+		return data.value;
 	});
 
 	const wasAutoSelected = ref(false);
