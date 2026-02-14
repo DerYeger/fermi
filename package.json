@@ -66,7 +66,7 @@
 		"@vueuse/nuxt": "14.2.1",
 		"@yeger/vitest-utils": "1.2.1",
 		"bumpp": "10.4.1",
-		"eslint": "9.39.2",
+		"eslint": "10.0.0",
 		"happy-dom": "20.6.1",
 		"nuxt-svgo": "4.2.6",
 		"playwright": "1.58.2",
