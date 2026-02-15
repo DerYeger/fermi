@@ -28,13 +28,6 @@ vi.mock("#imports", async (importOriginal) => {
 	};
 });
 
-vi.mock("~/types/ferment", () => ({
-	FailedFermentSchema: {
-		parse: vi.fn()
-	},
-	MAX_NOTES_LENGTH: 1000
-}));
-
 describe("components/Forms/FailFermentForm/FailForm", () => {
 	it("renders UForm component", async () => {
 		const wrapper = await mountSuspended(FailForm, {

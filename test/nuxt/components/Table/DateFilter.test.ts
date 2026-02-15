@@ -26,9 +26,13 @@ vi.mock("@vueuse/core", async (importOriginal) => {
 	const { ref: vueRef } = await import("vue");
 	return {
 		...actual,
-		useLocalStorage: (_key: unknown, _defaultValue: DateFilterState) => {
-			localStorageRef = vueRef(initialLocalStorageValue);
-			return localStorageRef;
+		useLocalStorage: (key: unknown, defaultValue: DateFilterState) => {
+			const resolvedKey = typeof key === "function" ? key() : key;
+			if (typeof resolvedKey === "string" && resolvedKey.startsWith("date-filter-")) {
+				localStorageRef = vueRef(initialLocalStorageValue);
+				return localStorageRef;
+			}
+			return vueRef(defaultValue);
 		},
 		useEventBus: () => ({
 			on: mockEventBusOn
@@ -44,6 +48,12 @@ describe("components/Table/DateFilter", () => {
 		onUpdate: vi.fn()
 	};
 
+	const mountDateFilter = async (props = {}) => {
+		return mountSuspended(DateFilter, {
+			props: { ...defaultProps, ...props }
+		});
+	};
+
 	// Reset initial localStorage value before each test
 	afterEach(() => {
 		initialLocalStorageValue = null;
@@ -51,25 +61,19 @@ describe("components/Table/DateFilter", () => {
 
 	describe("rendering", () => {
 		it("renders filter button with correct icon", async () => {
-			const wrapper = await mountSuspended(DateFilter, {
-				props: defaultProps
-			});
+			const wrapper = await mountDateFilter();
 			expect(wrapper.find("button").exists()).toBe(true);
 			const button = wrapper.findComponent({ name: "UButton" });
 			expect(button.props("icon")).toBe("hugeicons:filter");
 		});
 
 		it("renders UPopover component", async () => {
-			const wrapper = await mountSuspended(DateFilter, {
-				props: defaultProps
-			});
+			const wrapper = await mountDateFilter();
 			expect(wrapper.findComponent({ name: "UPopover" }).exists()).toBe(true);
 		});
 
 		it("uses link variant for button", async () => {
-			const wrapper = await mountSuspended(DateFilter, {
-				props: defaultProps
-			});
+			const wrapper = await mountDateFilter();
 			const button = wrapper.findComponent({ name: "UButton" });
 			expect(button.props("variant")).toBe("link");
 		});
@@ -77,17 +81,13 @@ describe("components/Table/DateFilter", () => {
 
 	describe("filter states", () => {
 		it("uses neutral color when not filtered and popover closed", async () => {
-			const wrapper = await mountSuspended(DateFilter, {
-				props: { ...defaultProps, isFiltered: false }
-			});
+			const wrapper = await mountDateFilter({ isFiltered: false });
 			const button = wrapper.findComponent({ name: "UButton" });
 			expect(button.props("color")).toBe("neutral");
 		});
 
 		it("uses primary color when filtered", async () => {
-			const wrapper = await mountSuspended(DateFilter, {
-				props: { ...defaultProps, isFiltered: true }
-			});
+			const wrapper = await mountDateFilter({ isFiltered: true });
 			const button = wrapper.findComponent({ name: "UButton" });
 			expect(button.props("color")).toBe("primary");
 		});
@@ -95,9 +95,7 @@ describe("components/Table/DateFilter", () => {
 
 	describe("event bus", () => {
 		it("registers event bus listener on mount", async () => {
-			await mountSuspended(DateFilter, {
-				props: defaultProps
-			});
+			await mountDateFilter();
 			expect(mockEventBusOn).toHaveBeenCalled();
 		});
 	});
@@ -105,17 +103,13 @@ describe("components/Table/DateFilter", () => {
 	describe("onUpdate callback", () => {
 		it("calls onUpdate with null on mount when no filter set", async () => {
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			expect(mockOnUpdate).toHaveBeenCalledWith(null);
 		});
 
 		it("calls onUpdate with null when unmounted", async () => {
 			const mockOnUpdate = vi.fn();
-			const wrapper = await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			const wrapper = await mountDateFilter({ onUpdate: mockOnUpdate });
 			mockOnUpdate.mockClear();
 			wrapper.unmount();
 			expect(mockOnUpdate).toHaveBeenCalledWith(null);
@@ -126,36 +120,28 @@ describe("components/Table/DateFilter", () => {
 		it("initializes with on type from localStorage", async () => {
 			initialLocalStorageValue = { type: "on", date: "2024-06-15" };
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			expect(mockOnUpdate).toHaveBeenCalledWith({ type: "on", date: "2024-06-15" });
 		});
 
 		it("initializes with before type from localStorage", async () => {
 			initialLocalStorageValue = { type: "before", date: "2024-03-20" };
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			expect(mockOnUpdate).toHaveBeenCalledWith({ type: "before", date: "2024-03-20" });
 		});
 
 		it("initializes with after type from localStorage", async () => {
 			initialLocalStorageValue = { type: "after", date: "2024-09-01" };
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			expect(mockOnUpdate).toHaveBeenCalledWith({ type: "after", date: "2024-09-01" });
 		});
 
 		it("initializes with between type from localStorage", async () => {
 			initialLocalStorageValue = { type: "between", from: "2024-01-01", to: "2024-12-31" };
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			expect(mockOnUpdate).toHaveBeenCalledWith({ type: "between", from: "2024-01-01", to: "2024-12-31" });
 		});
 	});
@@ -163,9 +149,7 @@ describe("components/Table/DateFilter", () => {
 	describe("filter model updates via localStorage changes", () => {
 		it("calls onUpdate when model changes to a date filter", async () => {
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			mockOnUpdate.mockClear();
 
 			localStorageRef.value = { type: "on", date: "2024-05-15" };
@@ -176,9 +160,7 @@ describe("components/Table/DateFilter", () => {
 
 		it("calls onUpdate when model changes to between filter", async () => {
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			mockOnUpdate.mockClear();
 
 			localStorageRef.value = { type: "between", from: "2024-01-01", to: "2024-06-30" };
@@ -190,9 +172,7 @@ describe("components/Table/DateFilter", () => {
 		it("calls onUpdate with null when model is cleared", async () => {
 			initialLocalStorageValue = { type: "on", date: "2024-05-15" };
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			mockOnUpdate.mockClear();
 
 			localStorageRef.value = null;
@@ -204,9 +184,7 @@ describe("components/Table/DateFilter", () => {
 		it("does not call onUpdate when model value is identical", async () => {
 			initialLocalStorageValue = { type: "on", date: "2024-05-15" };
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			mockOnUpdate.mockClear();
 
 			// Set to the same value
@@ -221,9 +199,7 @@ describe("components/Table/DateFilter", () => {
 		it("resets filter when clear event is received", async () => {
 			initialLocalStorageValue = { type: "on", date: "2024-06-15" };
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			mockOnUpdate.mockClear();
 
 			const callback = eventBusCallback();
@@ -236,9 +212,7 @@ describe("components/Table/DateFilter", () => {
 		it("ignores non-clear events from event bus", async () => {
 			initialLocalStorageValue = { type: "on", date: "2024-06-15" };
 			const mockOnUpdate = vi.fn();
-			await mountSuspended(DateFilter, {
-				props: { ...defaultProps, onUpdate: mockOnUpdate }
-			});
+			await mountDateFilter({ onUpdate: mockOnUpdate });
 			mockOnUpdate.mockClear();
 
 			const callback = eventBusCallback();

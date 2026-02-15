@@ -1,12 +1,7 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import RatingFormFields from "~/components/Forms/FormFields/RatingFormFields.vue";
-
-// Mock MAX_NOTES_LENGTH
-vi.mock("~/types/ferment", () => ({
-	MAX_NOTES_LENGTH: 1000
-}));
 
 describe("components/Forms/FormFields/RatingFormFields", () => {
 	const defaultProps = {

@@ -31,20 +31,6 @@ vi.mock("#imports", async (importOriginal) => {
 	};
 });
 
-vi.mock("~/types/ferment", () => ({
-	CompletedFermentSchema: {
-		parse: vi.fn((data: object) => data)
-	},
-	MAX_NOTES_LENGTH: 1000,
-	RATING_CATEGORIES: [
-		{ key: "overall", name: "Overall", placeholder: "Overall notes" },
-		{ key: "flavor", name: "Flavor", placeholder: "Flavor notes" },
-		{ key: "texture", name: "Texture", placeholder: "Texture notes" },
-		{ key: "smell", name: "Smell", placeholder: "Smell notes" },
-		{ key: "process", name: "Process", placeholder: "Process notes" }
-	]
-}));
-
 describe("components/Forms/ArchiveFermentForm/ArchiveForm", () => {
 	describe("rendering", () => {
 		it("renders UForm component", async () => {

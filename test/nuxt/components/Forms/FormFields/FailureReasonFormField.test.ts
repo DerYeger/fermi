@@ -1,11 +1,6 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import FailureReasonFormField from "~/components/Forms/FormFields/FailureReasonFormField.vue";
-
-// Mock MAX_NOTES_LENGTH
-vi.mock("~/types/ferment", () => ({
-	MAX_NOTES_LENGTH: 1000
-}));
 
 describe("components/Forms/FormFields/FailureReasonFormField", () => {
 	it("renders UFormField component", async () => {

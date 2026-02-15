@@ -3,7 +3,7 @@ import { defineVitestProject } from "@nuxt/test-utils/config";
 import { defineTestConfig } from "@yeger/vitest-utils";
 import { defineConfig } from "vitest/config";
 
-const baseConfig = defineTestConfig({ coverage: false, idempotent: true });
+const baseConfig = defineTestConfig({ coverage: false, idempotent: true }, { pool: "threads" });
 
 export default defineConfig({
 	test: {
@@ -32,7 +32,6 @@ export default defineConfig({
 					name: "nuxt",
 					include: ["test/nuxt/**/*.{test,spec}.ts"],
 					environment: "nuxt",
-					globalSetup: [fileURLToPath(new URL("./test/nuxt/globalSetup.ts", import.meta.url))],
 					setupFiles: [fileURLToPath(new URL("./test/nuxt/setup.ts", import.meta.url))]
 				}
 			})
