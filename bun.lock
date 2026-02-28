@@ -19,7 +19,7 @@
         "@tauri-apps/plugin-notification": "2.3.3",
         "@tauri-apps/plugin-shell": "2.3.5",
         "@tauri-apps/plugin-store": "2.4.2",
-        "@yeger/streams": "2.0.2",
+        "@yeger/streams": "3.3.0",
         "ai": "6.0.91",
         "compressorjs": "1.2.1",
         "echarts": "6.0.0",
@@ -962,7 +962,7 @@
 
     "@xmldom/xmldom": ["@xmldom/xmldom@0.9.8", "", {}, "sha512-p96FSY54r+WJ50FIOsCOjyj/wavs8921hG5+kVMmZgKcvIKxMXHTrjNJvRgWa/zuX3B6t2lijLNFaOyuxUH+2A=="],
 
-    "@yeger/streams": ["@yeger/streams@2.0.2", "", {}, "sha512-L+HzDYkg/+DClqoAJ31PLbzUAz7RnKFgI0thszLKhm4NTMuxZhBxagMAYc2fKuGttsawmt6JD/wLn5rAbpo4mw=="],
+    "@yeger/streams": ["@yeger/streams@3.3.0", "", {}, "sha512-fAfET6OEisVuY2cWNAFH86uEIt00eZ6zVLesFg91D35+293XqiZ3OobjAqmpX7sRrEXns7jBEbAFUX20qvt7Sw=="],
 
     "@yeger/vitest-utils": ["@yeger/vitest-utils@1.2.1", "", { "dependencies": { "deepmerge": "4.3.1" }, "peerDependencies": { "vitest": "^4.0.0" } }, "sha512-4MOpp+hLiZv43sNOaGINQHKXH72uf0nPSA+u3qNpQzoiVuaDWnO1sdU2MNNnzPhBKyjfTv5s73zry2Y6cbFn6g=="],
 

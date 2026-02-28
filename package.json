@@ -40,7 +40,7 @@
 		"@tauri-apps/plugin-notification": "2.3.3",
 		"@tauri-apps/plugin-shell": "2.3.5",
 		"@tauri-apps/plugin-store": "2.4.2",
-		"@yeger/streams": "2.0.2",
+		"@yeger/streams": "3.3.0",
 		"ai": "6.0.91",
 		"compressorjs": "1.2.1",
 		"echarts": "6.0.0",
