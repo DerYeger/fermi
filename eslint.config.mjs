@@ -35,7 +35,8 @@ export default eslintConfig(
 	},
 	{
 		ignores: [
-			"src-tauri/**"
+			"src-tauri/**",
+			"*.md"
 		]
 	},
 	// Vue

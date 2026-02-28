@@ -15,17 +15,21 @@
 
 <script setup lang="ts">
 	import type { ECBasicOption } from "echarts/types/dist/shared";
-	import { Stream } from "@yeger/streams/sync";
+	import * as s from "@yeger/streams/sync";
 	import VChart from "vue-echarts";
 	import { MAX_STARS, RATING_CATEGORIES } from "~/types/ferment";
 
 	const { data, isLoading } = useCompletedFerments();
 
 	const chartData = computed(() => {
-		return Stream.from(data.value).map((ferment) => {
-			if (ferment.state !== "completed") return null;
-			return RATING_CATEGORIES.map((rating) => ferment[rating.key].stars ?? 0);
-		}).filterNonNull().toArray();
+		return s.toArray(s.pipe(
+			data.value,
+			s.map((ferment) => {
+				if (ferment.state !== "completed") return null;
+				return RATING_CATEGORIES.map((rating) => ferment[rating.key].stars ?? 0);
+			}),
+			s.filterDefined()
+		));
 	});
 
 	const hasData = computed(() => chartData.value.some((category) => category.some((star) => star > 0)));

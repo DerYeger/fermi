@@ -1,5 +1,6 @@
 import type { Tool, UIToolInvocation } from "ai";
-import { Stream } from "@yeger/streams/sync";
+import type { Ferment } from "~/types/ferment";
+import * as s from "@yeger/streams/sync";
 
 const FermentSearchToolResultSchema = z.object({
 	id: z.string(),
@@ -28,45 +29,48 @@ const fermentSearch: Tool = {
 	description: "Search the user's ferment collection using various filters. Returns up to 10 relevant ferments with basic info (no notes/images). All filters are optional and combined with AND logic.",
 	inputSchema: FermentQuerySchema,
 	execute: async ({ name, container, state, ingredientName, startDateFrom, startDateTo, endDateFrom, endDateTo }: zInfer<typeof FermentQuerySchema>) => {
-		let matches = Stream.from(FermentCollection.toArray);
+		const filters: s.Filter<Ferment>[] = [];
 		if (name) {
 			const nameLower = name.toLowerCase();
-			matches = matches.filter((f) => f.name.toLowerCase().includes(nameLower));
+			filters.push((f) => f.name.toLowerCase().includes(nameLower));
 		}
 
 		if (container) {
 			const containerLower = container.toLowerCase();
-			matches = matches.filter((f) => f.container?.toLowerCase().includes(containerLower) ?? false);
+			filters.push((f) => f.container?.toLowerCase().includes(containerLower) ?? false);
 		}
 
 		if (state) {
-			matches = matches.filter((f) => f.state === state);
+			filters.push((f) => f.state === state);
 		}
 
 		if (ingredientName) {
 			const ingredientLower = ingredientName.toLowerCase();
-			matches = matches.filter((f) =>
+			filters.push((f) =>
 				f.ingredients.some((i) => i.name.toLowerCase().includes(ingredientLower))
 			);
 		}
 
 		if (startDateFrom) {
-			matches = matches.filter((f) => f.startDate >= startDateFrom);
+			filters.push((f) => f.startDate >= startDateFrom);
 		}
 
 		if (startDateTo) {
-			matches = matches.filter((f) => f.startDate <= startDateTo);
+			filters.push((f) => f.startDate <= startDateTo);
 		}
 
 		if (endDateFrom) {
-			matches = matches.filter((f) => f.endDate !== null && f.endDate >= endDateFrom);
+			filters.push((f) => f.endDate !== null && f.endDate >= endDateFrom);
 		}
 
 		if (endDateTo) {
-			matches = matches.filter((f) => f.endDate !== null && f.endDate <= endDateTo);
+			filters.push((f) => f.endDate !== null && f.endDate <= endDateTo);
 		}
 
-		const allMatches = matches.toArray();
+		const allMatches = s.toArray(s.pipe(
+			FermentCollection.toArray,
+			s.filter((ferment) => filters.every((filter, index) => filter(ferment, index)))
+		));
 		const results = allMatches
 			.slice(0, FERMENT_RESULT_LIMIT)
 			.map((ferment) => FermentSearchToolResultSchema.parse(ferment));

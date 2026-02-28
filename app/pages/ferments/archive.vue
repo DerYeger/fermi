@@ -55,7 +55,7 @@
 	import type { ArchivedFerment, FermentState } from "~/types/ferment";
 	import type { Filter } from "~/types/filter";
 	import { createColumnHelper, getFacetedRowModel, getFacetedUniqueValues } from "@tanstack/vue-table";
-	import { Stream } from "@yeger/streams/sync";
+	import * as s from "@yeger/streams/sync";
 	import IngredientBadges from "~/components/IngredientBadges.vue";
 	import FermentActionsCell from "~/components/Table/FermentActionsCell.vue";
 	import StarsCell from "~/components/Table/StarsCell.vue";
@@ -283,7 +283,7 @@
 				if (saltRatios.length === 0) {
 					return null;
 				}
-				const avgSaltRatio = (Stream.from(saltRatios).sum() / saltRatios.length);
+				const avgSaltRatio = (s.sum(saltRatios) / saltRatios.length);
 				return `${formatPercentage(avgSaltRatio)}`;
 			}
 		}),
@@ -313,7 +313,7 @@
 				if (durations.length === 0) {
 					return null;
 				}
-				const avgDuration = (Stream.from(durations).sum() / durations.length);
+				const avgDuration = (s.sum(durations) / durations.length);
 				return `${avgFormat.format(avgDuration)} ${avgDuration === 1 ? "day" : "days"}`;
 			}
 		}),
@@ -340,11 +340,15 @@
 				filterFn: numberRangeFilterFn,
 				cell: createStarsCell(),
 				footer: (ctx) => {
-					const ratings = Stream.from(ctx.table.getGlobalFacetedRowModel().rows).map((row) => row.getValue<number | null>(rating.key)).filterNonNull().toArray();
+					const ratings = s.toArray(s.pipe(
+						ctx.table.getGlobalFacetedRowModel().rows,
+						s.map((row) => row.getValue<number | null>(rating.key)),
+						s.filterDefined()
+					));
 					if (ratings.length === 0) {
 						return null;
 					}
-					const avgRating = (Stream.from(ratings).sum() / ratings.length);
+					const avgRating = (s.sum(ratings) / ratings.length);
 					return `${avgFormat.format(avgRating)} ${avgRating === 1 ? "star" : "stars"}`;
 				}
 			})),

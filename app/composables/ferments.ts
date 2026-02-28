@@ -1,5 +1,5 @@
 import { and, eq, lt, not, useLiveQuery } from "@tanstack/vue-db";
-import { Stream } from "@yeger/streams/sync";
+import * as s from "@yeger/streams/sync";
 
 export function useFerments() {
 	return useLiveQuery((q) => q.from({ ferment: FermentCollection }));
@@ -51,38 +51,38 @@ export function useIngredients() {
 export function useFermentNames(otherNames: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
 	const query = useLiveQuery((q) => q.from({ ferment: FermentCollection }).select(({ ferment }) => ({ name: ferment.name })));
 	return computed(() =>
-		Stream.from(query.data.value ?? [])
-			.map((item) => item.name)
-			.concat(toValue(otherNames))
-			.distinct()
-			.toArray()
-			.sort((a, b) => a.localeCompare(b))
+		s.toArray(s.pipe(
+			query.data.value ?? [],
+			s.map((item) => item.name),
+			s.append(toValue(otherNames)),
+			s.distinct()
+		)).sort((a, b) => a.localeCompare(b))
 	);
 }
 
 export function useFermentContainers(otherContainers: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
 	const query = useLiveQuery((q) => q.from({ ferment: FermentCollection }).select(({ ferment }) => ({ container: ferment.container })));
 	return computed(() =>
-		Stream.from(query.data.value ?? [])
-			.map((item) => item.container)
-			.filterNonNull()
-			.concat(toValue(otherContainers))
-			.distinct()
-			.toArray()
-			.sort((a, b) => a.localeCompare(b))
+		s.toArray(s.pipe(
+			query.data.value ?? [],
+			s.map((item) => item.container),
+			s.filterDefined(),
+			s.append(toValue(otherContainers)),
+			s.distinct()
+		)).sort((a, b) => a.localeCompare(b))
 	);
 }
 
 export function useIngredientNames(otherNames: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
 	const query = useIngredients();
 	return computed(() =>
-		Stream.from(query.data.value ?? [])
-			.flatMap((item) => item.ingredients)
-			.map((ingredient) => ingredient.name)
-			.concat(toValue(otherNames))
-			.distinct()
-			.toArray()
-			.sort((a, b) => a.localeCompare(b))
+		s.toArray(s.pipe(
+			query.data.value ?? [],
+			s.flatMap((item) => item.ingredients),
+			s.map((ingredient) => ingredient.name),
+			s.append(toValue(otherNames)),
+			s.distinct()
+		)).sort((a, b) => a.localeCompare(b))
 	);
 }
 
@@ -125,14 +125,14 @@ export function formatQuantity(quantity: number, unit: string) {
 export function useIngredientUnits(otherUnits: MaybeRefOrGetter<string[]>): ComputedRef<string[]> {
 	const query = useIngredients();
 	return computed(() =>
-		Stream.from(query.data.value ?? [])
-			.flatMap((item) => item.ingredients)
-			.map((ingredient) => ingredient.unit)
-			.concat(toValue(otherUnits))
-			.filter((unit) => !PREDEFINED_UNITS_SET.has(unit))
-			.distinct()
-			.toArray()
-			.sort((a, b) => a.localeCompare(b))
+		s.toArray(s.pipe(
+			query.data.value ?? [],
+			s.flatMap((item) => item.ingredients),
+			s.map((ingredient) => ingredient.unit),
+			s.append(toValue(otherUnits)),
+			s.filter((unit) => !PREDEFINED_UNITS_SET.has(unit)),
+			s.distinct()
+		)).sort((a, b) => a.localeCompare(b))
 	);
 }
 

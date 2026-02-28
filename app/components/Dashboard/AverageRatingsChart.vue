@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 	import type { ECBasicOption } from "echarts/types/dist/shared";
-	import { Stream } from "@yeger/streams/sync";
+	import * as s from "@yeger/streams/sync";
 	import VChart from "vue-echarts";
 	import { MAX_STARS, RATING_CATEGORIES } from "~/types/ferment";
 
@@ -43,9 +43,9 @@
 		});
 
 		return Object.entries(counts).map(([category, count]) => {
-			const ratingSum = Stream.from(count).map((value, index) => value * (index + 1)).sum();
-			const numberOfRatings = Stream.from(count).sum();
-			const average = ratingSum / numberOfRatings;
+			const ratingSum = s.sum(s.pipe(count, s.map((value, index) => value * (index + 1))));
+			const numberOfRatings = s.sum(count);
+			const average = numberOfRatings > 0 ? ratingSum / numberOfRatings : 0;
 			return { name: category.substring(0, 1).toUpperCase() + category.substring(1), average };
 		});
 	});
